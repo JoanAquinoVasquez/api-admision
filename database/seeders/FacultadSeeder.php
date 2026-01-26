@@ -53,6 +53,10 @@ class FacultadSeeder extends Seeder
             [
                 'nombre' => 'FACULTAD DE MEDICINA VETERINARIA',
                 'siglas' => 'FMV',
+            ],
+            [
+                'nombre' => 'FACULTAD DE AGRONOMÍA',
+                'siglas' => 'FAG'
             ]
         ];
 

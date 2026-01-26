@@ -39,9 +39,9 @@ class UserSeeder extends Seeder
             'email' => 'arojasf@unprg.edu.pe',
         ])->roles()->attach($superAdminRole->id);
 
-        User::create([
-            'email' => 'ivalle@unprg.edu.pe',
-        ])->roles()->attach($adminRole->id);
+        // User::create([
+        //     'email' => 'ivalle@unprg.edu.pe',
+        // ])->roles()->attach($adminRole->id);
 
         User::create([
             'email' => 'lmija@unprg.edu.pe',
@@ -78,6 +78,10 @@ class UserSeeder extends Seeder
             'name' => 'Comision Admision',
             'email' => 'c0m1s10n@unprg.edu.pe',
             'password' => '4dm1510nEPG2025-II'
-        ])->roles()->attach($comisionRole->id);;
+        ])->roles()->attach($comisionRole->id);
+        User::create([
+            'name' => 'Sender',
+            'email' => 'sotoya@unprg.edu.pe',
+        ])->roles()->attach($adminRole->id);
     }
 }

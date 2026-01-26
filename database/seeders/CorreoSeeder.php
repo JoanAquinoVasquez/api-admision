@@ -13,6 +13,6 @@ class CorreoSeeder extends Seeder
      */
     public function run(): void
     {
-        Correo::factory()->count(50)->create();
+        // Correo::factory()->count(50)->create();
     }
 }

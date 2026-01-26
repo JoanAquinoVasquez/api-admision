@@ -14,42 +14,42 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
 {
-        // Crear roles
-        $superAdminRole = Role::create([
-            'nombre' => 'Super Administrativo',
-            'slug' => 'super-admin'
-        ]);
+        // // Crear roles
+        // $superAdminRole = Role::create([
+        //     'nombre' => 'Super Administrativo',
+        //     'slug' => 'super-admin'
+        // ]);
 
-        $adminRole = Role::create([
-            'nombre' => 'Administrativo',
-            'slug' => 'admin'
-        ]);
+        // $adminRole = Role::create([
+        //     'nombre' => 'Administrativo',
+        //     'slug' => 'admin'
+        // ]);
 
-        $comisionRole = Role::create([
-            'nombre' => 'Comision Admision',
-            'slug' => 'comision'
-        ]);
+        // $comisionRole = Role::create([
+        //     'nombre' => 'Comision Admision',
+        //     'slug' => 'comision'
+        // ]);
 
-        // Crear usuarios y asignar roles
-        $superAdmin = User::create([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@example.com',
-            'password' => Hash::make('password123'),
-        ]);
-        $superAdmin->roles()->attach($superAdminRole->id);
+        // // Crear usuarios y asignar roles
+        // $superAdmin = User::create([
+        //     'name' => 'Super Admin',
+        //     'email' => 'superadmin@example.com',
+        //     'password' => Hash::make('password123'),
+        // ]);
+        // $superAdmin->roles()->attach($superAdminRole->id);
 
-        $admin = User::create([
-            'name' => 'Administrador',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password123'),
-        ]);
-        $admin->roles()->attach($adminRole->id);
+        // $admin = User::create([
+        //     'name' => 'Administrador',
+        //     'email' => 'admin@example.com',
+        //     'password' => Hash::make('password123'),
+        // ]);
+        // $admin->roles()->attach($adminRole->id);
 
-        $comision = User::create([
-            'name' => 'Comision',
-            'email' => 'comision@example.com',
-            'password' => Hash::make('password123'),
-        ]);
-        $comision->roles()->attach($comisionRole->id);
+        // $comision = User::create([
+        //     'name' => 'Comision',
+        //     'email' => 'comision@example.com',
+        //     'password' => Hash::make('password123'),
+        // ]);
+        // $comision->roles()->attach($comisionRole->id);
     }
 }
