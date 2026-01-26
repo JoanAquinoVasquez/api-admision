@@ -27,6 +27,8 @@ return Application::configure(basePath: dirname(__DIR__))
     //     ['prefix' => 'api', 'middleware' => ['api', 'auth:api']],
     // )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->trustProxies(at: '*');
+
         $middleware->appendToGroup('web', [
             EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,

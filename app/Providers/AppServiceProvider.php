@@ -8,6 +8,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema; 
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,14 +26,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Definir un limitador para la API
+        Schema::defaultStringLength(191);
         RateLimiter::for('api', function () {
             return Limit::perMinute(120);  // Limita a 60 solicitudes por minuto
         });
 
         Relation::morphMap([
             'Docente' => Docente::class,
-            'User' => User::class,  // Si tienes un modelo User, puedes agregarlo aquí
-            // puedes agregar otros tipos también
+            'User' => User::class,  
         ]);
     }
 }
