@@ -1,0 +1,8 @@
+# Redirigir a /public/ si intentan acceder a /admision-epg/
+RewriteEngine On
+RewriteCond %{REQUEST_URI} ^/admision-epg/?$ [NC]
+RewriteRule ^ /admision-epg/public/ [L,R=301]
+
+# Bloquear acceso directo a /admision-epg/ sin redirigir
+RewriteCond %{REQUEST_URI} ^/admision-epg/?$ [NC]
+RewriteRule ^ - [F]
