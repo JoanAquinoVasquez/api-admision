@@ -5,27 +5,16 @@
 
     RewriteEngine On
 
-    # Esto asegura que Laravel maneje las rutas dentro de la carpeta /admision-epg
-    RewriteBase /admision-epg/
-
-     # Asegurar que las rutas de la API sean procesadas correctamente
-    RewriteCond %{REQUEST_URI} ^/admision-epg/api [NC]
-    RewriteRule ^api/(.*)$ ../index.php/api/$1 [L,QSA]
-
-    # Asegurar que los archivos en /admision-epg/build/assets sean servidos directamente
-    RewriteCond %{REQUEST_URI} ^/admision-epg/build/assets/ [NC]
-    RewriteCond %{REQUEST_FILENAME} -f
-    RewriteRule .* - [L]
-
-    # Redirigir solicitudes de /assets a /build/assets
-    RewriteCond %{REQUEST_URI} ^/admision-epg/assets/ [NC]
-    RewriteRule ^assets/(.*)$ build/assets/$1 [L]
-
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Enviar todas las solicitudes al Front Controller (index.php)
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
