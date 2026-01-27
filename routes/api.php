@@ -235,9 +235,11 @@ Route::get('/provincias/{id}', [ProvinciaController::class, 'showDepartamento'])
 Route::get('/distritos/{id}', [DistritoController::class, 'showProvincia']);
 Route::get('/grados', [GradoController::class, 'index']);
 Route::get('/facultades', [FacultadController::class, 'index']);
-Route::apiResource('/programas', ProgramaController::class);
+// Optimized endpoint for landing pages - MUST be before apiResource
+Route::get('/programas-landing', [ProgramaController::class, 'forLandingPages']);
 Route::get('/programas-habilitados', [ProgramaController::class, 'programasHabilitados']);
 Route::get('/programa-grado/{id}', [ProgramaController::class, 'showGrado']);
+Route::apiResource('/programas', ProgramaController::class);
 
 
 // Rutas de Autenticación de Google con correo Institucional

@@ -13,6 +13,12 @@ class Programa extends Model
     // Ocultar los campos created_at y updated_at
     protected $hidden = ['created_at', 'updated_at'];
 
+    // Cast fields to ensure they're always included in JSON
+    protected $casts = [
+        'plan_estudio' => 'string',
+        'brochure' => 'string',
+    ];
+
     protected $fillable = [
         'facultad_id',
         'grado_id',
@@ -20,7 +26,9 @@ class Programa extends Model
         'docente_id',
         'nombre',
         'vacantes',
-        'estado'
+        'estado',
+        'plan_estudio',
+        'brochure',
     ];
 
     // Relación muchos a uno con Facultad

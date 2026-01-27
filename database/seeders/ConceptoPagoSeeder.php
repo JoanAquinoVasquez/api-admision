@@ -32,7 +32,7 @@ class ConceptoPagoSeeder extends Seeder
             // ],
             [
                 'cod_concepto' => '00000971',
-                'nombre' => 'Inscripción de Segunda Especialidad de FIQUIA',
+                'nombre' => 'Inscripción de Segunda Especialidad de FIQIA',
                 'monto' => 50.00,
                 'estado' => true,
                 'created_at' => now(),
@@ -40,7 +40,7 @@ class ConceptoPagoSeeder extends Seeder
             ],
             [
                 'cod_concepto' => '00000970',
-                'nombre' => 'Carpeta de Segunda Especialidad de FIQUIA',
+                'nombre' => 'Carpeta de Segunda Especialidad de FIQIA',
                 'monto' => 150.00,
                 'estado' => true,
                 'created_at' => now(),

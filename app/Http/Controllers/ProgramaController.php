@@ -24,6 +24,17 @@ class ProgramaController extends BaseController
     }
 
     /**
+     * Get programs optimized for landing pages (minimal data)
+     */
+    public function forLandingPages()
+    {
+        return $this->handleRequest(function () {
+            $programas = $this->programaService->getForLandingPages();
+            return $this->successResponse($programas);
+        }, 'Error al obtener los programas');
+    }
+
+    /**
      * Get enabled programs with inscription count
      */
     public function programasHabilitados()

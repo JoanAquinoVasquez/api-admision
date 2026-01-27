@@ -81,10 +81,6 @@ class AuthController extends BaseController
                 return $this->errorResponse($resultado['message'], 401);
             }
 
-            $this->logActivity('Login con Google', null, [
-                'email' => $resultado['user']['email'] ?? null,
-            ]);
-
             $response = $this->successResponse($resultado);
 
             if (isset($resultado['cookies'])) {
@@ -271,11 +267,8 @@ class AuthController extends BaseController
      */
     public function checkAuth(Request $request)
     {
-        Log::info('AuthController::checkAuth called');
         return $this->handleRequest(function () use ($request) {
             $user = $request->user('api');
-            Log::info('AuthController::checkAuth user:', ['user' => $user]);
-
             if (!$user) {
                 return $this->successResponse(['authenticated' => false]);
             }

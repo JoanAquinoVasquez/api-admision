@@ -23,6 +23,14 @@ class ProgramaService
     }
 
     /**
+     * Get programs optimized for landing pages
+     */
+    public function getForLandingPages(): \Illuminate\Support\Collection
+    {
+        return $this->programaRepository->getForLandingPages();
+    }
+
+    /**
      * Get enabled programs with inscription count
      */
     public function getEnabledPrograms(): Collection

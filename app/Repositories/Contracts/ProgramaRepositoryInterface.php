@@ -3,7 +3,7 @@
 namespace App\Repositories\Contracts;
 
 use App\Repositories\Contracts\RepositoryInterface;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 interface ProgramaRepositoryInterface extends RepositoryInterface
@@ -59,6 +59,13 @@ interface ProgramaRepositoryInterface extends RepositoryInterface
      * @return Collection
      */
     public function getAllWithRelations(): Collection;
+
+    /**
+     * Get programs optimized for landing pages
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getForLandingPages(): \Illuminate\Support\Collection;
 
     /**
      * Get enabled programs with inscription count

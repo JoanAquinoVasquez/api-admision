@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Models\Programa;
 use App\Repositories\BaseRepository;
 use App\Repositories\Contracts\ProgramaRepositoryInterface;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInterface
@@ -184,6 +184,32 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
     {
         return $this->model->with(['facultad', 'grado', 'conceptoPago'])
             ->get();
+    }
+
+    /**
+     * Get programs for landing pages (optimized - only necessary fields)
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getForLandingPages(): \Illuminate\Support\Collection
+    {
+        return $this->model
+            ->select(['id', 'grado_id', 'facultad_id', 'nombre', 'plan_estudio', 'brochure', 'estado'])
+            ->with(['facultad:id,siglas'])
+            ->where('estado', true)
+            ->get()
+            ->map(function ($programa) {
+                return [
+                    'id' => $programa->id,
+                    'grado_id' => $programa->grado_id,
+                    'nombre' => mb_convert_case($programa->grado->nombre, MB_CASE_TITLE, "UTF-8") . ' en ' . $programa->nombre,
+                    'plan_estudio' => $programa->plan_estudio,
+                    'brochure' => $programa->brochure,
+                    'facultad' => [
+                        'siglas' => $programa->facultad?->siglas ?? 'N/A'
+                    ]
+                ];
+            });
     }
 
     /**
