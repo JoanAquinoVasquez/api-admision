@@ -8,10 +8,16 @@ use App\Exports\InscripcionesFinalesExport;
 use App\Exports\InscripcionExport;
 use App\Exports\InscripcionNotasFinalExport;
 use App\Exports\PreinscripcionSinPagarExport;
+use App\Models\ComisionAdmision;
+use App\Models\Facultad;
+use App\Models\Inscripcion;
+use App\Models\Programa;
+use App\Models\Voucher;
 use App\Repositories\Contracts\InscripcionRepositoryInterface;
 use App\Repositories\Contracts\ProgramaRepositoryInterface;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportService
@@ -98,23 +104,348 @@ class ReportService
      */
     public function generateProgramasNoAperturadosPDF()
     {
-        $programas = $this->programaRepository->all()
-            ->where('estado', false)
-            ->map(function ($programa) {
-                return [
-                    'id' => $programa->id,
-                    'facultad' => $programa->facultad->siglas ?? 'N/A',
-                    'grado' => $programa->grado->nombre ?? 'N/A',
-                    'programa' => $programa->nombre,
+        try {
+            $programas = Programa::with(['facultad', 'grado'])
+                ->where('estado', 0)
+                ->get()
+                ->map(function ($programa) {
+                    return (object) [
+                        'facultad' => $programa->facultad ? $programa->facultad->siglas : 'N/A',
+                        'grado' => $programa->grado ? $programa->grado->nombre : 'N/A',
+                        'programa' => $programa->nombre,
+                    ];
+                })
+                ->values();
+
+            $pdf = Pdf::loadView('reporte-programas-no-aperturados', [
+                'programas' => $programas,
+                'fechaHora' => now(),
+            ]);
+
+            $pdf->setPaper('A4', 'portrait');
+
+            return $pdf->stream("reporte-programas-no-aperturados.pdf");
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar el PDF.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function generateProgramasAperturadosPDF()
+    {
+        try {
+            $programas = Programa::with(['facultad', 'grado'])
+                ->where('estado', 1)
+                ->get()
+                ->map(function ($programa) {
+                    return (object) [
+                        'facultad' => $programa->facultad ? $programa->facultad->siglas : 'N/A',
+                        'grado' => $programa->grado ? $programa->grado->nombre : 'N/A',
+                        'programa' => $programa->nombre,
+                    ];
+                })
+                ->values();
+
+            $pdf = Pdf::loadView('reporte-programas', [
+                'programas' => $programas,
+                'fechaHora' => now(),
+            ]);
+
+            $pdf->setPaper('A4', 'portrait');
+
+            return $pdf->stream("reporte-programas.pdf");
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar el PDF.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function generateFacultadPDF()
+    {
+        try {
+            $facultades = Facultad::with(['programas.grado', 'programas.inscripciones'])
+                ->get()
+                ->map(function ($facultad) {
+                    $programas = $facultad->programas->map(function ($programa) use ($facultad) {
+                        $totalInscritos = $programa->inscripciones->count();
+
+                        return (object) [
+                            'grado' => $programa->grado ? $programa->grado->nombre : 'N/A',
+                            'programa' => $programa->nombre,
+                            'total_inscritos' => $totalInscritos,
+                        ];
+                    });
+
+                    return (object) [
+                        'facultad' => $facultad->nombre,
+                        'programas' => $programas,
+                    ];
+                });
+
+            $pdf = Pdf::loadView('reporte-inscripcion', [
+                'facultades' => $facultades,
+                'fechaHora' => now(),
+            ]);
+
+            $pdf->setPaper('A4', 'portrait');
+
+            return $pdf->stream("reporte-inscripcion.pdf");
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar la constancia en PDF.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function generateFinalPdf()
+    {
+        $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
+        $programasData = [];
+
+        foreach ($idProgramas as $idPrograma) {
+            $inscripciones = Inscripcion::with([
+                'postulante',
+                'programa.grado',
+                'programa.docente',
+                'nota'
+            ])
+                ->where('programa_id', $idPrograma)
+                ->get();
+
+            $inscripciones = $inscripciones->sortBy(function ($inscripcion) {
+                return strtolower($inscripcion->postulante->ap_paterno) . ' ' .
+                    strtolower($inscripcion->postulante->ap_materno) . ' ' .
+                    strtolower($inscripcion->postulante->nombres);
+            })->values();
+
+            if ($inscripciones->isNotEmpty()) {
+                $programasData[] = [
+                    'programa' => $inscripciones->first()->programa->nombre ?? 'Desconocido',
+                    'grado' => $inscripciones->first()->programa->grado->nombre ?? 'Desconocido',
+                    'inscripciones' => $inscripciones,
+                    'docente' => $inscripciones->first()->programa->docente,
                 ];
-            });
+            }
+        }
 
-        $pdf = Pdf::loadView('reporte-programas-no-aperturados', [
-            'programas' => $programas,
-            'fechaHora' => now(),
-        ]);
+        if (empty($programasData)) {
+            return response()->json(['error' => 'No hay postulantes aptos registrados para los programas seleccionados'], 200);
+        }
 
-        return $pdf->stream("reporte-programas-no-aperturados.pdf");
+        $pdf = Pdf::loadView('postulante-aptos-final', ['programasData' => $programasData]);
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream("notasCV-multiple.pdf");
+    }
+
+    public function generateFinalAulasPdf()
+    {
+        $aulasAsignadas = [
+            28 => 'AULA 01',
+            38 => 'AULA 02',
+            8 => 'AULA 17',
+            37 => 'AULA 03',
+            33 => 'AULA 05',
+            22 => 'AULA 08',
+            35 => 'AULA 09',
+            41 => 'AULA 10',
+            4 => 'AULA 11',
+            13 => 'AULA 12',
+            29 => 'AULA 13',
+            43 => 'AULA 14',
+            11 => 'AULA 15',
+            31 => 'AULA 16',
+            34 => 'AULA 17',
+            24 => 'AULA 18',
+        ];
+
+        $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
+        $programasData = [];
+
+        foreach ($idProgramas as $idPrograma) {
+            $inscripciones = Inscripcion::with([
+                'postulante',
+                'programa.grado',
+                'programa.docente',
+                'nota'
+            ])
+                ->where('programa_id', $idPrograma)
+                ->get();
+
+            $inscripciones = $inscripciones->sortBy(function ($inscripcion) {
+                return strtolower($inscripcion->postulante->ap_paterno) . ' ' .
+                    strtolower($inscripcion->postulante->ap_materno) . ' ' .
+                    strtolower($inscripcion->postulante->nombres);
+            })->values();
+
+            if ($inscripciones->isNotEmpty()) {
+                $programaNombre = $inscripciones->first()->programa->nombre ?? 'Desconocido';
+                $gradoNombre = $inscripciones->first()->programa->grado->nombre ?? 'Desconocido';
+                $docente = $inscripciones->first()->programa->docente;
+                $aula = $aulasAsignadas[$idPrograma] ?? 'Sin aula asignada';
+
+                $programasData[] = [
+                    'programa' => $programaNombre,
+                    'grado' => $gradoNombre,
+                    'inscripciones' => $inscripciones,
+                    'docente' => $docente,
+                    'aula' => $aula,
+                ];
+            }
+        }
+
+        if (empty($programasData)) {
+            return response()->json(['error' => 'No hay postulantes aptos registrados para los programas seleccionados'], 200);
+        }
+
+        $pdf = Pdf::loadView('postulante-aptos-final-aulas', ['programasData' => $programasData]);
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream("reporte_aulas.pdf");
+    }
+
+    public function generateFinalFirmasPdf()
+    {
+        $aulasAsignadas = [
+            28 => 'AULA 01',
+            38 => 'AULA 02',
+            8 => 'AULA 17',
+            37 => 'AULA 03',
+            33 => 'AULA 05',
+            22 => 'AULA 08',
+            35 => 'AULA 09',
+            41 => 'AULA 10',
+            4 => 'AULA 11',
+            13 => 'AULA 12',
+            29 => 'AULA 13',
+            43 => 'AULA 14',
+            11 => 'AULA 15',
+            31 => 'AULA 16',
+            34 => 'AULA 17',
+            24 => 'AULA 18',
+        ];
+
+        $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
+        $programasData = [];
+
+        foreach ($idProgramas as $idPrograma) {
+            $inscripciones = Inscripcion::with([
+                'postulante',
+                'programa.grado',
+                'programa.docente',
+                'nota'
+            ])
+                ->where('programa_id', $idPrograma)
+                ->get();
+
+            $inscripciones = $inscripciones->sortBy(function ($inscripcion) {
+                return strtolower($inscripcion->postulante->ap_paterno) . ' ' .
+                    strtolower($inscripcion->postulante->ap_materno) . ' ' .
+                    strtolower($inscripcion->postulante->nombres);
+            })->values();
+
+            if ($inscripciones->isNotEmpty()) {
+                $programaNombre = $inscripciones->first()->programa->nombre ?? 'Desconocido';
+                $gradoNombre = $inscripciones->first()->programa->grado->nombre ?? 'Desconocido';
+                $docente = $inscripciones->first()->programa->docente;
+                $aula = $aulasAsignadas[$idPrograma] ?? 'Sin aula asignada';
+
+                $programasData[] = [
+                    'programa' => $programaNombre,
+                    'grado' => $gradoNombre,
+                    'inscripciones' => $inscripciones,
+                    'docente' => $docente,
+                    'aula' => $aula,
+                ];
+            }
+        }
+
+        if (empty($programasData)) {
+            return response()->json(['error' => 'No hay postulantes aptos registrados para los programas seleccionados'], 200);
+        }
+
+        $pdf = Pdf::loadView('postulante-aptos-final-firmas', ['programasData' => $programasData]);
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream("reporte_aptos_firmas.pdf");
+    }
+
+    public function getResumenGeneralInscripcion()
+    {
+        $programas = Programa::with(['grado', 'inscripciones', 'facultad'])->get();
+        $comision = ComisionAdmision::all();
+        $vouchers = Voucher::all();
+
+        $resumen = [];
+
+        foreach ($comision as $miembro) {
+            $programasFiltrados = $miembro->resumen_completo
+                ? $programas
+                : $programas->where('facultad_id', $miembro->facultad_id);
+
+            $detalleProgramas = [];
+            $totales = [];
+            $totalGeneral = 0;
+
+            foreach ($programasFiltrados as $programa) {
+                $cantidad = $programa->inscripciones->count();
+                $totalGeneral += $cantidad;
+
+                $abreviatura_grado = match ($programa->grado->id) {
+                    1 => 'DOC',
+                    2 => 'MAE',
+                    3 => 'SEG',
+                    default => 'N/A'
+                };
+
+                $gradoNombre = strtoupper(trim($programa->grado->nombre));
+                if (!isset($totales[$gradoNombre])) {
+                    $totales[$gradoNombre] = 0;
+                }
+                $totales[$gradoNombre] += $cantidad;
+
+                $cobertura = $programa->vacantes > 0
+                    ? round(($cantidad / $programa->vacantes) * 100, 2)
+                    : 0;
+
+                $detalleProgramas[] = [
+                    'programa' => $abreviatura_grado . ' - ' . $programa->nombre,
+                    'facultad' => $programa->facultad->siglas,
+                    'inscritos' => $cantidad,
+                    'vacantes' => $programa->vacantes,
+                    'cobertura' => $cobertura . '%',
+                ];
+            }
+
+            $totales['TOTAL'] = $totalGeneral;
+
+            $vouchersArray = [];
+            $vouchersArray['VOUCHERS_BN'] = $vouchers->where('agencia', '!=', '0987')->count();
+            $vouchersArray['VOUCHERS_PY'] = $vouchers->where('agencia', '0987')->count();
+            $vouchersArray['VOUCHERS_TOTAL'] = $vouchers->count();
+
+            $resumen[] = [
+                'comision' => [
+                    'nombre' => $miembro->ap_paterno . ' ' . $miembro->ap_materno . ' ' . $miembro->nombres,
+                    'email' => $miembro->email,
+                    'resumen_completo' => (bool) $miembro->resumen_completo,
+                    'facultad' => $miembro->facultad->siglas ?? null,
+                ],
+                'resumen_general' => $totales,
+                'vouchers' => $vouchersArray,
+                'programas' => $detalleProgramas,
+            ];
+        }
+
+        return $resumen;
     }
 
     /**
@@ -143,5 +474,49 @@ class ReportService
     public function getInscripcionesPorPrograma()
     {
         return $this->programaRepository->getProgramasWithInscripciones();
+    }
+
+    public function generateIngresantesTopPDF()
+    {
+        try {
+            // Obtener todos los programas activos con sus relaciones necesarias
+            $programas = Programa::with(['facultad', 'grado', 'inscripciones.nota'])
+                ->where('estado', true)
+                ->get()
+                ->map(function ($programa) {
+                    // Filtrar solo los ingresantes válidos
+                    $ingresantes = $programa->inscripciones->filter(function ($inscripcion) {
+                        $nota = $inscripcion->nota;
+                        return $nota &&
+                            is_numeric($nota->cv) &&
+                            is_numeric($nota->entrevista) &&
+                            is_numeric($nota->examen);
+                    });
+
+                    return (object) [
+                        'facultad' => $programa->facultad ? $programa->facultad->siglas : 'N/A',
+                        'grado' => $programa->grado ? $programa->grado->nombre : 'N/A',
+                        'programa' => $programa->nombre,
+                        'total_ingresantes' => $ingresantes->count(),
+                    ];
+                })
+                ->sortByDesc('total_ingresantes')
+                ->values(); // Reindexar
+
+            $pdf = Pdf::loadView('reporte-ingresantes-top', [
+                'programas' => $programas,
+                'fechaHora' => now(),
+            ]);
+
+            $pdf->setPaper('A4', 'portrait');
+
+            return $pdf->stream("reporte-ingresantes-top.pdf");
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar el PDF.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

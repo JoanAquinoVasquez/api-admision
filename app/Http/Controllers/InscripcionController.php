@@ -33,15 +33,11 @@ use App\Repositories\InscripcionRepository;
 
 class InscripcionController extends BaseController
 {
-    protected InscripcionService $inscripcionService;
-    protected InscripcionRepositoryInterface $inscripcionRepository;
-
     public function __construct(
-        InscripcionService $inscripcionService,
-        InscripcionRepositoryInterface $inscripcionRepository
+        protected InscripcionService $inscripcionService,
+        protected InscripcionRepositoryInterface $inscripcionRepository,
+        protected \App\Services\ReportService $reportService
     ) {
-        $this->inscripcionService = $inscripcionService;
-        $this->inscripcionRepository = $inscripcionRepository;
     }
 
     /**
@@ -130,118 +126,19 @@ class InscripcionController extends BaseController
 
     public function reportProgramasNoAperturadosPDF()
     {
-        try {
-            // Obtener todos los programas activos con sus relaciones
-            $programas = Programa::with(['facultad', 'grado'])
-                ->where('estado', 0)
-                ->get()
-                ->map(function ($programa) {
-                    return (object) [
-                        'facultad' => $programa->facultad ? $programa->facultad->siglas : 'N/A',
-                        'grado' => $programa->grado ? $programa->grado->nombre : 'N/A',
-                        'programa' => $programa->nombre,
-                    ];
-                })
-                ->values();
-
-            $pdf = Pdf::loadView('reporte-programas-no-aperturados', [
-                'programas' => $programas,
-                'fechaHora' => now(),
-            ]);
-
-            $pdf->setPaper('A4', 'portrait');
-
-            return $pdf->stream("reporte-programas-no-aperturados.pdf");
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al generar el PDF.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return $this->reportService->generateProgramasNoAperturadosPDF();
     }
 
 
     public function reportProgramasAperturadosPDF()
     {
-        try {
-            // Obtener todos los programas activos con sus relaciones
-            $programas = Programa::with(['facultad', 'grado'])
-                ->where('estado', 1)
-                ->get()
-                ->map(function ($programa) {
-                    return (object) [
-                        'facultad' => $programa->facultad ? $programa->facultad->siglas : 'N/A',
-                        'grado' => $programa->grado ? $programa->grado->nombre : 'N/A',
-                        'programa' => $programa->nombre,
-                    ];
-                })
-                ->values();
-            Log::info($programas);
-
-            $pdf = Pdf::loadView('reporte-programas', [
-                'programas' => $programas,
-                'fechaHora' => now(),
-            ]);
-
-            $pdf->setPaper('A4', 'portrait');
-
-            return $pdf->stream("reporte-programas.pdf");
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al generar el PDF.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return $this->reportService->generateProgramasAperturadosPDF();
     }
 
     // Reporte diario de inscritos por facultad en pdf
     public function reportFacultadPDF()
     {
-        try {
-            // Obtener los grados por facultad con sus programas y el total de inscritos
-            $facultades = Facultad::with(['programas.grado', 'programas.inscripciones'])
-                ->get()
-                ->map(function ($facultad) {
-                    $programas = $facultad->programas->map(function ($programa) use ($facultad) {
-                        $totalInscritos = $programa->inscripciones->count();
-
-                        return (object) [
-                            'grado' => $programa->grado ? $programa->grado->nombre : 'N/A',
-                            'programa' => $programa->nombre,
-                            'total_inscritos' => $totalInscritos,
-                        ];
-                    });
-
-                    return (object) [
-                        'facultad' => $facultad->nombre,
-                        'programas' => $programas,
-                    ];
-                });
-
-            // Pasar los datos a la vista
-            $pdf = Pdf::loadView('reporte-inscripcion', [
-                'facultades' => $facultades,
-                'fechaHora' => now(),
-            ]);
-
-            // Definir nombre del archivo PDF
-            $nombreArchivo = "reporte-inscripcion.pdf";
-
-            // Configuración del tamaño de la página y orientación
-            $pdf->setPaper('A4', 'portrait');
-
-            // Renderizar PDF
-            return $pdf->stream($nombreArchivo);
-        } catch (\Exception $e) {
-            // Manejar cualquier error que pueda ocurrir
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al generar la constancia en PDF.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return $this->reportService->generateFacultadPDF();
     }
 
 
@@ -265,16 +162,7 @@ class InscripcionController extends BaseController
 
     public function reportPreinscritosSinPagar()
     {
-        try {
-            // Genera el nombre del archivo con la fecha y hora actual
-            $nombreArchivo = 'reporte_pre-inscripcion_sin_pagar' . Carbon::now()->format('His_dmy') . '.xlsx';
-            return Excel::download(new PreinscripcionSinPagarExport, $nombreArchivo);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al exporte el reporte de Pre-inscritos que aun no pagan su Derecho de Inscripcion',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return $this->reportService->generatePreinscritosSinPagarReport();
     }
 
     public function resumenInscripcion()
@@ -427,306 +315,32 @@ class InscripcionController extends BaseController
 
     public function reportFinalExcel()
     {
-        try {
-            // Genera el nombre del archivo con la fecha y hora actual
-            $nombreArchivo = 'reporte_final_' . Carbon::now()->format('His_dmy') . '.xlsx';
-
-            // Descarga el archivo Excel con el nombre generado
-            return Excel::download(new InscripcionesFinalesExport, $nombreArchivo);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al generar el reporte de inscripciones',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return $this->reportService->generateFinalReportExcel();
     }
 
     public function reportNotasFinalExcel()
     {
-        try {
-            // Genera el nombre del archivo con la fecha y hora actual
-            $nombreArchivo = 'reporte_resultados_' . Carbon::now()->format('His_dmy') . '.xlsx';
-
-            // Descarga el archivo Excel con el nombre generado
-            return Excel::download(new InscripcionNotasFinalExport, $nombreArchivo);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al generar el reporte de inscripciones',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return $this->reportService->generateNotasFinalReportExcel();
     }
 
     public function reportFinalPdf()
     {
-        $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
-
-        $programasData = [];
-
-        foreach ($idProgramas as $idPrograma) {
-            $inscripciones = Inscripcion::with([
-                'postulante',
-                'programa.grado',
-                'programa.docente',
-                'nota' // Cargar las notas de los postulantes
-            ])
-                ->where('programa_id', $idPrograma)
-                // ->where('val_fisico', 1)  // Postulantes aptos
-                ->get();
-
-            // Ordenar por ap_paterno, ap_materno y nombres
-            $inscripciones = $inscripciones->sortBy(function ($inscripcion) {
-                return strtolower($inscripcion->postulante->ap_paterno) . ' ' .
-                    strtolower($inscripcion->postulante->ap_materno) . ' ' .
-                    strtolower($inscripcion->postulante->nombres);
-            })->values(); // Resetear índices del array
-
-            if ($inscripciones->isNotEmpty()) {
-                $programasData[] = [
-                    'programa' => $inscripciones->first()->programa->nombre ?? 'Desconocido',
-                    'grado' => $inscripciones->first()->programa->grado->nombre ?? 'Desconocido',
-                    'inscripciones' => $inscripciones,
-                    'docente' => $inscripciones->first()->programa->docente,
-                ];
-            }
-        }
-
-        if (empty($programasData)) {
-            return response()->json(['error' => 'No hay postulantes aptos registrados para los programas seleccionados'], 200);
-        }
-
-        // Generar el PDF con varias páginas
-        $pdf = Pdf::loadView('postulante-aptos-final', ['programasData' => $programasData]);
-        $pdf->setPaper('A4', 'portrait');
-        $nombreArchivo = "notasCV-multiple.pdf";
-
-        return $pdf->stream($nombreArchivo);
+        return $this->reportService->generateFinalPdf();
     }
 
     public function reportFinalAulasPdf()
     {
-        // Asignación de aulas por ID de programa
-        $aulasAsignadas = [
-            28 => 'AULA 01',
-            38 => 'AULA 02',
-            8 => 'AULA 17',
-            37 => 'AULA 03',
-            33 => 'AULA 05',
-            22 => 'AULA 08',
-            35 => 'AULA 09',
-            41 => 'AULA 10',
-            4 => 'AULA 11',
-            13 => 'AULA 12',
-            29 => 'AULA 13',
-            43 => 'AULA 14',
-            11 => 'AULA 15',
-            31 => 'AULA 16',
-            34 => 'AULA 17',
-            24 => 'AULA 18',
-        ];
-
-        $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
-
-        $programasData = [];
-
-        foreach ($idProgramas as $idPrograma) {
-            $inscripciones = Inscripcion::with([
-                'postulante',
-                'programa.grado',
-                'programa.docente',
-                'nota'
-            ])
-                ->where('programa_id', $idPrograma)
-                // ->where('val_fisico', 1)  // Postulantes aptos
-                ->get();
-
-            $inscripciones = $inscripciones->sortBy(function ($inscripcion) {
-                return strtolower($inscripcion->postulante->ap_paterno) . ' ' .
-                    strtolower($inscripcion->postulante->ap_materno) . ' ' .
-                    strtolower($inscripcion->postulante->nombres);
-            })->values();
-
-            if ($inscripciones->isNotEmpty()) {
-                $programaNombre = $inscripciones->first()->programa->nombre ?? 'Desconocido';
-                $gradoNombre = $inscripciones->first()->programa->grado->nombre ?? 'Desconocido';
-                $docente = $inscripciones->first()->programa->docente;
-                $aula = $aulasAsignadas[$idPrograma] ?? 'Sin aula asignada';
-
-                $programasData[] = [
-                    'programa' => $programaNombre,
-                    'grado' => $gradoNombre,
-                    'inscripciones' => $inscripciones,
-                    'docente' => $docente,
-                    'aula' => $aula, // <-- Aquí agregamos el AULA al array
-                ];
-            }
-        }
-
-        if (empty($programasData)) {
-            return response()->json(['error' => 'No hay postulantes aptos registrados para los programas seleccionados'], 200);
-        }
-
-        // Generar PDF con el array completo incluyendo aulas
-        $pdf = Pdf::loadView('postulante-aptos-final-aulas', ['programasData' => $programasData]);
-        $pdf->setPaper('A4', 'portrait');
-        $nombreArchivo = "reporte_aulas.pdf";
-
-        return $pdf->stream($nombreArchivo);
-
-        /* $pdf = Pdf::loadView('postulante-aptos-final-aulas', ['programasData' => $programasData]);
-        // return $pdf->stream($nombreArchivo);
-        return view('postulante-aptos-final-aulas', ['programasData' => $programasData]); */
+        return $this->reportService->generateFinalAulasPdf();
     }
 
     public function reportFinalFirmasPdf()
     {
-        // Asignación de aulas por ID de programa
-        $aulasAsignadas = [
-            28 => 'AULA 01',
-            38 => 'AULA 02',
-            8 => 'AULA 17',
-            37 => 'AULA 03',
-            33 => 'AULA 05',
-            22 => 'AULA 08',
-            35 => 'AULA 09',
-            41 => 'AULA 10',
-            4 => 'AULA 11',
-            13 => 'AULA 12',
-            29 => 'AULA 13',
-            43 => 'AULA 14',
-            11 => 'AULA 15',
-            31 => 'AULA 16',
-            34 => 'AULA 17',
-            24 => 'AULA 18',
-        ];
-
-        $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
-
-        $programasData = [];
-
-        foreach ($idProgramas as $idPrograma) {
-            $inscripciones = Inscripcion::with([
-                'postulante',
-                'programa.grado',
-                'programa.docente',
-                'nota'
-            ])
-                ->where('programa_id', $idPrograma)
-                ->get();
-
-            $inscripciones = $inscripciones->sortBy(function ($inscripcion) {
-                return strtolower($inscripcion->postulante->ap_paterno) . ' ' .
-                    strtolower($inscripcion->postulante->ap_materno) . ' ' .
-                    strtolower($inscripcion->postulante->nombres);
-            })->values();
-
-            if ($inscripciones->isNotEmpty()) {
-                $programaNombre = $inscripciones->first()->programa->nombre ?? 'Desconocido';
-                $gradoNombre = $inscripciones->first()->programa->grado->nombre ?? 'Desconocido';
-                $docente = $inscripciones->first()->programa->docente;
-                $aula = $aulasAsignadas[$idPrograma] ?? 'Sin aula asignada';
-
-                $programasData[] = [
-                    'programa' => $programaNombre,
-                    'grado' => $gradoNombre,
-                    'inscripciones' => $inscripciones,
-                    'docente' => $docente,
-                    'aula' => $aula, // <-- Aquí agregamos el AULA al array
-                ];
-            }
-        }
-
-        if (empty($programasData)) {
-            return response()->json(['error' => 'No hay postulantes aptos registrados para los programas seleccionados'], 200);
-        }
-
-        // Generar PDF con el array completo incluyendo aulas
-        $pdf = Pdf::loadView('postulante-aptos-final-firmas', ['programasData' => $programasData]);
-        $pdf->setPaper('A4', 'portrait');
-        $nombreArchivo = "reporte_aptos_firmas.pdf";
-
-        return $pdf->stream($nombreArchivo);
-
-        /* $pdf = Pdf::loadView('postulante-aptos-final-aulas', ['programasData' => $programasData]);
-        // return $pdf->stream($nombreArchivo);
-        return view('postulante-aptos-final-aulas', ['programasData' => $programasData]); */
+        return $this->reportService->generateFinalFirmasPdf();
     }
 
     public function resumenGeneralInscripcion()
     {
-        $programas = Programa::with(['grado', 'inscripciones', 'facultad'])->get();
-        $comision = ComisionAdmision::all();
-        $vouchers = Voucher::all();
-
-        $resumen = [];
-
-        foreach ($comision as $miembro) {
-            // 🔹 Filtrar programas según el atributo resumen_completo
-            $programasFiltrados = $miembro->resumen_completo
-                ? $programas   // todos los programas
-                : $programas->where('facultad_id', $miembro->facultad_id); // solo de su facultad
-
-            $detalleProgramas = [];
-            $totales = [];
-            $totalGeneral = 0;
-
-            foreach ($programasFiltrados as $programa) {
-                $cantidad = $programa->inscripciones->count();
-                $totalGeneral += $cantidad;
-
-                // Abreviatura del grado
-                $abreviatura_grado = match ($programa->grado->id) {
-                    1 => 'DOC',
-                    2 => 'MAE',
-                    3 => 'SEG',
-                    default => 'N/A'
-                };
-
-                // Guardar totales por grado (en mayúscula)
-                $gradoNombre = strtoupper(trim($programa->grado->nombre));
-                if (!isset($totales[$gradoNombre])) {
-                    $totales[$gradoNombre] = 0;
-                }
-                $totales[$gradoNombre] += $cantidad;
-
-                // Cobertura
-                $cobertura = $programa->vacantes > 0
-                    ? round(($cantidad / $programa->vacantes) * 100, 2)
-                    : 0;
-
-                $detalleProgramas[] = [
-                    'programa' => $abreviatura_grado . ' - ' . $programa->nombre,
-                    'facultad' => $programa->facultad->siglas,
-                    'inscritos' => $cantidad,
-                    'vacantes' => $programa->vacantes,
-                    'cobertura' => $cobertura . '%',
-                ];
-            }
-
-            // Agregar total general
-            $totales['TOTAL'] = $totalGeneral;
-
-            $vouchersArray = [];
-
-            // Totales de vouchers
-            $vouchersArray['VOUCHERS_BN'] = $vouchers->where('agencia', '!=', '0987')->count();
-            $vouchersArray['VOUCHERS_PY'] = $vouchers->where('agencia', '0987')->count();
-            $vouchersArray['VOUCHERS_TOTAL'] = $vouchers->count();
-
-            $resumen[] = [
-                'comision' => [
-                    'nombre' => $miembro->ap_paterno . ' ' . $miembro->ap_materno . ' ' . $miembro->nombres,
-                    'email' => $miembro->email,
-                    'resumen_completo' => (bool) $miembro->resumen_completo,
-                    'facultad' => $miembro->facultad->siglas ?? null,
-                ],
-                'resumen_general' => $totales,
-                'vouchers' => $vouchersArray,
-                'programas' => $detalleProgramas,
-            ];
-        }
-
-        return response()->json($resumen);
+        return response()->json($this->reportService->getResumenGeneralInscripcion());
     }
 
     public function resumenInscripcionGrafico()
