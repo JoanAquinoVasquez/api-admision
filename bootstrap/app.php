@@ -36,14 +36,15 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Illuminate\Http\Middleware\HandleCors::class, // Agregado para CORS
         ]);
 
         $middleware->appendToGroup('api', [
+            \Illuminate\Http\Middleware\HandleCors::class, // Agregado para CORS
             EncryptCookies::class,
             \App\Http\Middleware\AttachTokenFromCookie::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-
         ]);
 
         $middleware->alias([
