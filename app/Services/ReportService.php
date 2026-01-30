@@ -522,6 +522,123 @@ class ReportService
         return $this->programaRepository->getProgramasWithInscripciones();
     }
 
+    /**
+     * Get summary of inscriptions for the frontend view
+     */
+    public function getResumenInscripcionData()
+    {
+        $programas = Programa::with(['grado', 'facultad', 'conceptoPago', 'inscripciones'])->get();
+
+        return $programas->map(function ($programa) {
+            // Asignar abreviatura del grado
+            $abreviatura_grado = match ($programa->grado->id) {
+                1 => 'DOC',
+                2 => 'MAE',
+                3 => 'SEG',
+                default => 'N/A'
+            };
+
+            // Calcular cobertura
+            $cobertura = $programa->vacantes > 0
+                ? round(($programa->inscripciones->count() / $programa->vacantes) * 100, 2)
+                : 0;
+
+            // Calcular recaudación de 0970 y 0971
+            if ($programa->concepto_pago_id === 3) {
+                $recaudacion = 'S/. ' . number_format($programa->inscripciones->count() * 200, 2, '.', ',');
+            } else {
+                $recaudacion = 'S/. ' . number_format($programa->inscripciones->count() * ($programa->conceptoPago->monto ?? 0), 2, '.', ',');
+            }
+
+            // Contar validados
+            $val_digital = $programa->inscripciones->where('val_digital', 1)->count();
+            $val_fisico = $programa->inscripciones->where('val_fisico', 1)->count();
+
+            return [
+                'id' => $programa->id,
+                'grado_programa' => $abreviatura_grado . ' - ' . $programa->nombre,
+                'facultad' => $programa->facultad->siglas,
+                'inscritos' => $programa->inscripciones->count(),
+                'vacantes' => $programa->vacantes,
+                'cobertura' => $cobertura,
+                'recaudacion' => $recaudacion,
+                'validados' => $val_digital,
+                'aptos' => $val_fisico,
+            ];
+        });
+    }
+
+    /**
+     * Get detailed status of inscriptions
+     */
+    public function getEstadoInscripcionData()
+    {
+        $inscripciones = Inscripcion::with([
+            'programa.grado',
+            'programa.facultad',
+            'postulante.documentos',
+            'postulante.distrito.provincia.departamento',
+            'voucher.conceptoPago'
+        ])->get();
+
+        // Totales generales
+        $totalInscritos = $inscripciones->count();
+
+        // Contadores de validaciones digitales
+        $valDigital0 = $inscripciones->where('val_digital', 0)->count();
+        $valDigital1 = $inscripciones->where('val_digital', 1)->count();
+        $valDigital2 = $inscripciones->where('val_digital', 2)->count();
+
+        // Contadores de validaciones físicas
+        $valFisico0 = $inscripciones->where('val_fisico', 0)->count();
+        $valFisico1 = $inscripciones->where('val_fisico', 1)->count();
+
+        // Contadores por grado
+        $grado1 = $inscripciones->where('programa.grado_id', 1)->count();
+        $grado2 = $inscripciones->where('programa.grado_id', 2)->count();
+        $grado3 = $inscripciones->where('programa.grado_id', 3)->count();
+
+        return [
+            'total_inscritos' => $totalInscritos,
+            'validaciones' => [
+                'digital' => [
+                    'pendientes' => $valDigital0 + $valDigital2,
+                    'validados' => $valDigital1,
+                    'porcentaje' => $totalInscritos > 0 ? round(($valDigital1 / ($valDigital0 + $valDigital1 + $valDigital2)) * 100, 1) : 0.0
+                ],
+                'fisico' => [
+                    'faltantes' => $valFisico0,
+                    'recepcionados' => $valFisico1,
+                    'porcentaje' => $totalInscritos > 0 ? round(($valFisico1 / ($valFisico0 + $valFisico1)) * 100, 1) : 0.0
+                ],
+            ],
+            'grados' => [
+                'doc' => $grado1,
+                'mae' => $grado2,
+                'seg' => $grado3
+            ]
+        ];
+    }
+
+    /**
+     * Get data for inscription charts
+     */
+    public function getResumenInscripcionGraficoData()
+    {
+        return Inscripcion::with('programa.grado')
+            ->get()
+            ->map(function ($inscripcion) {
+                return [
+                    'created_at' => $inscripcion->created_at,
+                    'programa' => [
+                        'grado' => [
+                            'nombre' => $inscripcion->programa->grado->nombre ?? 'N/A',
+                        ],
+                    ],
+                ];
+            });
+    }
+
     public function generateIngresantesTopPDF()
     {
         try {

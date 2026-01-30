@@ -143,4 +143,18 @@ class InscripcionService
             ];
         }
     }
+
+    /**
+     * Get possible programs for an inscription based on voucher concept
+     */
+    public function getProgramasPosibles(int $inscripcionId)
+    {
+        $inscripcion = $this->inscripcionRepository->findWithRelations($inscripcionId);
+
+        if (!$inscripcion || !$inscripcion->voucher) {
+            throw new \Exception('Inscripción o voucher no encontrado');
+        }
+
+        return $this->programaRepository->getByConceptoPago($inscripcion->voucher->concepto_pago_id);
+    }
 }

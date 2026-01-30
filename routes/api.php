@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\BitacoraController;
+use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\ConceptoPagoController;
 use App\Http\Controllers\CorreoController;
 use App\Http\Controllers\DepartamentoController;
@@ -251,6 +252,9 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/login-cypress', [AuthController::class, 'loginCypress']);
 Route::post('/login-rpa', [AuthController::class, 'loginRPA']);
 
+
+// Chatbot con Gemini
+Route::post('/chat', [ChatbotController::class, 'chat']);
 
 // Ruta de fallback para rutas no encontradas
 Route::fallback(function () {

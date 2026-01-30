@@ -11,7 +11,8 @@ class ValidationService
 {
     public function __construct(
         protected InscripcionRepositoryInterface $inscripcionRepository
-    ) {}
+    ) {
+    }
 
     /**
      * Validar digitalmente una inscripción
@@ -53,12 +54,12 @@ class ValidationService
 
                 // Preparar datos para correo
                 $datosCorreo = $this->getDatosCorreo($inscripcion);
-                
+
                 $this->logActivity(
-                    $user, 
-                    $inscripcion, 
-                    1, 
-                    null, 
+                    $user,
+                    $inscripcion,
+                    1,
+                    null,
                     'Correo de validación digital y constancia de postulante enviado',
                     ['correo_enviado' => 'Inscripción validada y constancia de postulante']
                 );
@@ -125,10 +126,10 @@ class ValidationService
             $inscripcion->update(['val_fisico' => 1]);
 
             $this->logActivity(
-                auth()->user(), 
-                $inscripcion, 
-                'fisica', 
-                null, 
+                auth()->user(),
+                $inscripcion,
+                'fisica',
+                null,
                 'Inscripción validada físicamente'
             );
 
@@ -141,6 +142,35 @@ class ValidationService
         }
     }
 
+
+    /**
+     * Send validation email manually
+     */
+    public function sendValidationEmail(int $inscripcionId): array
+    {
+        $inscripcion = $this->inscripcionRepository->findWithRelations($inscripcionId);
+
+        if (!$inscripcion) {
+            throw new \Exception('Inscripción no encontrada');
+        }
+
+        $datosCorreo = $this->getDatosCorreo($inscripcion);
+
+        // Enviar correo
+        SendEmailValidarInscripcionJob::dispatch(
+            $inscripcion->postulante->email,
+            $inscripcion,
+            $datosCorreo['autoridad'],
+            $datosCorreo['gradoRequerido'],
+            $datosCorreo['urlDocumentos']
+        );
+
+        return [
+            'success' => true,
+            'message' => 'Correo de validación y constancia enviado exitosamente',
+        ];
+    }
+
     /**
      * Obtener datos para el correo según el programa
      */
@@ -151,7 +181,7 @@ class ValidationService
 
         $autoridad = config("admission.autoridades.{$gradoId}", 'Autoridad');
         $gradoRequerido = config("admission.grados_requeridos.{$gradoId}", '');
-        
+
         $urlDocumentos = '';
         if ($gradoId == 3) { // Segunda Especialidad
             $urlDocumentos = config("admission.url_documentos.facultades.{$facultadId}", '');
@@ -193,7 +223,7 @@ class ValidationService
         }
 
         if (function_exists('activity')) {
-             activity()
+            activity()
                 ->causedBy($user)
                 ->performedOn($inscripcion)
                 ->withProperties($properties)
@@ -201,6 +231,6 @@ class ValidationService
         } else {
             Log::warning("Activity logger function not found.");
         }
-       
+
     }
 }

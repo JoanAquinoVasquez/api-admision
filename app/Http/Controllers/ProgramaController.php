@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Services\ProgramaService;
 use Illuminate\Http\Request;
 
+use App\Http\Resources\ProgramaResource;
+
 class ProgramaController extends BaseController
 {
     public function __construct(
@@ -19,7 +21,7 @@ class ProgramaController extends BaseController
     {
         return $this->handleRequest(function () {
             $programas = $this->programaService->getAllWithRelations();
-            return $this->successResponse($programas);
+            return $this->successResponse(ProgramaResource::collection($programas));
         }, 'Error al obtener los programas');
     }
 
@@ -66,7 +68,7 @@ class ProgramaController extends BaseController
                 'nombre' => $programa->nombre,
             ]);
 
-            return $this->successResponse($programa, 'Programa creado exitosamente', 201);
+            return $this->successResponse(new ProgramaResource($programa), 'Programa creado exitosamente', 201);
         }, 'Error al crear el programa');
     }
 
@@ -80,7 +82,7 @@ class ProgramaController extends BaseController
             if (!$programa) {
                 return $this->errorResponse("El programa con ID {$id} no existe", 404);
             }
-            return $this->successResponse($programa);
+            return $this->successResponse(new ProgramaResource($programa));
 
         }, 'Error al obtener los detalles del programa');
     }
@@ -108,7 +110,7 @@ class ProgramaController extends BaseController
                 'programa_id' => $id,
             ]);
 
-            return $this->successResponse($programa, 'Programa actualizado exitosamente');
+            return $this->successResponse(new ProgramaResource($programa), 'Programa actualizado exitosamente');
         }, 'Error al actualizar el programa');
     }
 

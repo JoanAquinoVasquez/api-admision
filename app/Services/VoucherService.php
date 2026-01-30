@@ -305,12 +305,12 @@ class VoucherService
             ->get();
         // Cálculos en el backend
         $totalVouchers = $vouchers->count();
-        $totalRecaudado2025 = $vouchers->filter(function ($v) {
-            return \Carbon\Carbon::parse($v->fecha_pago)->year === 2025;
+        $totalRecaudado2026 = $vouchers->filter(function ($v) {
+            return \Carbon\Carbon::parse($v->fecha_pago)->year === 2026;
         })->sum('monto');
 
-        $totalRecaudado2024 = $vouchers->filter(function ($v) {
-            return \Carbon\Carbon::parse($v->fecha_pago)->year === 2024;
+        $totalRecaudado2025 = $vouchers->filter(function ($v) {
+            return \Carbon\Carbon::parse($v->fecha_pago)->year <= 2025;
         })->sum('monto');
 
         $inscritos = $vouchers->where('estado', 0)->count();
@@ -326,8 +326,8 @@ class VoucherService
         // Datos a devolver al frontend
         return [
             'totalVouchers' => $totalVouchers,
+            'totalRecaudado2026' => $totalRecaudado2026,
             'totalRecaudado2025' => $totalRecaudado2025,
-            'totalRecaudado2024' => $totalRecaudado2024,
             'inscritos' => $inscritos,
             'noInscritos' => $noInscritos,
             'pagaloPeCount' => $pagaloPeCount,
