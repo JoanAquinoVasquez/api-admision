@@ -21,7 +21,7 @@
 
 <body>
 
-    <img src="{{ 'img/ficha.png' }}" style="position: absolute; width: 112.9%; margin-left: -1.19cm; margin-top: -1.2cm">
+    <img src="{{ public_path('img/ficha.png') }}" style="position: absolute; width: 112.9%; margin-left: -1.19cm; margin-top: -1.2cm">
     <div style="position: relative; width: 21cm; height: 4cm;"> <!-- Ancho aproximado de una página A4 -->
         @if ($foto)
            <img src="{{ $foto }}" alt="Foto del Postulante"
