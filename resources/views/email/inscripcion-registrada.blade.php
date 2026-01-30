@@ -241,7 +241,7 @@
             <h4>{{ $data['sexo'] = 'M' ? 'Estimado, ' : 'Estimada, ' }}
                 <strong> {{ $data['nombres'] }} {{ $data['ap_paterno'] }} {{ $data['ap_materno'] }} </strong>
             </h4>
-            <p>Agradecemos su inscripción en la <strong>{{ $nombre_grado }}</strong> del Programa de
+            <p>Agradecemos su inscripción en el Programa de <strong>{{ $nombre_grado }}</strong> en
                 <strong>{{ $nombre_programa }}</strong>. Nos complace informarle que su inscripción ha sido registrada
                 correctamente. Recibirá una confirmación
                 por correo electrónico cuando se reciban sus documentos, y la constancia de inscripción será enviada en

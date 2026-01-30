@@ -242,8 +242,7 @@
                 <strong> {{ $inscripcion->postulante->nombres }} {{ $inscripcion->postulante->ap_paterno }}
                     {{ $inscripcion->postulante->ap_materno }} </strong>
             </h4>
-            <p>Usted se ha inscrito en {{ $inscripcion->programa->grado_id == 1 ? 'el' : 'la' }}
-                <strong>{{ $inscripcion->programa->grado->nombre }}</strong> del Programa de
+            <p>Usted se ha inscrito en el programa de <strong>{{ $inscripcion->programa->grado->nombre }}</strong> en
                 <strong>{{ $inscripcion->programa->nombre }}</strong>. Nos complace informarle que sus documentos
                 digitales han sido
                 validados y recepcionados exitosamente. Ya puede acercarse a dejar los siguientes documentos en fisico
@@ -276,7 +275,7 @@
         </div>
         <div class="consultation-banner">
             <div class="consultation-banner-content">
-                <p>Trae estos documentos:
+                <p>No olvides estos documentos:
                     <span style="font-size: 1.6rem; display: inline;">👉</span>
                     <strong>
                         <a href="{{ $urlDocumentos }}" target="_blank"

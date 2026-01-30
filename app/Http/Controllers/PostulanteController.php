@@ -62,10 +62,6 @@ class PostulanteController extends BaseController
         return $this->handleRequest(function () use ($id) {
             $postulante = Postulante::findOrFail($id);
 
-            $this->logActivity('Constancia generada', null, [
-                'postulante_id' => $id,
-            ]);
-
             return $this->pdfService->generateConstancia($postulante);
         }, 'Error al generar la constancia en PDF');
     }

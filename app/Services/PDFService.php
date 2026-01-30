@@ -22,6 +22,30 @@ class PDFService
         $programa = $inscripcion->programa;
         $foto = $postulante->documentos->firstWhere('tipo', 'Foto');
 
+        // Convert local image to base64 for PDF generation
+        $fotoBase64 = null;
+        if ($foto && $foto->nombre_archivo) {
+            try {
+                // Photos are stored locally in storage/app/public/fotos/
+                $fotoPath = storage_path('app/public/' . str_replace('storage/', '', $foto->nombre_archivo));
+
+                if (file_exists($fotoPath)) {
+                    $imageContent = file_get_contents($fotoPath);
+                    $fotoBase64 = 'data:image/jpeg;base64,' . base64_encode($imageContent);
+                } else {
+                    Log::warning('Photo file not found for constancia', [
+                        'postulante_id' => $postulante->id,
+                        'path' => $fotoPath
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::warning('Error loading photo for constancia', [
+                    'postulante_id' => $postulante->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
+
         $data = [
             'nombres' => $postulante->nombres,
             'apellidos' => $postulante->ap_paterno . " " . $postulante->ap_materno,
@@ -35,7 +59,7 @@ class PDFService
             'departamento' => $postulante->distrito->provincia->departamento->nombre,
             'provincia' => $postulante->distrito->provincia->nombre,
             'distrito' => $postulante->distrito->nombre,
-            'foto' => $foto->url,
+            'foto' => $fotoBase64,
             'nombreGrado' => $programa->grado->nombre,
             'nombrePrograma' => $programa->nombre,
             'cod_voucher' => $inscripcion->codigo,
@@ -43,7 +67,7 @@ class PDFService
         ];
 
         $pdf = Pdf::loadView('constancia', $data);
-        $pdf->setOption('isRemoteEnabled', true);
+        $pdf->setOption('isRemoteEnabled', false); // Disabled since we use base64
         $pdf->setPaper('A4', 'portrait');
 
         return $pdf->stream("documento-{$postulante->num_iden}_" . now()->format('d-m-Y_His') . ".pdf");
