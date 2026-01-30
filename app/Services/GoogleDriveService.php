@@ -45,7 +45,6 @@ class GoogleDriveService
 
         // Obtener URL
         $fileUrl = Storage::disk('google')->url($filePath);
-        \Illuminate\Support\Facades\Log::info("Archivo subido a Drive. URL obtenida: {$fileUrl}");
 
         // Extraer ID
         $fileId = $this->extractGoogleDriveFileId($fileUrl);
