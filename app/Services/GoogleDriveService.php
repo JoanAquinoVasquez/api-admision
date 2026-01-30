@@ -45,13 +45,13 @@ class GoogleDriveService
 
         // Obtener URL
         $fileUrl = Storage::disk('google')->url($filePath);
-        // \Illuminate\Support\Facades\Log::info("Archivo subido a Drive. URL: {$fileUrl}");
+        \Illuminate\Support\Facades\Log::info("Archivo subido a Drive. URL obtenida: {$fileUrl}");
 
         // Extraer ID
         $fileId = $this->extractGoogleDriveFileId($fileUrl);
 
         if (!$fileId) {
-            \Illuminate\Support\Facades\Log::error("No se pudo extraer ID de archivo de Drive. URL: {$fileUrl}");
+            \Illuminate\Support\Facades\Log::error("No se pudo extraer ID de archivo de Drive. URL: {$fileUrl} Regex falló.");
         }
 
         return [
@@ -117,7 +117,8 @@ class GoogleDriveService
      */
     private function extractGoogleDriveFileId(string $url): ?string
     {
-        preg_match('/\/d\/([a-zA-Z0-9_-]+)/', $url, $matches);
+        // Soporta formatos: /d/ID/ y id=ID
+        preg_match('/(?:id=|\/d\/)([\w-]+)/', $url, $matches);
         return $matches[1] ?? null;
     }
 
