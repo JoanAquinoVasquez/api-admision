@@ -41,11 +41,16 @@ class UploadDocumentosDriveJob implements ShouldQueue
 
                 $upload = $driveService->upload($file, $this->gradoId, $doc['tipo'], $this->postulante->num_iden);
 
+                if (empty($upload['url'])) {
+                    Log::error("Falló la obtención de URL para el documento: {$doc['tipo']} del postulante ID: {$this->postulante->id}");
+                    continue;
+                }
+
                 Documento::create([
-                    'postulante_id'  => $this->postulante->id,
-                    'tipo'           => $doc['tipo'],
+                    'postulante_id' => $this->postulante->id,
+                    'tipo' => $doc['tipo'],
                     'nombre_archivo' => $upload['fileName'],
-                    'url'            => $upload['url'],
+                    'url' => $upload['url'],
                 ]);
 
                 unlink($filePath); // Limpieza opcional

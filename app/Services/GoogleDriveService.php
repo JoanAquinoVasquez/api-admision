@@ -34,15 +34,25 @@ class GoogleDriveService
 
         // Ruta en Google Drive
         $filePath = "{$folder}/{$subFolderName}/{$fileName}";
-        
+
         // Subir archivo
-        Storage::disk('google')->put($filePath, file_get_contents($file));
+        $uploaded = Storage::disk('google')->put($filePath, file_get_contents($file));
+
+        if (!$uploaded) {
+            \Illuminate\Support\Facades\Log::error("Error al subir archivo a Google Drive: {$filePath}");
+            throw new \Exception("No se pudo subir el archivo a Google Drive: {$fileName}");
+        }
 
         // Obtener URL
         $fileUrl = Storage::disk('google')->url($filePath);
+        // \Illuminate\Support\Facades\Log::info("Archivo subido a Drive. URL: {$fileUrl}");
 
         // Extraer ID
         $fileId = $this->extractGoogleDriveFileId($fileUrl);
+
+        if (!$fileId) {
+            \Illuminate\Support\Facades\Log::error("No se pudo extraer ID de archivo de Drive. URL: {$fileUrl}");
+        }
 
         return [
             'url' => $fileId ? "https://drive.google.com/file/d/{$fileId}/view?usp=sharing" : null,
@@ -82,7 +92,8 @@ class GoogleDriveService
             if (!in_array($inputName, $filesEnviados)) {
                 $fileId = $this->extractGoogleDriveFileId($documento->url);
 
-                if (!$fileId) continue;
+                if (!$fileId)
+                    continue;
 
                 $carpetaGradoNuevo = $carpetasGrados[$idGradoNew] ?? 'default';
                 $carpetaTipoDocumento = $tiposDocumentos[$documento->tipo] ?? 'default';
@@ -106,7 +117,7 @@ class GoogleDriveService
      */
     private function extractGoogleDriveFileId(string $url): ?string
     {
-        preg_match('/\/d\/(.*?)\//', $url, $matches);
+        preg_match('/\/d\/([a-zA-Z0-9_-]+)/', $url, $matches);
         return $matches[1] ?? null;
     }
 
