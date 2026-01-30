@@ -68,7 +68,21 @@ class InscripcionController extends BaseController
             return response()->json(['message' => 'Inscripción no encontrada'], 404);
         }
 
-        return response()->json($inscripcion, 200);
+        try {
+            $programasPosibles = $this->inscripcionService->getProgramasPosibles($id);
+            // Asegurarnos de cargar la relación grado para extraer los grados únicos
+            $programasPosibles->load('grado');
+            $gradosPosibles = $programasPosibles->pluck('grado')->unique('id')->values();
+        } catch (\Exception $e) {
+            $programasPosibles = [];
+            $gradosPosibles = [];
+        }
+
+        $data = $inscripcion->toArray();
+        $data['programas_posibles'] = $programasPosibles;
+        $data['grados_posibles'] = $gradosPosibles;
+
+        return response()->json($data, 200);
     }
 
     /**
