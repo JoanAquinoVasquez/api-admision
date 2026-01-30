@@ -202,7 +202,7 @@ class DistritoSeeder extends Seeder
             [186, 'LLUMPA', 20],
             [187, 'LUCMA', 20],
             [188, 'MUSGA', 20],
-            /* [189, 'OCROS', 21],
+            [189, 'OCROS', 21],
             [190, 'ACAS', 21],
             [191, 'CAJAMARQUILLA', 21],
             [192, 'CARHUAPAMPA', 21],
@@ -1884,7 +1884,7 @@ class DistritoSeeder extends Seeder
             [1867, 'CURIMANA', 195],
             [1868, 'NESHUYA', 195],
             [1869, 'ALEXANDER VON HUMBOLDT', 195],
-            [1870, 'PURUS', 196] */
+            [1870, 'PURUS', 196]
         ];
 
 

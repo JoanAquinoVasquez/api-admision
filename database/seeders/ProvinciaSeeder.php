@@ -33,7 +33,7 @@ class ProvinciaSeeder extends Seeder
             [17, 'HUARI', 2],
             [18, 'HUARMEY', 2],
             [19, 'HUAYLAS', 2],
-            [20, 'MARISCAL LUZURIAGA', 2],/* 
+            [20, 'MARISCAL LUZURIAGA', 2],
             [21, 'OCROS', 2],
             [22, 'PALLASCA', 2],
             [23, 'POMABAMBA', 2],
@@ -209,15 +209,14 @@ class ProvinciaSeeder extends Seeder
             [193, 'CORONEL PORTILLO', 25],
             [194, 'ATALAYA', 25],
             [195, 'PADRE ABAD', 25],
-            [196, 'PURUS', 25] */
+            [196, 'PURUS', 25]
         ];
 
         foreach ($provincias as $provincia) {
-            Provincia::create([
-                'id' => $provincia[0],
-                'nombre' => $provincia[1],
-                'departamento_id' => $provincia[2]
-            ]);
+            Provincia::updateOrCreate(
+                ['id' => $provincia[0]],
+                ['nombre' => $provincia[1], 'departamento_id' => $provincia[2]]
+            );
         }
     }
 }
