@@ -1889,9 +1889,9 @@ class DistritoSeeder extends Seeder
 
 
         foreach ($distritos as $distrito) {
-            Distrito::updateOrCreate(
-                ['id' => $distrito[0]],
+            Distrito::create(
                 [
+                    'id' => $distrito[0],
                     'nombre' => $distrito[1],
                     'provincia_id' => $distrito[2]
                 ]
