@@ -207,7 +207,7 @@ class DocenteController extends BaseController
                 'programa_id' => $idPrograma,
             ]);
 
-            return $pdf->stream("notasCV-postulantes.pdf");
+            return $pdf->stream("notasCV-postulantes_" . now()->format('d-m-Y_His') . ".pdf");
         } catch (\Exception $e) {
             return $this->errorResponse('Error al generar el reporte: ' . $e->getMessage(), 500);
         }
@@ -235,7 +235,7 @@ class DocenteController extends BaseController
                 'programas_count' => count($idProgramas),
             ]);
 
-            return $pdf->stream("plantilla_entrevista.pdf");
+            return $pdf->stream("plantilla_entrevista_" . now()->format('d-m-Y_His') . ".pdf");
         } catch (\Exception $e) {
             return $this->errorResponse('Error al generar el reporte múltiple: ' . $e->getMessage(), 500);
         }

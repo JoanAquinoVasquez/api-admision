@@ -108,7 +108,7 @@ class BitacoraController extends BaseController
             $fechaFin = $request->query('fecha_fin');
 
             $export = new BitacoraExport($fechaInicio, $fechaFin);
-            $fileName = 'bitacora_admision_' . now()->format('Ymd_His') . '.xlsx';
+            $fileName = 'bitacora_admision_' . now()->format('d-m-Y_His') . '.xlsx';
 
             $this->logActivity('Bitácora exportada', null, [
                 'fecha_inicio' => $fechaInicio,

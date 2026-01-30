@@ -10,6 +10,7 @@ use App\Repositories\Contracts\VoucherRepositoryInterface;
 use App\Services\DniService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
 
 class VoucherService
@@ -74,7 +75,7 @@ class VoucherService
             }
 
             $codPago = substr($line, 35, 8);
-            $validCodes = ['00000012', '00001005', '00000971', '00000970', '00000001', '00000003'];
+            $validCodes = ['00000012', '00001005', '00000971', '00000970'];
 
             if (in_array($codPago, $validCodes)) {
                 $voucherData = $this->parseVoucherLine($line);
@@ -99,20 +100,38 @@ class VoucherService
         $nroVoucher = substr($line, 18, 7);
         $codPago = substr($line, 35, 8);
         $dni = substr($line, 54, 8);
+        $montoSubstring = substr($line, 62, 15);
         $fecha = substr($line, 79, 8);
         $hora = substr($line, 87, 6);
         $cajero = substr($line, 93, 4);
         $agencia = substr($line, 97, 4);
-        $montoSubstring = substr($line, 62, 15);
+        $nombre = trim(substr($line, 104, 40));
 
         $monto = floatval(substr($montoSubstring, 0, 13)) + (floatval(substr($montoSubstring, 13, 2)) / 100);
-        $fechaFormateada = Carbon::createFromFormat('dmY', $fecha)->format('Y-m-d');
+
+        // BN TXT format is usually YYYYMMDD
+        try {
+            $fechaFormateada = Carbon::createFromFormat('Ymd', $fecha)->format('Y-m-d');
+        } catch (\Exception $e) {
+            // Fallback if it's actually DDMMYYYY
+            try {
+                $fechaFormateada = Carbon::createFromFormat('dmY', $fecha)->format('Y-m-d');
+            } catch (\Exception $e2) {
+                Log::error("Error parsing date: $fecha. Line: $line");
+                $fechaFormateada = now()->format('Y-m-d');
+            }
+        }
+
         $horaFormateada = substr($hora, 0, 2) . ':' . substr($hora, 2, 2) . ':' . substr($hora, 4, 2);
+
+        $conceptoPago = ConceptoPago::where('cod_concepto', $codPago)->first();
 
         return [
             'numero' => $nroVoucher,
             'cod_concepto' => $codPago,
+            'concepto_pago_id' => $conceptoPago ? $conceptoPago->id : null,
             'num_iden' => $dni,
+            'nombre_completo' => $nombre ?: $dni, // Fallback to DNI if name is empty
             'fecha_pago' => $fechaFormateada,
             'hora_pago' => $horaFormateada,
             'cajero' => $cajero,
@@ -126,6 +145,11 @@ class VoucherService
      */
     protected function saveVoucher(array $voucherData): bool
     {
+        if (!$voucherData['concepto_pago_id']) {
+            Log::warning("Skipping voucher save: concepto_pago_id is null for cod_concepto: " . ($voucherData['cod_concepto'] ?? 'unknown'));
+            return false;
+        }
+
         $exists = Voucher::where('numero', $voucherData['numero'])
             ->where('num_iden', $voucherData['num_iden'])
             ->exists();
@@ -134,7 +158,11 @@ class VoucherService
             return false;
         }
 
-        Voucher::create($voucherData);
+        // Remove cod_concepto as it's not in the vouchers table directly, we use concepto_pago_id
+        $dataToSave = $voucherData;
+        unset($dataToSave['cod_concepto']);
+
+        Voucher::create($dataToSave);
         return true;
     }
 

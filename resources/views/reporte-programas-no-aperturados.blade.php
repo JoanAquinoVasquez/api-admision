@@ -59,10 +59,11 @@
 </head>
 
 <body>
-
-    <h2>REPORTE DE PROGRAMAS ACADÉMICOS NO APERTURADOS</h2>
-    <p>Universidad Nacional Pedro Ruiz Gallo - Escuela de Posgrado</p>
-    <p>Examen de Admisión {{ config('admission.cronograma.periodo') }}</p>
+ <div style="text-align: center;">
+        <img src="{{ public_path('img/isotipo_color_epg.webp') }}" alt="Logo UNPRG" width="100px">
+        <h2>REPORTE DE PROGRAMAS ACADÉMICOS NO APERTURADOS</h2>
+        <p>Examen de Admisión {{ config('admission.cronograma.periodo') }}</p>
+    </div>
 
     <table>
         <thead>

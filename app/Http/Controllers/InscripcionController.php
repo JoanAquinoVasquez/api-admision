@@ -141,6 +141,127 @@ class InscripcionController extends BaseController
         return $this->reportService->generateFacultadPDF();
     }
 
+    /**
+     * Validar físicamente una inscripción
+     */
+    public function valFisica($id)
+    {
+        return $this->handleRequest(function () use ($id) {
+            $result = app(\App\Services\ValidationService::class)->validateFisica($id);
+            return $this->successResponse($result);
+        }, 'Error al validar físicamente la inscripción');
+    }
+
+    /**
+     * Enviar correo de validación digital y constancia de postulante
+     */
+    public function enviarCorreo($id)
+    {
+        return $this->handleRequest(function () use ($id) {
+            $inscripcion = $this->inscripcionRepository->findWithRelations($id);
+
+            if (!$inscripcion) {
+                return $this->errorResponse('Inscripción no encontrada', 404);
+            }
+
+            // Logic to get data for email
+            $gradoId = $inscripcion->programa->grado_id;
+            $facultadId = $inscripcion->programa->facultad_id;
+
+            $autoridad = config("admission.autoridades.{$gradoId}", 'Autoridad');
+            $gradoRequerido = config("admission.grados_requeridos.{$gradoId}", '');
+
+            $urlDocumentos = '';
+            if ($gradoId == 3) { // Segunda Especialidad
+                $urlDocumentos = config("admission.url_documentos.facultades.{$facultadId}", '');
+            } else {
+                $urlDocumentos = config("admission.url_documentos.default");
+            }
+
+            // Enviar correo
+            \App\Jobs\SendEmailValidarInscripcionJob::dispatch(
+                $inscripcion->postulante->email,
+                $inscripcion,
+                $autoridad,
+                $gradoRequerido,
+                $urlDocumentos
+            );
+
+            return $this->successResponse(null, 'Correo de validación y constancia enviado exitosamente');
+        }, 'Error al enviar el correo de validación');
+    }
+
+    /**
+     * Obtener programas posibles para el voucher de la inscripción
+     */
+    public function programasPosibles($id)
+    {
+        return $this->handleRequest(function () use ($id) {
+            $inscripcion = $this->inscripcionRepository->findWithRelations($id);
+            if (!$inscripcion || !$inscripcion->voucher) {
+                return $this->errorResponse('Inscripción o voucher no encontrado', 404);
+            }
+
+            $programas = Programa::with(['grado', 'facultad'])
+                ->where('concepto_pago_id', $inscripcion->voucher->concepto_pago_id)
+                ->where('estado', true)
+                ->get();
+
+            return $this->successResponse($programas);
+        }, 'Error al obtener programas posibles');
+    }
+
+    /**
+     * Generar reporte general de inscripciones (Excel)
+     */
+    public function report(Request $request)
+    {
+        return $this->handleRequest(function () use ($request) {
+            $gradoId = intval($request->input('grado'));
+            $programaId = intval($request->input('programa'));
+
+            $this->logActivity('Reporte de inscripciones generado', null, [
+                'grado_id' => $gradoId,
+                'programa_id' => $programaId,
+            ]);
+
+            return $this->reportService->generateInscripcionReport($gradoId, $programaId);
+        }, 'Error al generar el reporte de inscripciones');
+    }
+
+    /**
+     * Generar reporte diario de inscripciones (Excel)
+     */
+    public function reportDiario()
+    {
+        return $this->handleRequest(function () {
+            $this->logActivity('Reporte diario de inscripciones generado');
+            return $this->reportService->generateDailyReport();
+        }, 'Error al generar el reporte diario');
+    }
+
+    /**
+     * Generar reporte diario de inscritos por facultad (Excel)
+     */
+    public function reportDiarioFacultad()
+    {
+        return $this->handleRequest(function () {
+            $this->logActivity('Reporte diario por facultad generado');
+            return $this->reportService->generateFacultadReport();
+        }, 'Error al generar el reporte por facultad');
+    }
+
+    /**
+     * Generar reporte de programas top (PDF)
+     */
+    public function reportProgramasTop()
+    {
+        return $this->handleRequest(function () {
+            $this->logActivity('Reporte de programas top generado');
+            return $this->reportService->generateProgramasTopPDF();
+        }, 'Error al generar el reporte de programas top');
+    }
+
 
     public function inscripcionNota()
     {

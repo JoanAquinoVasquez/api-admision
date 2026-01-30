@@ -139,7 +139,7 @@
         @endif
 
         <div class="header-container">
-            <img src="{{ public_path('img/logo_negro_epg.png') }}" alt="Logo UNPRG">
+            <img src="{{ public_path('img/isotipo_color_epg.webp') }}" alt="Logo UNPRG">
             <div class="block-1">
                 <h2>UNIVERSIDAD NACIONAL PEDRO RUIZ GALLO</h2>
                 <h3>ESCUELA DE POSGRADO</h3>

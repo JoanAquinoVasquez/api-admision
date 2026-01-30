@@ -17,8 +17,10 @@ class BaseController extends LaravelController
 
     /**
      * Execute a callback and handle common exceptions
+     * 
+     * @return mixed
      */
-    protected function handleRequest(callable $callback, string $errorMessage = 'An error occurred'): JsonResponse
+    protected function handleRequest(callable $callback, string $errorMessage = 'An error occurred')
     {
         try {
             return $callback();

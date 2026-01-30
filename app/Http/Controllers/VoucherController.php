@@ -122,7 +122,7 @@ class VoucherController extends BaseController
     public function export()
     {
         return $this->handleRequest(function () {
-            $nombreArchivo = 'vouchers_' . Carbon::now()->format('His_dmy') . '.xlsx';
+            $nombreArchivo = 'vouchers_' . now()->format('d-m-Y_His') . '.xlsx';
             return Excel::download(new VoucherExport, $nombreArchivo);
         }, 'Error al generar el reporte de vouchers');
     }

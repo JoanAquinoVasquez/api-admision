@@ -129,16 +129,14 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
     /**
      * Get top programas by inscripciones
      *
-     * @param int $limit
      * @return Collection
      */
-    public function getTopProgramas(int $limit = 10): Collection
+    public function getTopProgramas(): Collection
     {
         return $this->model->with(['facultad', 'grado'])
             ->withCount('inscripciones')
             ->where('estado', true)
             ->orderByDesc('inscripciones_count')
-            ->limit($limit)
             ->get()
             ->map(function ($programa) {
                 return (object) [

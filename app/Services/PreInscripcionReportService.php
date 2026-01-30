@@ -16,7 +16,7 @@ class PreInscripcionReportService
      */
     public function generatePreInscripcionReport(int $gradoId, int $programaId): BinaryFileResponse
     {
-        $nombreArchivo = 'preinscripcion_' . Carbon::now()->format('His_dmy') . '.xlsx';
+        $nombreArchivo = 'preinscripcion_' . now()->format('d-m-Y_His') . '.xlsx';
         return Excel::download(new PreInscripcionExport($gradoId, $programaId), $nombreArchivo);
     }
 
@@ -25,7 +25,7 @@ class PreInscripcionReportService
      */
     public function generateDailyReport(): BinaryFileResponse
     {
-        $nombreArchivo = 'preinscripcion_diario_' . Carbon::now()->format('His_dmy') . '.xlsx';
+        $nombreArchivo = 'preinscripcion_diario_' . now()->format('d-m-Y_His') . '.xlsx';
         return Excel::download(new PreInscripcionDiarioExport, $nombreArchivo);
     }
 
@@ -34,7 +34,7 @@ class PreInscripcionReportService
      */
     public function generateDailyFacultyReport(): BinaryFileResponse
     {
-        $nombreArchivo = 'preinscripcion_facultad_diario_' . Carbon::now()->format('His_dmy') . '.xlsx';
+        $nombreArchivo = 'preinscripcion_facultad_diario_' . now()->format('d-m-Y_His') . '.xlsx';
         return Excel::download(new PreInscripcionDiarioFacultadExport, $nombreArchivo);
     }
 }

@@ -46,7 +46,7 @@ class PDFService
         $pdf->setOption('isRemoteEnabled', true);
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->stream("documento-{$postulante->num_iden}.pdf");
+        return $pdf->stream("documento-{$postulante->num_iden}_" . now()->format('d-m-Y_His') . ".pdf");
     }
 
     /**
@@ -55,9 +55,12 @@ class PDFService
     public function generateCarnets(array $postulanteIds)
     {
         $postulantes = Postulante::whereIn('id', $postulanteIds)
-            ->with(['inscripcion', 'documentos' => function ($query) {
-                $query->where('tipo', 'Foto');
-            }])->get();
+            ->with([
+                'inscripcion',
+                'documentos' => function ($query) {
+                    $query->where('tipo', 'Foto');
+                }
+            ])->get();
 
         if ($postulantes->isEmpty()) {
             throw new \Exception('No hay postulantes para exportar en los criterios seleccionados.');

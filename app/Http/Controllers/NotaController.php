@@ -97,7 +97,7 @@ class NotaController extends BaseController
 
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->stream("Ingresantes.pdf");
+        return $pdf->stream("Ingresantes_" . now()->format('d-m-Y_His') . ".pdf");
     }
 
     /**

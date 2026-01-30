@@ -139,10 +139,13 @@
 </head>
 
 <body>
-    <h2>REPORTE DE INSCRIPCION POR FACULTAD | ESCUELA DE POSGRADO - ADMISION {{ config('admission.cronograma.periodo') }}</h2>
-    <p><strong>Fecha y hora:</strong> {{ $fechaHora }}</p>
-    <p><strong>Rector:</strong> Dr. Enrique Wilfredo Carpena Velásquez</p>
-    <p><strong>Director de Escuela:</strong> Dr. Leandro Agapito Aznarán Castillo</p>
+    <div style="text-align: center;">
+        <img src="{{ public_path('img/isotipo_color_epg.webp') }}" alt="Logo" width="100">
+        <h2>REPORTE DE INSCRIPCION POR FACULTAD | ESCUELA DE POSGRADO - ADMISION {{ config('admission.cronograma.periodo') }}</h2>
+        <p><strong>Fecha y hora:</strong> {{ $fechaHora }}</p>
+        <p><strong>Rector:</strong> Dr. Enrique Wilfredo Carpena Velásquez</p>
+        <p><strong>Director de Escuela:</strong> Dr. Leandro Agapito Aznarán Castillo</p>
+    </div>
 
     @foreach ($facultades as $facultad)
         <h3>Facultad: {{ $facultad->facultad }}</h3>

@@ -155,7 +155,7 @@
 
                     <div class="card">
                         <div class="photo">
-                            <img src="{{ asset('/img/carnet-2025.png')}}" width="100%" height="100%">
+                            <img src="{{ asset('/img/carnet-2026-I.png')}}" width="100%" height="100%">
                             {{-- La imagen del postulante se establece como fondo --}}
                         </div>
                         <div class="details">

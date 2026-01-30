@@ -33,10 +33,9 @@ interface ProgramaRepositoryInterface extends RepositoryInterface
     /**
      * Get top programas by inscripciones
      *
-     * @param int $limit
      * @return Collection
      */
-    public function getTopProgramas(int $limit = 10): Collection;
+    public function getTopProgramas(): Collection;
 
     /**
      * Get programas habilitados (estado = true)

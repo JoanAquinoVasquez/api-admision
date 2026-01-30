@@ -115,7 +115,7 @@
 <body>
     <!-- Encabezado -->
     <div class="encabezado">
-        <img src="{{ public_path('img/logo_negro_epg.png') }}" alt="Logo UNPRG">
+        <img src="{{ public_path('img/isotipo_color_epg.webp') }}" alt="Logo UNPRG">
         <div class="titulo">
             <h2>REPORTE DE INGRESANTES POR PROGRAMA</h2>
             <div class="subtitulo">ESCUELA DE POSGRADO - ADMISIÓN {{ config('admission.cronograma.periodo') }}</div>

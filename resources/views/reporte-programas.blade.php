@@ -42,9 +42,12 @@
 </head>
 
 <body>
+    <div style="text-align: center; margin-bottom: 10px;">
+        <img src="{{ public_path('img/isotipo_color_epg.webp') }}" alt="Logo UNPRG" width="100px">
+        <h2>REPORTE DE PROGRAMAS ACADÉMICOS APERTURADOS</h2>
+        <p>Examen de Admisión {{ config('admission.cronograma.periodo') }}</p>
+    </div>
 
-    <h2>REPORTE DE PROGRAMAS ACADÉMICOS APERTURADOS</h2>
-    <p>Examen de Admisión {{ config('admission.cronograma.periodo') }}</p>
 
     <table>
         <thead>

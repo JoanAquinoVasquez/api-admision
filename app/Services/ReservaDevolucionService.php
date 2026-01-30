@@ -129,7 +129,7 @@ class ReservaDevolucionService
      */
     public function generateReportReserva()
     {
-        $nombreArchivo = 'reporte_reservas_' . Carbon::now()->format('His_dmy') . '.xlsx';
+        $nombreArchivo = 'reporte_reservas_' . now()->format('d-m-Y_His') . '.xlsx';
         return Excel::download(new ReservaExport, $nombreArchivo);
     }
 
@@ -221,7 +221,7 @@ class ReservaDevolucionService
      */
     public function generateReportDevolucion()
     {
-        $nombreArchivo = 'reporte_devolucion_' . Carbon::now()->format('His_dmy') . '.xlsx';
+        $nombreArchivo = 'reporte_devolucion_' . now()->format('d-m-Y_His') . '.xlsx';
         return Excel::download(new DevolucionExport, $nombreArchivo);
     }
 

@@ -197,7 +197,7 @@ class ReservaDevolucionController extends BaseController
 
             return response($contenido)
                 ->header('Content-Type', 'text/plain')
-                ->header('Content-Disposition', 'attachment; filename="vouchers_reserva.txt"');
+                ->header('Content-Disposition', 'attachment; filename="vouchers_reserva_' . now()->format('d-m-Y_His') . '.txt"');
         }, 'Error al generar el reporte de vouchers');
     }
 

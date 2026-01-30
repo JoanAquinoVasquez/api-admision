@@ -69,7 +69,6 @@ class AuthController extends BaseController
      */
     public function googleLogin(Request $request)
     {
-        Log::info($request);
         return $this->handleRequest(function () use ($request) {
             $request->validate([
                 'credential' => 'required|string',

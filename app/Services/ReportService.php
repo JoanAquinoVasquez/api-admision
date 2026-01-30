@@ -33,7 +33,7 @@ class ReportService
      */
     public function generateInscripcionReport(int $gradoId, int $programaId)
     {
-        $nombreArchivo = 'reporte_inscripcion_' . Carbon::now()->format('His_dmy') . '.xlsx';
+        $nombreArchivo = 'reporte_inscripcion_' . now()->format('d-m-Y_His') . '.xlsx';
         return Excel::download(new InscripcionExport($gradoId, $programaId), $nombreArchivo);
     }
 
@@ -42,7 +42,7 @@ class ReportService
      */
     public function generateDailyReport()
     {
-        $nombreArchivo = 'reporte_inscripcion_diario_' . Carbon::now()->format('His_dmy') . '.xlsx';
+        $nombreArchivo = 'reporte_inscripcion_diario_' . now()->format('d-m-Y_His') . '.xlsx';
         return Excel::download(new InscripcionDiarioExport, $nombreArchivo);
     }
 
@@ -51,7 +51,7 @@ class ReportService
      */
     public function generateFacultadReport()
     {
-        $nombreArchivo = 'reporte_inscripcion_diario_facultad_' . Carbon::now()->format('His_dmy') . '.xlsx';
+        $nombreArchivo = 'reporte_inscripcion_diario_facultad_' . now()->format('d-m-Y_His') . '.xlsx';
         return Excel::download(new InscripcionDiarioFacultadExport, $nombreArchivo);
     }
 
@@ -60,7 +60,7 @@ class ReportService
      */
     public function generatePreinscritosSinPagarReport()
     {
-        $nombreArchivo = 'reporte_pre-inscripcion_sin_pagar' . Carbon::now()->format('His_dmy') . '.xlsx';
+        $nombreArchivo = 'reporte_pre-inscripcion_sin_pagar_' . now()->format('d-m-Y_His') . '.xlsx';
         return Excel::download(new PreinscripcionSinPagarExport, $nombreArchivo);
     }
 
@@ -69,7 +69,7 @@ class ReportService
      */
     public function generateFinalReportExcel()
     {
-        $nombreArchivo = 'reporte_final_' . Carbon::now()->format('His_dmy') . '.xlsx';
+        $nombreArchivo = 'reporte_final_' . now()->format('d-m-Y_His') . '.xlsx';
         return Excel::download(new InscripcionesFinalesExport, $nombreArchivo);
     }
 
@@ -78,7 +78,7 @@ class ReportService
      */
     public function generateNotasFinalReportExcel()
     {
-        $nombreArchivo = 'reporte_resultados_' . Carbon::now()->format('His_dmy') . '.xlsx';
+        $nombreArchivo = 'reporte_resultados_' . now()->format('d-m-Y_His') . '.xlsx';
         return Excel::download(new InscripcionNotasFinalExport, $nombreArchivo);
     }
 
@@ -96,7 +96,53 @@ class ReportService
 
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->stream("reporte-inscripcion-top.pdf");
+        return $pdf->stream("reporte-inscripcion-top_" . now()->format('d-m-Y_His') . ".pdf");
+    }
+
+    /**
+     * Generar PDF de postulantes aptos (entrevista) por programa
+     */
+    public function generatePostulantesAptosPDF($idPrograma)
+    {
+        $inscripciones = \App\Models\Inscripcion::with(['postulante', 'programa.grado'])
+            ->where('programa_id', $idPrograma)
+            ->where('val_digital', 1)
+            ->get();
+
+        $pdf = Pdf::loadView('notas.postulantes-aptos', [
+            'inscripciones' => $inscripciones,
+            'fechaHora' => now(),
+        ]);
+
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream("postulantes_aptos_" . $idPrograma . "_" . now()->format('d-m-Y_His') . ".pdf");
+    }
+
+    /**
+     * Generar PDF de postulantes aptos (entrevista) por múltiples programas
+     */
+    public function generatePostulantesAptosMultiplePDF()
+    {
+        $programas = \App\Models\Programa::with([
+            'grado',
+            'inscripciones' => function ($q) {
+                $q->where('val_digital', 1)->with('postulante');
+            }
+        ])->where('estado', true)
+            ->whereHas('inscripciones', function ($q) {
+                $q->where('val_digital', 1);
+            })
+            ->get();
+
+        $pdf = Pdf::loadView('notas.postulantes-aptos-multiple', [
+            'programas' => $programas,
+            'fechaHora' => now(),
+        ]);
+
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream("postulantes_aptos_multiple_" . now()->format('d-m-Y_His') . ".pdf");
     }
 
     /**
@@ -124,7 +170,7 @@ class ReportService
 
             $pdf->setPaper('A4', 'portrait');
 
-            return $pdf->stream("reporte-programas-no-aperturados.pdf");
+            return $pdf->stream("reporte-programas-no-aperturados_" . now()->format('d-m-Y_His') . ".pdf");
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -156,7 +202,7 @@ class ReportService
 
             $pdf->setPaper('A4', 'portrait');
 
-            return $pdf->stream("reporte-programas.pdf");
+            return $pdf->stream("reporte-programas_" . now()->format('d-m-Y_His') . ".pdf");
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -195,7 +241,7 @@ class ReportService
 
             $pdf->setPaper('A4', 'portrait');
 
-            return $pdf->stream("reporte-inscripcion.pdf");
+            return $pdf->stream("reporte-inscripcion_" . now()->format('d-m-Y_His') . ".pdf");
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -243,7 +289,7 @@ class ReportService
         $pdf = Pdf::loadView('postulante-aptos-final', ['programasData' => $programasData]);
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->stream("notasCV-multiple.pdf");
+        return $pdf->stream("reporte_notasCV-multiple_" . now()->format('d-m-Y_His') . ".pdf");
     }
 
     public function generateFinalAulasPdf()
@@ -309,7 +355,7 @@ class ReportService
         $pdf = Pdf::loadView('postulante-aptos-final-aulas', ['programasData' => $programasData]);
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->stream("reporte_aulas.pdf");
+        return $pdf->stream("reporte_aulas_" . now()->format('d-m-Y_His') . ".pdf");
     }
 
     public function generateFinalFirmasPdf()
@@ -375,7 +421,7 @@ class ReportService
         $pdf = Pdf::loadView('postulante-aptos-final-firmas', ['programasData' => $programasData]);
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->stream("reporte_aptos_firmas.pdf");
+        return $pdf->stream("reporte_aptos_firmas_" . now()->format('d-m-Y_His') . ".pdf");
     }
 
     public function getResumenGeneralInscripcion()
@@ -510,7 +556,7 @@ class ReportService
 
             $pdf->setPaper('A4', 'portrait');
 
-            return $pdf->stream("reporte-ingresantes-top.pdf");
+            return $pdf->stream("reporte-ingresantes-top_" . now()->format('d-m-Y_His') . ".pdf");
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
