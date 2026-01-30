@@ -16,7 +16,7 @@ class VoucherSeeder extends Seeder
         //Crear voucher especifico
         Voucher::create([
             'concepto_pago_id' => 1,
-            'voucher' => '2091020',
+            'numero' => '2091020',
             'num_iden' => '75167077',
             'nombre_completo' => 'AQUINO VASQUEZ JOAN EDINSON',
             'monto' => 250.00,
