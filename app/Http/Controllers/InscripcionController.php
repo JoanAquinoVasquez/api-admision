@@ -146,7 +146,7 @@ class InscripcionController extends BaseController
     {
         return $this->handleRequest(function () use ($id) {
             $result = $this->validationService->validateFisica($id);
-            return $this->successResponse($result);
+            return $this->successResponse($result, 'Se validó correctamente');
         }, 'Error al validar físicamente la inscripción');
     }
 

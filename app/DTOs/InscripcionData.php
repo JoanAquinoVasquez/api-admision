@@ -49,7 +49,7 @@ class InscripcionData
             fechaNacimiento: $request->input('fecha_nacimiento'),
             sexo: $request->input('sexo'),
             celular: $request->input('celular'),
-            direccion: $request->input('direccion'),
+            direccion: mb_strtoupper($request->input('direccion'), 'UTF-8'),
             distritoId: (int) $request->input('distrito_id'),
             programaId: (int) $request->input('programa_id'),
             tipoPago: $request->input('tipo_pago'),

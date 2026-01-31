@@ -134,8 +134,8 @@ class InscripcionUpdateController extends Controller
             foreach (
                 [
                     'DocumentoIdentidad' => 'rutaDocIden',
-                    'Curriculum'         => 'rutaCV',
-                    'Voucher'            => 'rutaVoucher',
+                    'Curriculum' => 'rutaCV',
+                    'Voucher' => 'rutaVoucher',
                 ] as $tipo => $inputName
             ) {
                 if ($request->hasFile($inputName)) {

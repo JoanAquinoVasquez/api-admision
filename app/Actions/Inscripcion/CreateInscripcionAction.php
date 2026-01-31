@@ -21,7 +21,8 @@ class CreateInscripcionAction
         protected ProgramaRepositoryInterface $programaRepository,
         protected VoucherService $voucherService,
         protected DocumentService $documentService
-    ) {}
+    ) {
+    }
 
     public function execute(InscripcionData $data): array
     {
@@ -30,7 +31,7 @@ class CreateInscripcionAction
 
             // 1. Validar Voucher
             $voucher = $this->voucherService->findVoucher($data->tipoPago, $data->codVoucher, $data->numIden);
-            
+
             if (!$voucher) {
                 throw new \Exception('Voucher no encontrado o no corresponde al postulante');
             }
@@ -56,13 +57,13 @@ class CreateInscripcionAction
 
             // 4. Crear Inscripción
             $inscripcion = $this->inscripcionRepository->create([
-                'programa_id'   => $programa->id,
+                'programa_id' => $programa->id,
                 'postulante_id' => $postulante->id,
-                'voucher_id'    => $voucher->id,
-                'codigo'        => $data->codVoucher,
-                'val_digital'   => 0,
-                'val_fisico'    => false,
-                'estado'        => $programa->estado,
+                'voucher_id' => $voucher->id,
+                'codigo' => $data->codVoucher,
+                'val_digital' => 0,
+                'val_fisico' => false,
+                'estado' => $programa->estado,
             ]);
 
             // 5. Manejar Archivos Temporales (para Job de Drive)
@@ -71,7 +72,7 @@ class CreateInscripcionAction
                 'DocumentoIdentidad' => $data->docIdentidadFile,
                 'Curriculum' => $data->cvFile,
             ];
-            
+
             $tempPaths = $this->documentService->storeTempFiles($filesToUpload);
 
             // 6. Guardar Foto localmente
@@ -96,10 +97,10 @@ class CreateInscripcionAction
                 UploadDocumentosDriveJob::dispatch($postulante, $tempPaths, $programa->grado_id);
 
                 // Enviar Email
-                $url = config("admission.programa_urls.{$programa->id}");
+                $url = $programa->brochure;
                 $nombre_programa = mb_strtoupper($programa->nombre, 'UTF-8');
-                $nombre_grado = $programa->grado->nombre;
-                
+                $nombre_grado = ucfirst(strtolower($programa->grado->nombre));
+
                 $cleanData = $data->toPostulanteArray();
                 $cleanData['programa_id'] = $data->programaId;
                 $cleanData['cod_voucher'] = $data->codVoucher;
@@ -110,14 +111,14 @@ class CreateInscripcionAction
             return [
                 'success' => true,
                 'message' => 'Inscripción nueva registrada exitosamente y correo de inscripción enviado',
-                'data'    => $data->toPostulanteArray(),
+                'data' => $data->toPostulanteArray(),
             ];
 
         } catch (ValidationException $e) {
             return [
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors'  => $e->errors(),
+                'errors' => $e->errors(),
             ];
         } catch (\Exception $e) {
             DB::rollBack();

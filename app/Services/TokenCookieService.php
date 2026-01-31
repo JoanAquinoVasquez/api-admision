@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Cookie;
 use Symfony\Component\HttpFoundation\Cookie as HttpCookie;
+use Illuminate\Support\Facades\Log;
 
 class TokenCookieService
 {

@@ -10,6 +10,7 @@ use App\Models\Inscripcion;
 use App\Models\Programa;
 use Carbon\Carbon;
 use Google\Service\Drive\DriveFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -260,6 +261,8 @@ class ReservaDevolucionService
         $programa_old = Programa::find($inscripcion->programa_id);
         $old_grado = $inscripcion->programa->grado_id;
 
+        Log::info("🔄 updatePrograma: Inscripcion $inscripcionId, OldProgram {$programa_old->id}, NewProgram $nuevoProgramaId");
+
         if (!$inscripcion) {
             return null;
         }
@@ -277,9 +280,22 @@ class ReservaDevolucionService
 
         $new_grado = $inscripcion->programa->grado_id;
 
+        Log::info("📝 Checking Grade Change: Old $old_grado vs New $new_grado");
+
         // Move documents if grade changed
-        if ($old_grado != $new_grado && $request) {
-            $this->moverDocumentos($inscripcion->postulante_id, $new_grado, $request);
+        if ($old_grado != $new_grado) {
+            Log::info("🚀 Grades different, dispatching job to move documents...");
+
+            // Dispatch logic used in InscripcionUpdateController
+            \App\Jobs\MoverDocumentosGoogleDriveJob::dispatch(
+                $inscripcion->postulante_id,
+                $new_grado,
+                [] // No files are being replaced in this action
+            )->afterCommit();
+
+            Log::info("✅ Job MoverDocumentosGoogleDriveJob dispatched.");
+        } else {
+            Log::info("ℹ️ Grades are same, skipping document move.");
         }
 
         return [
@@ -287,111 +303,5 @@ class ReservaDevolucionService
             'programa_old' => $programa_old,
             'programa_new' => $programa,
         ];
-    }
-
-    /**
-     * Move documents to new grade folder
-     */
-    public function moverDocumentos(int $postulanteId, int $nuevoGradoId, $request)
-    {
-        $carpetasGrados = [
-            1 => 'DOCTORADO',
-            2 => 'MAESTRIA',
-            3 => 'SEGUNDA-ESPECIALIDAD',
-        ];
-
-        $tiposDocumentos = [
-            'Voucher' => 'Voucher',
-            'Curriculum' => 'Curriculum',
-            'DocumentoIdentidad' => 'DocumentoIdentidad',
-        ];
-
-        $documentos = Documento::where('postulante_id', $postulanteId)
-            ->where('estado', true)
-            ->where('tipo', "!=", "Foto")
-            ->get();
-
-        $tipoDocumentosMapeados = [
-            'Voucher' => 'rutaVoucher',
-            'Curriculum' => 'rutaCV',
-            'DocumentoIdentidad' => 'rutaDocIden',
-        ];
-
-        foreach ($documentos as $documento) {
-            if (!in_array($tipoDocumentosMapeados[$documento->tipo] ?? '', array_keys($request->allFiles()))) {
-                $fileId = $this->extractGoogleDriveFileId($documento->url);
-
-                $carpetaGradoNuevo = $carpetasGrados[$nuevoGradoId] ?? 'default';
-                $carpetaTipoDocumento = $tiposDocumentos[$documento->tipo] ?? 'default';
-
-                $rutaNuevaCarpeta = "{$carpetaGradoNuevo}/{$carpetaTipoDocumento}";
-
-                $fileName = $documento->nombre_archivo;
-                $newFileName = preg_replace('/^[^\/]+/', $carpetaGradoNuevo, $fileName);
-
-                $documento->update([
-                    'nombre_archivo' => $newFileName
-                ]);
-
-                $this->moverFile($fileId, $rutaNuevaCarpeta);
-            }
-        }
-    }
-
-    /**
-     * Extract Google Drive file ID from URL
-     */
-    private function extractGoogleDriveFileId(string $url)
-    {
-        preg_match('/\/d\/(.*?)\//', $url, $matches);
-        return $matches[1] ?? null;
-    }
-
-    /**
-     * Move file in Google Drive
-     */
-    private function moverFile(string $fileId, string $rutaAMover)
-    {
-        $folderName = env('GOOGLE_DRIVE_FOLDER', 'ProcesoAdmision2025-I');
-        $service = Storage::disk('google')->getAdapter()->getService();
-        $newFolderId = $this->getFolderIdByPath("$folderName/" . $rutaAMover, $service);
-
-        $file = $service->files->get($fileId, ['fields' => 'parents']);
-        $previousParents = join(',', $file->parents);
-
-        $driveFile = new DriveFile();
-        $service->files->update(
-            $fileId,
-            $driveFile,
-            [
-                'addParents' => $newFolderId,
-                'removeParents' => $previousParents,
-                'fields' => 'id, parents'
-            ]
-        );
-    }
-
-    /**
-     * Get folder ID by path in Google Drive
-     */
-    private function getFolderIdByPath(string $folderPath, $service)
-    {
-        $folders = explode('/', $folderPath);
-        $parentId = 'root';
-        $foundId = null;
-
-        foreach ($folders as $folderName) {
-            $query = "name = '$folderName' and mimeType = 'application/vnd.google-apps.folder' and trashed = false and '$parentId' in parents";
-            $results = $service->files->listFiles(['q' => $query, 'fields' => 'files(id, name)', 'spaces' => 'drive']);
-
-            if ($results->getFiles() == 0) {
-                return null;
-            }
-
-            $foundId = $results->getFiles()[0]->getId();
-            $parentId = $foundId;
-        }
-
-        return $foundId;
     }
 }

@@ -169,10 +169,18 @@ class GoogleDriveService
             $results = $service->files->listFiles(['q' => $query, 'fields' => 'files(id, name)', 'spaces' => 'drive']);
 
             if (count($results->getFiles()) == 0) {
-                return null;
+                // Si la carpeta no existe, la creamos
+                $fileMetadata = new DriveFile([
+                    'name' => $folderName,
+                    'mimeType' => 'application/vnd.google-apps.folder',
+                    'parents' => [$parentId]
+                ]);
+                $folder = $service->files->create($fileMetadata, ['fields' => 'id']);
+                $foundId = $folder->id;
+            } else {
+                $foundId = $results->getFiles()[0]->getId();
             }
 
-            $foundId = $results->getFiles()[0]->getId();
             $parentId = $foundId;
         }
 

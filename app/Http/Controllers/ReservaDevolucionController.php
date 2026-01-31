@@ -134,7 +134,16 @@ class ReservaDevolucionController extends BaseController
                 return $this->errorResponse('Inscripción no encontrada', 404);
             }
 
-            $this->logActivity('Inscripción reservada', null, ['inscripcion_id' => $id]);
+            $this->logActivity('Inscripción reservada', $inscripcion, [
+                'subject' => [
+                    'nombres' => $inscripcion->postulante->nombres,
+                    'ap_paterno' => $inscripcion->postulante->ap_paterno,
+                    'ap_materno' => $inscripcion->postulante->ap_materno,
+                    'num_iden' => $inscripcion->postulante->num_iden,
+                    'tipo_doc' => $inscripcion->postulante->tipo_doc,
+                ],
+                'inscripcion_id' => $id
+            ]);
 
             return $this->successResponse(null, 'Inscripción reservada');
         }, 'Error al reservar inscripción');
@@ -168,7 +177,16 @@ class ReservaDevolucionController extends BaseController
                 return $this->errorResponse('Inscripción no encontrada', 404);
             }
 
-            $this->logActivity('Reserva cancelada', null, ['inscripcion_id' => $id]);
+            $this->logActivity('Reserva cancelada', $inscripcion, [
+                'subject' => [
+                    'nombres' => $inscripcion->postulante->nombres,
+                    'ap_paterno' => $inscripcion->postulante->ap_paterno,
+                    'ap_materno' => $inscripcion->postulante->ap_materno,
+                    'num_iden' => $inscripcion->postulante->num_iden,
+                    'tipo_doc' => $inscripcion->postulante->tipo_doc,
+                ],
+                'inscripcion_id' => $id
+            ]);
 
             return $this->successResponse(null, 'Inscripción cancelada');
         }, 'Error al cancelar reserva');
@@ -214,10 +232,20 @@ class ReservaDevolucionController extends BaseController
             }
 
             if ($resultado === false) {
-                return $this->errorResponse('Inscripción de este programa si se aperturara', 400);
+                return $this->errorResponse('Inscripción de este programa sí se aperturará', 400);
             }
 
-            $this->logActivity('Inscripción marcada para devolución', null, ['inscripcion_id' => $id]);
+            // $resultado es la inscripción
+            $this->logActivity('Inscripción marcada para devolución', $resultado, [
+                'subject' => [
+                    'nombres' => $resultado->postulante->nombres,
+                    'ap_paterno' => $resultado->postulante->ap_paterno,
+                    'ap_materno' => $resultado->postulante->ap_materno,
+                    'num_iden' => $resultado->postulante->num_iden,
+                    'tipo_doc' => $resultado->postulante->tipo_doc,
+                ],
+                'inscripcion_id' => $id
+            ]);
 
             return $this->successResponse(null, 'Inscripción registrada exitosamente para su devolución');
         }, 'Error al marcar inscripción para devolución');
@@ -251,7 +279,16 @@ class ReservaDevolucionController extends BaseController
                 return $this->errorResponse('Inscripción no encontrada o programa activo', 404);
             }
 
-            $this->logActivity('Devolución cancelada', null, ['inscripcion_id' => $id]);
+            $this->logActivity('Devolución cancelada', $inscripcion, [
+                'subject' => [
+                    'nombres' => $inscripcion->postulante->nombres,
+                    'ap_paterno' => $inscripcion->postulante->ap_paterno,
+                    'ap_materno' => $inscripcion->postulante->ap_materno,
+                    'num_iden' => $inscripcion->postulante->num_iden,
+                    'tipo_doc' => $inscripcion->postulante->tipo_doc,
+                ],
+                'inscripcion_id' => $id
+            ]);
 
             return $this->successResponse(null, 'Devolución cancelada');
         }, 'Error al cancelar devolución');

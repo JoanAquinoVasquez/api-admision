@@ -81,6 +81,7 @@ class AuthController extends BaseController
             }
 
             $response = $this->successResponse($resultado);
+            Log::info('Login with Google', $resultado);
 
             if (isset($resultado['cookies'])) {
                 foreach ($resultado['cookies'] as $cookie) {
@@ -269,9 +270,10 @@ class AuthController extends BaseController
         return $this->handleRequest(function () use ($request) {
             $user = $request->user('api');
             if (!$user) {
+                Log::info('User not authenticated');
                 return $this->successResponse(['authenticated' => false]);
             }
-
+            Log::info('User authenticated');
             return $this->successResponse([
                 'authenticated' => true,
                 'user' => $user,

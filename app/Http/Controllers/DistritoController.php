@@ -12,7 +12,7 @@ class DistritoController extends BaseController
     public function showProvincia($id)
     {
         return $this->handleRequest(function () use ($id) {
-            $distritos = Distrito::where('provincia_id', $id)->get();
+            $distritos = Distrito::where('provincia_id', $id)->orderBy('nombre', 'asc')->get();
             return $this->successResponse($distritos);
         }, 'Error al obtener los distritos');
     }

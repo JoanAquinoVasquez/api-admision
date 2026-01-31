@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Jobs\SendEmailValidarInscripcionJob;
+use App\Jobs\SendEmailExpedienteFisicoJob;
 use App\Repositories\Contracts\InscripcionRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -133,9 +134,20 @@ class ValidationService
                 'Inscripción validada físicamente'
             );
 
+            // Preparar y enviar correo de validación física
+            $datosCorreo = $this->getDatosCorreo($inscripcion);
+
+            SendEmailExpedienteFisicoJob::dispatch(
+                $inscripcion->postulante->email,
+                $inscripcion,
+                $datosCorreo['autoridad'],
+                $datosCorreo['gradoRequerido'],
+                $datosCorreo['urlDocumentos']
+            );
+
             return [
                 'success' => true,
-                'message' => 'Validación física exitosa',
+                'message' => 'Validación física exitosa y correo enviado',
             ];
         } catch (\Exception $e) {
             throw new \Exception('Error al validar la inscripción: ' . $e->getMessage());

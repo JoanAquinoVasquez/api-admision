@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscripción Validada - Escuela de Posgrado UNPRG | Proceso de Admisión 2026-I</title>
+    <title>Expediente Físico Validado - Escuela de Posgrado UNPRG | Proceso de Admisión 2026-I</title>
     <!-- Import Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -124,15 +124,15 @@
         }
 
         .checklist-item::before {
-            content: "📝";
+            content: "✅";
             position: absolute;
             left: 0;
             top: 0;
             font-size: 1.1rem;
         }
 
-        .checklist-item.important::before {
-            content: "⚠️";
+        .checklist-item.next-step::before {
+            content: "✅";
         }
 
         .checklist-item.important {
@@ -151,37 +151,6 @@
             display: flex;
             gap: 12px;
             align-items: start;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            text-align: center;
-            margin-top: 2rem;
-            padding: 2rem;
-            background: #1e293b;
-            color: white;
-            border-radius: 12px;
-        }
-
-        .download-btn {
-            display: inline-block;
-            background-color: #fbbf24;
-            color: #1e3a8a;
-            font-weight: 800;
-            text-decoration: none;
-            padding: 16px 32px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            text-transform: uppercase;
-            font-size: 1rem;
-            margin-top: 1rem;
-            border: 2px solid #f59e0b;
-        }
-
-        .download-btn:hover {
-            background-color: #f59e0b;
-            transform: translateY(-2px);
         }
 
         /* Footer */
@@ -245,76 +214,67 @@
                     </tr>
                 </table>
             </div>
-            <h1 class="header-title">¡Inscripción Validada!</h1>
+            <h1 class="header-title">Expediente Físico Validado</h1>
         </div>
 
         <!-- Body -->
         <div class="email-body">
             <div class="greeting">
-                Felicidades {{$inscripcion->postulante->sexo == 'M' ? 'Estimado' : 'Estimada' }}
-                <strong>{{ $inscripcion->postulante->nombres }}
-                    {{ $inscripcion->postulante->ap_paterno }}
-                    {{ $inscripcion->postulante->ap_materno }},</strong>
+                {{ $inscripcion->postulante->sexo == 'M' ? 'Estimado' : 'Estimada' }}
+                <strong>{{ $inscripcion->postulante->nombres }} {{ $inscripcion->postulante->ap_paterno }}
+                    {{ $inscripcion->postulante->ap_materno }}</strong>,
             </div>
 
             <div class="congrats-box">
                 <div class="congrats-text">
-                    Tus documentos digitales han sido revisados y <strong>APROBADOS</strong> satisfactoriamente para el
-                    programa de:
-                    <div style="margin-top: 0.5rem; font-size: 1.2rem; color: #047857;">
-                        {{ ucfirst(strtolower($inscripcion->programa->grado->nombre)) }} en {{ $inscripcion->programa->nombre }}
-                    </div>
+                    Su <strong>Expediente Físico</strong> ha sido validado y recepcionado con éxito. Ahora usted ya se
+                    encuentra
+                    {{ $inscripcion->postulante->sexo == 'Masculino' ? 'apto' : 'apta' }} para dar el <strong>Examen
+                        de Admisión</strong>!
                 </div>
             </div>
 
             <p style="color: #4b5563;">
-                El siguiente paso es presentar tu <strong>Expediente Físico</strong> en la oficina de Admisión de la
-                Escuela de Posgrado de la UNPRG. <br>Horario de atención: <strong>Lunes a Viernes de 08:00 a.m. a 02:00
-                    p.m.</strong>
+                A continuación, detallamos las etapas finales de evaluación en las que deberás participar:
             </p>
 
             <div class="steps-container">
-                <h3 class="steps-title">📋 Documentos a Presentar en Físico:</h3>
+                <h3 class="steps-title">📅 Cronograma de Evaluación</h3>
                 <ul class="checklist">
-                    <li class="checklist-item"><strong>Constancia de Inscripción</strong> (Adjunta en este correo).</li>
-                    <li class="checklist-item"><strong>Comprobante de Pago Original</strong> (Banco de la Nación o
-                        Págalo.pe).</li>
-                    <li class="checklist-item"><strong>Solicitud dirigida al {{ $autoridad ?? '' }}</strong> (Descargar
-                        del enlace drive de abajo).</li>
-                    <li class="checklist-item">Copia simple de DNI o Carnet de Extranjería.</li>
-                    <li class="checklist-item">Una (1) fotografía a color tamaño carné.</li>
-                    <li class="checklist-item">Copia simple del <strong>{{ $gradoRequerido }}</strong>.</li>
-                    <li class="checklist-item">Impresión del Registro en SUNEDU.</li>
+                    <li class="checklist-item next-step">
+                        <strong>Examen de Admisión:</strong> Se realizará el día
+                        <strong>{{ $examen_admision }}</strong>.
+                    </li>
+
+
                     <li class="checklist-item">
-                        <strong>Currículum Vitae Documentado</strong>
-                        <br>
-                        <span style="font-size: 0.9rem; color: #64748b;">
-                            (Anillado con tapa transparente al inicio y tapa trasera color
-                            <strong
-                                style="color: {{ $inscripcion->programa->facultad_id == 4 && !in_array($inscripcion->programa->grado_id, [1, 2]) ? '#0ea5e9' : '#22c55e' }}">
-                                {{ $inscripcion->programa->facultad_id == 4 && !in_array($inscripcion->programa->grado_id, [1, 2]) ? 'TURQUESA' : 'VERDE' }}
-                            </strong>. Foliado en la parte superior derecha).
-                        </span>
+                        <strong>Entrevista Personal:</strong> Se llevará a cabo <strong>inmediatamente después</strong>
+                        del Examen de Admisión.
+                        @if(isset($inscripcion->programa->grado_id) && ($inscripcion->programa->grado_id === 1 || $inscripcion->programa->grado_id === 2))
+                            Es indispensable tener listo tu
+                        perfil de proyecto tentativo de investigación. @endif
+                    </li>
+
+
+                    <li class="checklist-item next-step">
+                        <strong>Requisitos de ingreso:</strong> Portar obligatoriamente DNI original, Carnet de
+                        Postulante, Lápiz 2B y borrador.
+                    </li>
+
+                    <li class="checklist-item next-step">
+                        <strong>Resultados:</strong> La lista de ingresantes se publicará el
+                        <strong>{{ $resultados_publicacion }}</strong> en nuestra pagina web y redes sociales.
                     </li>
                 </ul>
             </div>
 
             <div class="alert-box">
-                <span style="font-size: 1.5rem;">⏰</span>
+                <span style="font-size: 1.5rem;">⚠️</span>
                 <div>
-                    <strong>Plazo Máximo:</strong>
-                    <p style="margin: 0;">Tienes <strong>48 horas hábiles</strong> a partir de la recepción de este
-                        correo para presentar tu expediente físico.</p>
+                    <strong>Nota:</strong>
+                    <p style="margin: 0;">La ausencia en cualquiera de las etapas (examen o entrevista) descalificará
+                        automáticamente tu postulación.</p>
                 </div>
-            </div>
-
-            <div class="cta-section">
-                <h3 style="margin-top: 0; color: #fbbf24;">📂 Descarga los Formatos</h3>
-                <p style="opacity: 0.9; margin-bottom: 1.5rem;">Accede a los formatos de solicitud y declaraciones
-                    juradas aquí:</p>
-                <a href="{{ $urlDocumentos }}" target="_blank" class="download-btn">
-                    DESCARGAR DOCUMENTOS
-                </a>
             </div>
         </div>
 
@@ -330,7 +290,8 @@
 
                 <ul class="contact-list">
                     <li>📍 Av. Huamachuco Nro. 1130, Lambayeque</li>
-                    <li>📩 <a href="mailto:admision_epg@unprg.edu.pe" style="color: #ffffff; text-decoration: none;">admision_epg@unprg.edu.pe</a></li>
+                    <li>📩 <a href="mailto:admision_epg@unprg.edu.pe"
+                            style="color: #ffffff; text-decoration: none;">admision_epg@unprg.edu.pe</a></li>
                     <li>📱 995901454</li>
                 </ul>
             </div>

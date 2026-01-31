@@ -25,6 +25,7 @@ class InscripcionResource extends JsonResource
             'estado' => $this->estado,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'observacion' => $this->observacion,
 
             // Relaciones (cargadas condicionalmente o si ya están presentes)
             'programa' => new ProgramaResource($this->whenLoaded('programa')),

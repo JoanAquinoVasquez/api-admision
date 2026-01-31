@@ -4,311 +4,369 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmación de Inscripción</title>
+    <title>Confirmación de Inscripción 2026-I | ESCUELA DE POSGRADO UNPRG</title>
+    <!-- Import Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Reset & Base Styles */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
+            background-color: #f4f6f9;
+            color: #333333;
         }
 
-        .container {
-            max-width: 800px;
+        /* Container */
+        .email-wrapper {
+            max-width: 650px;
             margin: 2rem auto;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .header-content {
-            flex: 1;
-            text-align: center;
-        }
-
-        .logo-placeholder {
-            width: 120px;
-            height: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-placeholder img {
-            max-width: 100%;
-            max-height: 170px;
-            height: auto;
-            object-fit: contain;
-        }
-
-        h1 {
-            color: #2c3e50;
-            font-size: 2rem;
-            margin: 0;
-            padding: 0 1rem;
-        }
-
-        .consultation-banner {
-            background-color: #478ac5;
-            color: white;
-            padding: 1rem;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-top: 0.3rem;
-            padding-bottom: 0.4rem;
-        }
-
-        .consultation-banner-content {
-            flex-grow: 1;
-        }
-
-        .consultation-link {
             background-color: #ffffff;
-            color: #000000;
-            padding: 7px 10px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            margin-left: 1rem;
-            transition: background-color 0.3s;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid #eaeaea;
         }
 
-        .consultation-link:hover {
-            background-color: #FFD633;
+        /* Header */
+        .email-header {
+            background-color: #eff6ff;
+            /* Light Blue */
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: #1e3a8a;
+            position: relative;
+            border-bottom: 4px solid #3b82f6;
         }
 
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 0.8rem;
-            padding-top: 0.1rem;
-            padding-bottom: 0.1rem;
+        .header-logos {
+            width: 100%;
+            margin-bottom: 1.5rem;
         }
 
-        /* Estilo mejorado para los datos de la inscripción */
-        table {
+        .header-logos table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 0.8rem;
         }
 
-        th,
-        td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: left;
-            font-size: 1rem;
+        .logo-img {
+            height: 90px;
+            /* Increased size */
+            width: auto;
         }
 
-        th {
-            background-color: #f4f4f4;
-            font-weight: bold;
-        }
-
-        .footer-container {
-            background-color: #2873B4;
-            color: white;
-            font-size: 0.9rem;
-            text-align: center;
-            border-radius: 4px;
-        }
-
-        .footer-section h2 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #FFC300;
-            display: inline-block;
-            padding-bottom: 0.3rem;
-        }
-
-        .footer-section ul {
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: 800;
             margin: 0;
-            padding: 0;
-            list-style: none;
-            display: flex;
-            /* Distribuye los elementos en una fila */
-            justify-content: center;
-            /* Centra los elementos */
-            gap: 30px;
-            /* Espacio entre los elementos */
+            letter-spacing: -0.5px;
+            color: #1e40af;
+            /* Darker blue for text */
         }
 
-        .footer-section ul li {
+        /* Status Banner */
+        .status-banner {
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 1rem 2rem;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 2px solid #a7f3d0;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
         }
 
-        .footer-section ul li i {
-            font-size: 1.2rem;
-            color: #FFC300;
+        .status-icon {
+            font-size: 1.5rem;
         }
 
-        .footer-bottom {
+        /* Body Content */
+        .email-body {
+            padding: 2.5rem;
+        }
+
+        .greeting {
+            font-size: 1.25rem;
+            color: #111827;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight-text {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .info-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 0.5rem;
+        }
+
+        .data-table tr:first-child td {
+            border-top: none;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 0;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.95rem;
+        }
+
+        .data-table th {
+            color: #64748b;
+            font-weight: 600;
+            width: 40%;
+        }
+
+        .data-table td {
+            color: #334155;
+            font-weight: 500;
+        }
+
+        /* CTA Section */
+        .cta-box {
+            background: linear-gradient(to right, #2563eb, #1d4ed8);
+            border-radius: 10px;
+            padding: 1.5rem;
             text-align: center;
-            padding: 1rem 0;
-            font-size: 0.8rem;
-        }
-
-        .footer-bottom strong {
-            font-size: 0.9rem;
-        }
-
-        /* Evita que el correo se convierta en un enlace */
-        .footer-section ul li a {
-            text-decoration: none;
             color: white;
+            margin-top: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
         }
 
-        @media (max-width: 768px) {
-            .container {
-                margin: 1rem;
-                padding: 1rem;
+        .cta-text {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: #fbbf24;
+            color: #1e3a8a;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        .cta-button:hover {
+            background-color: #f59e0b;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .email-footer {
+            background-color: #2873B4;
+            color: #ffffff;
+            padding: 0;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .footer-content {
+            padding: 2rem;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-logo {
+            filter: grayscale(100%) opacity(0.7);
+            margin-bottom: 1rem;
+        }
+
+        /* Mobile Responsive */
+        @media only screen and (max-width: 600px) {
+            .email-wrapper {
+                margin: 0;
+                border-radius: 0;
+                width: 100% !important;
             }
 
-            .header {
-                flex-direction: column;
-                gap: 1rem;
+            .header-logos {
+                justify-content: center;
+                gap: 20px;
             }
 
-            .logo-placeholder {
-                width: 120px;
-                height: 60px;
+            .email-body {
+                padding: 1.5rem;
             }
 
-            table {
+            .data-table th,
+            .data-table td {
+                display: block;
                 width: 100%;
-                font-size: 0.9rem;
+                padding: 5px 0;
             }
 
-            .footer-container {
-                text-align: center;
+            .data-table th {
+                padding-top: 12px;
+                color: #94a3b8;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
             }
 
-            .footer-section {
-                text-align: center;
+            .data-table td {
+                border-bottom: 1px solid #f1f5f9;
+                padding-bottom: 12px;
             }
 
-            .consultation-banner {
+            .contact-list {
                 flex-direction: column;
-                text-align: center;
-            }
-
-            .consultation-link {
-                margin-left: 0;
-                margin-top: 1rem;
+                gap: 10px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo-placeholder">
-                {{-- Cuando se suba producción sera asi: --}}
-                {{-- <img src="{{ asset('img/logo-epg.webp') }}" alt="EPG"> --}}
-                {{-- Por ahora en local se usara img subidas a drive --}}
-                <img src="https://drive.usercontent.google.com/download?id=1XdEM7PcBXuRfkkdsBp3MqlDRz4n-GsJf&export=view&authuser=0"
-                    alt="EPG">
+    <div class="email-wrapper">
+        <!-- Header -->
+        <div class="email-header">
+            <div class="header-logos">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td width="50%" align="left" style="padding-right: 10px;">
+                            <img src="https://drive.usercontent.google.com/download?id=1XdEM7PcBXuRfkkdsBp3MqlDRz4n-GsJf&export=view"
+                                alt="EPG Logo" class="logo-img" style="height: 90px; width: auto; display: block;">
+                        </td>
+                        <td width="50%" align="right" style="padding-left: 10px;">
+                            <img src="https://drive.usercontent.google.com/download?id=1ph6WsmccjVnNwkK70-ntCVKKdHGJucS5&export=view"
+                                alt="UNPRG Logo" class="logo-img" style="height: 90px; width: auto; display: block;">
+                        </td>
+                    </tr>
+                </table>
             </div>
-            <div class="header-content">
-                <h1>Inscripción Registrada Exitosamente</h1>
-            </div>
-            <div class="logo-placeholder">
-                {{-- <img src="{{ asset('img/escudo_act_ofic.webp') }}" alt="UNPRG"> --}}
-                <img src="https://drive.usercontent.google.com/download?id=1ph6WsmccjVnNwkK70-ntCVKKdHGJucS5&export=view&authuser=0"
-                    alt="UNPRG">
-            </div>
+            <h1 class="header-title">Inscripción Registrada</h1>
         </div>
 
-        <div class="success-message">
-            <h4>{{ $data['sexo'] = 'M' ? 'Estimado, ' : 'Estimada, ' }}
-                <strong> {{ $data['nombres'] }} {{ $data['ap_paterno'] }} {{ $data['ap_materno'] }} </strong>
-            </h4>
-            <p>Agradecemos su inscripción en el Programa de <strong>{{ $nombre_grado }}</strong> en
-                <strong>{{ $nombre_programa }}</strong>. Nos complace informarle que su inscripción ha sido registrada
-                correctamente. Recibirá una confirmación
-                por correo electrónico cuando se reciban sus documentos, y la constancia de inscripción será enviada en
-                aproximadamente 24 horas. Posteriormente, deberá presentar su expediente en formato físico en la Escuela
-                de Posgrado.
+        <!-- Status Banner -->
+        <div class="status-banner">
+            <span class="status-icon">✅</span>
+            <span>¡Tu inscripción ha sido recepcionada con éxito!</span>
+        </div>
+
+        <!-- Body -->
+        <div class="email-body">
+            <div class="greeting">
+                {{ $data['sexo'] = 'M' ? 'Estimado' : 'Estimada' }},
+                <strong>{{ $data['nombres'] }} {{ $data['ap_paterno'] }}</strong>
+            </div>
+
+            <p style="color: #4b5563; margin-bottom: 1.5rem;">
+                Hemos recibido correctamente tu inscripción para el programa de <span
+                    class="highlight-text">{{ $nombre_grado }}</span> en <span
+                    class="highlight-text">{{ $nombre_programa }}</span>.
             </p>
-        </div>
 
-        <div class="consultation-banner">
-            <div class="consultation-banner-content">
-                <p>¿Necesitas más información sobre tu programa? Consulta aquí los detalles completos.</p>
+            <p style="color: #4b5563; margin-bottom: 1.5rem;">
+                La información subida está siendo revisado por nuestro equipo. Recibirás una notificación de validación
+                en aproximadamente <strong>24 horas</strong>. Una vez validado, te enviaremos tu constancia de
+                inscripción y los demás documentos que debes presentar presencialmente en la oficina de Admisión de
+                Posgrado de la UNPRG.
+            </p>
+
+            <div class="info-card">
+                <h3
+                    style="margin-top: 0; color: #1e293b; font-size: 1.1rem; border-bottom: 2px solid #fbbf24; display: inline-block; padding-bottom: 5px;">
+                    Detalles del Registro</h3>
+                <table class="data-table">
+                    <tr>
+                        <th>Nombres Completos</th>
+                        <td>{{ $data['nombres'] }} {{ $data['ap_paterno'] }} {{ $data['ap_materno'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Documento de Identidad</th>
+                        <td>{{ $data['num_iden'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Correo Electrónico</th>
+                        <td>{{ $data['email'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Celular</th>
+                        <td>{{ $data['celular'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Dirección</th>
+                        <td>{{ $data['direccion'] }}</td>
+                    </tr>
+                </table>
             </div>
-            <a href="{{ $url }}" target="_blank" class="consultation-link">
-                Consultar
-            </a>
-        </div>
 
-        <p class="info-text">A continuación se muestran los datos que has ingresado:</p>
-
-        <!-- Tabla para los datos -->
-        <table>
-            <tr>
-                <th>Grado y Programa</th>
-                <td>{{ $nombre_grado }} - {{ $nombre_programa }}</td>
-            </tr>
-            <tr>
-                <th>Nombres y Apellidos</th>
-                <td>{{ $data['nombres'] }} {{ $data['ap_paterno'] }} {{ $data['ap_materno'] }}</td>
-            </tr>
-            <tr>
-                <th>Correo Electrónico</th>
-                <td>{{ $data['email'] }}</td>
-            </tr>
-            <tr>
-                <th>Número de Identidad</th>
-                <td>{{ $data['num_iden'] }}</td>
-            </tr>
-            <tr>
-                <th>Celular</th>
-                <td>{{ $data['celular'] }}</td>
-            </tr>
-            <tr>
-                <th>Dirección</th>
-                <td>{{ $data['direccion'] }}</td>
-            </tr>
-        </table>
-
-        {{-- <img src="{{ asset('img/barra_colores_ofic.webp') }}" width="800px" height="10px" alt=""> --}}
-        <img src="https://drive.google.com/uc?export=view&id=1bXqmf32tJmjzpoG90fJJwkGN9N2_fKyQ" width="800px"
-            height="10px" alt="">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h2>Contacto</h2>
-                <ul>
-                    <li><i class="bx bx-map"></i> <strong>Dirección: </strong> Av. Huamachuco Nro. 1130 Lambayeque</li>
-                    <li><i class="bx bx-envelope"></i> <strong>Email: </strong> tele-educacion_epg@unprg.edu.pe</li>
-                </ul>
-                <ul>
-                    <li><i class="bx bx-phone"></i> <strong>Teléfono: </strong>+51 996 235 308</li>
-                </ul>
-                <div class="footer-bottom">
-                    <strong>Comisión de Admisión de la Escuela de Posgrado - UNPRG</strong>
-                    <p>© 2025 Universidad Nacional Pedro Ruiz Gallo | Todos los derechos reservados</p>
-                </div>
+            <div class="cta-box">
+                <div class="cta-text">¿Necesitas revisar el plan de estudios o más detalles?</div>
+                <a href="{{ $url }}" target="_blank" class="cta-button">Ver Detalles del Programa</a>
             </div>
         </div>
 
+        <!-- Footer -->
+        <div class="email-footer">
+            <img src="https://drive.google.com/uc?export=view&id=1bXqmf32tJmjzpoG90fJJwkGN9N2_fKyQ" width="100%"
+                height="6px" alt="Barra Colores" style="display: block; width: 100%;">
+
+            <div class="footer-content">
+                <p style="margin: 0 0 1rem 0; font-weight: 600; color: #ffffff;">Comisión de Admisión - Escuela de
+                    Posgrado UNPRG</p>
+
+                <ul class="contact-list">
+                    <li class="contact-item">
+                        <span>📍 Av. Huamachuco Nro. 1130, Lambayeque</span>
+                    </li>
+                    <li class="contact-item">
+                        <span>📩 <a href="mailto:admision_epg@unprg.edu.pe"
+                                style="color: #ffffff; text-decoration: none;">admision_epg@unprg.edu.pe</a></span>
+                    </li>
+                    <li class="contact-item">
+                        <span>📱 995901454</span>
+                    </li>
+                </ul>
+
+                <p style="margin-top: 1.5rem; opacity: 0.8; font-size: 0.75rem;">
+                    © 2026 Escuela de Posgrado de la Universidad Nacional Pedro Ruiz Gallo. Todos los derechos
+                    reservados.
+                </p>
+            </div>
+        </div>
     </div>
 </body>
 

@@ -78,9 +78,6 @@ class PostulanteController extends BaseController
                 return $this->errorResponse('No se proporcionaron IDs válidos', 400);
             }
 
-            $this->logActivity('Carnets generados', null, [
-                'cantidad' => count($ids),
-            ]);
 
             return $this->pdfService->generateCarnets($ids);
         }, 'Error al exportar los carnets');

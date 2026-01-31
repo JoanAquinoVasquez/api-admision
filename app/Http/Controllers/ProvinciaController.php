@@ -12,7 +12,7 @@ class ProvinciaController extends BaseController
     public function showDepartamento($id)
     {
         return $this->handleRequest(function () use ($id) {
-            $provincias = Provincia::where('departamento_id', $id)->get();
+            $provincias = Provincia::where('departamento_id', $id)->orderBy('nombre', 'asc')->get();
             return $this->successResponse($provincias);
         }, 'Error al obtener las provincias');
     }

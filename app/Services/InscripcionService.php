@@ -106,9 +106,9 @@ class InscripcionService
                 UploadDocumentosDriveJob::dispatch($postulante, $tempPaths, $programa->grado_id);
 
                 // Enviar Email
-                $url = config("admission.programa_urls.{$programa->id}");
+                $url = $programa->brochure;
                 $nombre_programa = mb_strtoupper($programa->nombre, 'UTF-8');
-                $nombre_grado = $programa->grado->nombre;
+                $nombre_grado = ucfirst(strtolower($programa->grado->nombre));
 
                 // Preparar datos para email (excluyendo archivos)
                 $emailData = (array) $data;

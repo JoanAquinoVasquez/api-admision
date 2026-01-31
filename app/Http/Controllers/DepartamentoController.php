@@ -12,7 +12,7 @@ class DepartamentoController extends BaseController
     public function index()
     {
         return $this->handleRequest(function () {
-            $departamentos = Departamento::all();
+            $departamentos = Departamento::orderBy('nombre', 'asc')->get();
             return $this->successResponse($departamentos);
         }, 'Error al obtener los departamentos');
     }

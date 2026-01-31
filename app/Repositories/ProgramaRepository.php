@@ -37,6 +37,7 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
     {
         return $this->model->with(['facultad', 'grado', 'conceptoPago'])
             ->where('estado', true)
+            ->orderBy('nombre', 'asc')
             ->get();
     }
 
@@ -50,6 +51,7 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
     {
         return $this->model->where('concepto_pago_id', $conceptoPagoId)
             ->where('estado', true)
+            ->orderBy('nombre', 'asc')
             ->get();
     }
 
@@ -70,6 +72,7 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
                     $query->where('val_fisico', 1);
                 }
             ])
+            ->orderBy('nombre', 'asc')
             ->get()
             ->map(function ($programa) {
                 // Asignar abreviatura del grado
@@ -157,6 +160,7 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
     {
         return $this->model->where('estado', true)
             ->with(['grado', 'facultad'])
+            ->orderBy('nombre', 'asc')
             ->get();
     }
 
@@ -170,6 +174,7 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
     {
         return $this->model->where('grado_id', $gradoId)
             ->with(['facultad', 'conceptoPago'])
+            ->orderBy('nombre', 'asc')
             ->get();
     }
 
@@ -181,6 +186,7 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
     public function getAllWithRelations(): Collection
     {
         return $this->model->with(['facultad', 'grado', 'conceptoPago'])
+            ->orderBy('nombre', 'asc')
             ->get();
     }
 
@@ -195,6 +201,7 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
             ->select(['id', 'grado_id', 'facultad_id', 'nombre', 'plan_estudio', 'brochure', 'estado'])
             ->with(['facultad:id,siglas'])
             ->where('estado', true)
+            ->orderBy('nombre', 'asc')
             ->get()
             ->map(function ($programa) {
                 return [
@@ -220,6 +227,7 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
         return $this->model->where('estado', true)
             ->with(['facultad', 'grado', 'conceptoPago'])
             ->withCount('inscripciones')
+            ->orderBy('nombre', 'asc')
             ->get();
     }
 
@@ -240,7 +248,7 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
             $query->where('estado', true);
         }
 
-        return $query->get();
+        return $query->orderBy('nombre', 'asc')->get();
     }
 
     public function getProgramasConConteo(): Collection
@@ -248,6 +256,7 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
         return $this->model
             ->with('grado')
             ->withCount('preInscripciones')
+            ->orderBy('nombre', 'asc')
             ->get();
     }
 
