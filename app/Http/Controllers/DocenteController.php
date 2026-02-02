@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Programa;
 use App\Services\DocenteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -127,11 +128,37 @@ class DocenteController extends BaseController
                 'programas.*' => 'required|integer|exists:programas,id',
             ]);
 
+            // Obtener programas que ya tenía asignados este docente (antes de la selección actual)
+            $programasExistentesIds = Programa::where('docente_id', $id)
+                ->pluck('id')
+                ->toArray();
+
+            // Identificar cuáles son REALMENTE nuevos en esta petición
+            $nuevosProgramasIds = array_diff($validated['programas'], $programasExistentesIds);
+
             $docente = $this->docenteService->assignProgramas($id, $validated['programas']);
 
-            $this->logActivity('Programas asignados a docente', null, [
-                'docente_id' => $id,
-                'programas' => $validated['programas'],
+            // Si hay nuevos programas, solo logeamos los nuevos para que la bitácora sea clara.
+            // Si no hay nuevos (ej. solo le dio guardar), mostramos lo que envió.
+            $programasALogear = !empty($nuevosProgramasIds) ? $nuevosProgramasIds : $validated['programas'];
+
+            $programasNombres = Programa::whereIn('id', $programasALogear)
+                ->with('grado')
+                ->get()
+                ->map(function ($p) {
+                    return ucfirst(strtolower($p->grado->nombre ?? '')) . ' en ' . ucfirst($p->nombre ?? '');
+                })
+                ->toArray();
+
+            $this->logActivity('Programas asignados a docente', $docente, [
+                'programas' => $programasNombres,
+                'subject' => [
+                    'nombres' => $docente->nombres,
+                    'ap_paterno' => $docente->ap_paterno,
+                    'ap_materno' => $docente->ap_materno,
+                    'tipo_doc' => 'DNI',
+                    'num_iden' => $docente->dni,
+                ]
             ]);
 
             return $this->successResponse($docente, 'Programas asignados exitosamente');

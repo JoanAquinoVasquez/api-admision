@@ -39,7 +39,7 @@ return [
         'barra_colores' => 'https://drive.google.com/uc?export=view&id=1bXqmf32tJmjzpoG90fJJwkGN9N2_fKyQ',
     ],
     'cronograma' => [
-        'examen_admision' => 'domingo 27 de Abril',
+        'examen_admision' => 'domingo 19 de Abril',
         'inicio_conceptos' => '17 de febrero',
         'periodo' => '2026-I',
         // Control de Etapas (Automatización)
@@ -49,18 +49,18 @@ return [
         'fechas_control' => [
             // Preinscripción
             'inicio_preinscripcion' => '2026-01-22',
-            'fin_preinscripcion' => '2026-02-25',
+            'fin_preinscripcion' => '2026-02-01',
 
             // Inscripción
-            'inicio_inscripcion' => '2026-02-26',
-            'fin_inscripcion' => '2026-04-22',
+            'inicio_inscripcion' => '2026-02-02',
+            'fin_inscripcion' => '2026-04-15',
 
             // Evaluación (Examen y Entrevista)
-            'inicio_evaluacion' => '2025-04-21',
-            'fin_evaluacion' => '2025-04-29',
+            'inicio_evaluacion' => '2026-04-16',
+            'fin_evaluacion' => '2026-04-18',
 
             // Resultados
-            'resultados_publicacion' => '2025-04-30',
+            'resultados_publicacion' => '2026-04-19',
         ],
     ],
 ];
