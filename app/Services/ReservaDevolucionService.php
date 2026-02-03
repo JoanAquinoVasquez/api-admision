@@ -261,7 +261,7 @@ class ReservaDevolucionService
         $programa_old = Programa::find($inscripcion->programa_id);
         $old_grado = $inscripcion->programa->grado_id;
 
-        Log::info("🔄 updatePrograma: Inscripcion $inscripcionId, OldProgram {$programa_old->id}, NewProgram $nuevoProgramaId");
+   
 
         if (!$inscripcion) {
             return null;
@@ -280,11 +280,11 @@ class ReservaDevolucionService
 
         $new_grado = $inscripcion->programa->grado_id;
 
-        Log::info("📝 Checking Grade Change: Old $old_grado vs New $new_grado");
+       
 
         // Move documents if grade changed
         if ($old_grado != $new_grado) {
-            Log::info("🚀 Grades different, dispatching job to move documents...");
+           
 
             // Dispatch logic used in InscripcionUpdateController
             \App\Jobs\MoverDocumentosGoogleDriveJob::dispatch(
@@ -293,9 +293,9 @@ class ReservaDevolucionService
                 [] // No files are being replaced in this action
             )->afterCommit();
 
-            Log::info("✅ Job MoverDocumentosGoogleDriveJob dispatched.");
+           
         } else {
-            Log::info("ℹ️ Grades are same, skipping document move.");
+           
         }
 
         return [

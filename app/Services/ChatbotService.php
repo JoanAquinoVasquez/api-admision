@@ -59,7 +59,7 @@ class ChatbotService
 
             // Extraer respuesta
             $botReply = $data['candidates'][0]['content']['parts'][0]['text'] ?? "No pude generar una respuesta.";
-            Log::info($botReply);
+           
             return $botReply;
 
         } catch (\Exception $e) {
