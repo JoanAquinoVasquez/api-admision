@@ -143,51 +143,70 @@ class ImportPreinscripciones extends Command
         $name = strtolower(trim($name));
         $cleanName = $this->matchClean($name);
 
+        // Detect degree type
+        $gradoId = null;
+        if (str_contains($cleanName, 'doctorado') || str_contains($cleanName, 'doctor')) {
+            $gradoId = 1;
+        } elseif (str_contains($cleanName, 'maestria')) {
+            $gradoId = 2;
+        } elseif (str_contains($cleanName, 'especialidad')) {
+            $gradoId = 3;
+        }
+
+        // Filter programs by degree if detected
+        $filteredProgramas = $programas;
+        if ($gradoId) {
+            $filteredProgramas = $programas->where('grado_id', $gradoId);
+            if ($filteredProgramas->isEmpty()) {
+                $filteredProgramas = $programas;
+            }
+        }
+
         // 1. Exact match (case insensitive)
-        foreach ($programas as $p) {
+        foreach ($filteredProgramas as $p) {
             if ($this->matchClean($p->nombre) == $cleanName)
                 return $p;
         }
 
-        // 2. Special cases for common ambiguous words
-        if ($cleanName === 'derecho') {
-            return $programas->first(function ($p) {
-                $n = $this->matchClean($p->nombre);
-                return str_contains($n, 'derecho') && !str_contains($n, 'penal') && !str_contains($n, 'civil');
-            }) ?? $programas->first(function ($p) {
-                return str_contains($this->matchClean($p->nombre), 'derecho');
-            });
-        }
-
-        // 3. Keyword/Mapping direct checks
+        // 2. Keyword/Mapping direct checks
         $mappings = [
-            'hidraulica' => 'Ciencias con mención en Ingeniería Hidráulica',
+            'hidraulica' => 'Ingeniería Hidráulica',
             'obras y construccion' => 'Gerencia de Obras y Construcción',
-            'penal' => 'Derecho con mención en Derecho Penal y Procesal Penal',
+            'penal' => 'Derecho Penal',
             'civil' => 'Derecho con mención en Civil y Comercial',
-            'constitucional' => 'Derecho con mención en Derecho Constitucional y Procesal Constitucional',
-            'sistemas' => 'Ingeniería de Sistemas con Mención en Gerencia de Tecnologías de la Información y Gestión del Software',
+            'constitucional' => 'Derecho Constitucional',
+            'sistemas' => 'Ingeniería de Sistemas',
             'suelos' => 'Manejo Sostenible de Suelos',
-            'plagas' => 'Ciencias con mención en Manejo Integrado de Plagas y Enfermedades',
-            'ambiental' => 'Gestión Ambiental - PRESENCIAL',
-            'calidad' => 'Ciencias con mención en Gestión de la Calidad e Inocuidad de Alimentos',
-            'procesos' => 'Ciencias con mención en Ingeniería de Procesos Industriales',
-            'proyectos' => 'Ciencias con mención en Proyectos de Inversión',
-            'gerencia empresarial' => 'Administración con mención en Gerencia Empresarial',
-            'administracion' => 'Administración con mención en Gerencia Empresarial',
-            'investigacion' => 'Ciencias de la Educación con mención en Investigación y Docencia',
-            'veterinaria' => 'Ciencias Veterinarias con Mención en Salud Animal',
-            'arquitecto' => 'Territorio y Urbanismo Sostenible',
-            'urbano' => 'Ordenamiento Territorial y Desarrollo Urbano',
-            'recursos hidricos' => 'Gestión Integrada de los Recursos Hídricos',
-            'obras' => 'Gerencia de Obras y Construcción',
+            'suelo' => 'Manejo Sostenible de Suelos',
+            'plagas' => 'Manejo Integrado de Plagas',
+            'ambiental' => 'Gestión Ambiental',
+            'calidad' => 'Gestión de la Calidad',
+            'procesos' => 'Ingeniería de Procesos Industriales',
+            'proyectos' => 'Proyectos de Inversión',
+            'gerencia empresarial' => 'Gerencia Empresarial',
+            'gestion universitaria' => 'Docencia y Gestión Universitaria',
+            'docencia universitaria' => 'Docencia y Gestión Universitaria',
+            'educacion universitaria' => 'Docencia y Gestión Universitaria',
+            'gerencia educativa' => 'Gerencia Educativa Estratégica',
+            'gestion publica' => 'Gestión Pública y Gerencia Social',
+            'investigacion y docencia' => 'Investigación y Docencia',
+            'docencia e investigacion' => 'Investigación y Docencia',
+            'mencion en investigacion' => 'Investigación y Docencia',
+            'veterinaria' => 'Ciencias Veterinarias',
+            'arquitecto' => 'Territorio y Urbanismo',
+            'urbano' => 'Ordenamiento Territorial',
+            'recursos hidricos' => 'Recursos Hídricos',
+            'enfermeria' => 'Ciencias de Enfermería',
+            'agroexportacion' => 'Agroexportación Sostenible',
+            'gerenica' => 'Gerencia de Obras',
+            'obras' => 'Gerencia de Obras',
         ];
 
         foreach ($mappings as $key => $targetName) {
             $cleanKey = $this->matchClean($key);
             if (str_contains($cleanName, $cleanKey)) {
                 $cleanTarget = $this->matchClean($targetName);
-                $found = $programas->first(function ($p) use ($cleanTarget) {
+                $found = $filteredProgramas->first(function ($p) use ($cleanTarget) {
                     return str_contains($this->matchClean($p->nombre), $cleanTarget);
                 });
                 if ($found)
@@ -195,32 +214,15 @@ class ImportPreinscripciones extends Command
             }
         }
 
-        // 4. Broad keyword match (if name is long enough)
+        // 4. Broad keyword match (only if unique)
         if (strlen($cleanName) > 5) {
-            foreach ($programas as $p) {
+            $matches = $filteredProgramas->filter(function ($p) use ($cleanName) {
                 $pClean = $this->matchClean($p->nombre);
-                if (str_contains($pClean, $cleanName))
-                    return $p;
+                return str_contains($pClean, $cleanName) || str_contains($cleanName, $pClean);
+            });
+            if ($matches->count() === 1) {
+                return $matches->first();
             }
-        }
-
-        // 5. Fallback: Levenshtein distance on cleaned names
-        $bestMatch = null;
-        $shortest = -1;
-        foreach ($programas as $p) {
-            $pClean = $this->matchClean($p->nombre);
-            $pCleanShort = str_replace(['ciencias con mencion en ', 'maestria en ', 'doctorado en ', ' con mencion en '], '', $pClean);
-
-            $lev = levenshtein($cleanName, $pCleanShort);
-            if ($lev < $shortest || $shortest < 0) {
-                $bestMatch = $p;
-                $shortest = $lev;
-            }
-        }
-
-        // Threshold: distance must be less than 50% of the input length
-        if ($shortest >= 0 && $shortest < strlen($cleanName) * 0.5) {
-            return $bestMatch;
         }
 
         return null;
