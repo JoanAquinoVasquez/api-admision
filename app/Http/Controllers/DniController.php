@@ -22,7 +22,7 @@ class DniController extends BaseController
                 'dni' => 'required|digits:8',
             ]);
 
-            $payload = $this->dniService->consultarDni($validated['dni']);
+            $payload = $this->dniService->getDniData($validated['dni']);
 
             $this->logActivity('Consulta DNI realizada', null, [
                 'dni' => $validated['dni'],

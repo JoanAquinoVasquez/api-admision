@@ -57,23 +57,44 @@ class VoucherController extends BaseController
     }
 
     /**
-     * Subir el txt del BN con los vouchers de pago.
+     * Subir el txt del BN con los vouchers de pago o registro manual.
      */
     public function store(Request $request)
     {
         return $this->handleRequest(function () use ($request) {
-            $request->validate([
-                'file.*' => 'required|mimes:txt|max:2048',
+            if ($request->hasFile('file')) {
+                $request->validate([
+                    'file.*' => 'required|mimes:txt|max:2048',
+                ]);
+
+                $resultado = $this->voucherService->processVoucherFiles($request->file('file'));
+
+                $this->logActivity('Vouchers procesados desde archivos TXT', null, [
+                    'registros' => $resultado['registros'],
+                ]);
+
+                return $this->successResponse($resultado, $resultado['message'], 201);
+            }
+
+            // Registro Manual
+            $validated = $request->validate([
+                'concepto_pago_id' => 'required|exists:concepto_pagos,id',
+                'numero' => 'required|string',
+                'num_iden' => 'required|string|size:8',
+                'nombre_completo' => 'required|string',
+                'monto' => 'required|numeric',
+                'fecha_pago' => 'required|date',
+                'hora_pago' => 'required',
+                'agencia' => 'required|string',
+                'cajero' => 'required|string',
             ]);
 
-            $resultado = $this->voucherService->processVoucherFiles($request->file('file'));
+            $voucher = Voucher::create(array_merge($validated, ['estado' => 1]));
 
-            $this->logActivity('Vouchers procesados desde archivos TXT', null, [
-                'registros' => $resultado['registros'],
-            ]);
+            $this->logActivity('Voucher registrado manualmente', $voucher);
 
-            return $this->successResponse($resultado, $resultado['message'], 201);
-        }, 'Error al procesar los archivos de vouchers');
+            return $this->successResponse($voucher, 'Voucher registrado exitosamente', 201);
+        }, 'Error al procesar el registro de voucher');
     }
 
     /**
