@@ -80,7 +80,7 @@ class ProgramaSeeder extends Seeder
                 'concepto_pago_id' => 1,
                 'vacantes' => 35,
                 'plan_estudio' => 'https://drive.google.com/file/d/1vqhYeEhcidBLs7xD_g5SUufR0NTMGMjY/view?usp=sharing',
-                'brochure' => 'https://drive.google.com/file/d/1jGZAbDX7mijmCpKs1OG2ixRC7pWxyr-z/view?usp=sharing',
+                'brochure' => 'https://drive.google.com/file/d/1pj0a3aNyNc9voYvuuHdabdkzv4lSeCPP/view?usp=sharing',
             ],
             [
                 'nombre' => 'Ciencias con mención en Ordenamiento Territorial y Desarrollo Urbano',
@@ -246,17 +246,6 @@ class ProgramaSeeder extends Seeder
                 'plan_estudio' => 'https://drive.google.com/file/d/1ntyUJGBJnRmEZbSZN7-PyaFzdDVpHRzb/view?usp=sharing',
                 'brochure' => 'https://drive.google.com/file/d/1zufFqYbBabw_W3RoHXXvaJeN2Xozh_CL/view?usp=sharing',
             ],
-
-            // MAESTRÍAS - FACHSE (6 programas)
-            [
-                'nombre' => 'Ciencias de la Educación con mención en Didáctica del Idioma Inglés',
-                'grado_id' => 2, // MAESTRÍA
-                'facultad_id' => 8, // FASCHE
-                'concepto_pago_id' => 1,
-                'vacantes' => 30,
-                'plan_estudio' => 'https://drive.google.com/file/d/1KYy_NZgm0rkCwAYpVFE8PQpiiLZbHuCb/view?usp=sharing',
-                'brochure' => 'https://drive.google.com/file/d/1o_89UerqtAdQdimYznFzmCVO9yELBa9c/view?usp=sharing',
-            ],
             [
                 'nombre' => 'Ciencias de la Educación con mención en Docencia y Gestión Universitaria',
                 'grado_id' => 2, // MAESTRÍA
@@ -274,15 +263,6 @@ class ProgramaSeeder extends Seeder
                 'vacantes' => 60,
                 'plan_estudio' => 'https://drive.google.com/file/d/1on4UnheUKsVVJXlm_YPd-iZnua8DnyZN/view?usp=sharing',
                 'brochure' => 'https://drive.google.com/file/d/1h9LcHN6GY-v1hbYM9ov7Dz6IhMWtUzK1/view?usp=sharing',
-            ],
-            [
-                'nombre' => 'Ciencias de la Educación con mención en Tecnologías de la Información e Informática Educativa',
-                'grado_id' => 2, // MAESTRÍA
-                'facultad_id' => 8, // FASCHE
-                'concepto_pago_id' => 1,
-                'vacantes' => 30,
-                'plan_estudio' => 'https://drive.google.com/file/d/1g9QVA7SLowKTXkxvNIeoTeTEQJQHZA_O/view?usp=sharing',
-                'brochure' => 'https://drive.google.com/file/d/1inKQkdLYzuSF7r2_Plt4Vk4QaQflkGEv/view?usp=sharing',
             ],
             [
                 'nombre' => 'Ciencias de la Educación con mención en Gerencia Educativa Estratégica',
@@ -303,16 +283,7 @@ class ProgramaSeeder extends Seeder
                 'brochure' => 'https://drive.google.com/file/d/1TxjBw4Aq2ZcRxGprVui-j3K2YCBDGkzR/view?usp=sharing',
             ],
 
-            // DOCTORADOS - FACHSE (2 programas)
-            [
-                'nombre' => 'Sociología',
-                'grado_id' => 1, // DOCTORADO
-                'facultad_id' => 8, // FASCHE
-                'concepto_pago_id' => 1,
-                'vacantes' => 30,
-                'plan_estudio' => 'https://drive.google.com/file/d/1yryABNk4FIzKxOd1K-K-1Uunj-S_Xzoe/view?usp=sharing',
-                'brochure' => 'https://drive.google.com/file/d/1WWbQhMfzfHtVQZsQNwBFxh3dzEI0pY84/view?usp=sharing',
-            ],
+            // DOCTORADOS - FACHSE (1 programa)
             [
                 'nombre' => 'Ciencias de la Educación',
                 'grado_id' => 1, // DOCTORADO

@@ -51,7 +51,7 @@ class BitacoraController extends BaseController
                 return [
                     'id' => $log->id,
                     'description' => $log->description,
-                    'causer' => $log->causer ? $log->causer->only(['id', 'name', 'email', 'profile_picture']) : ['name' => 'Usuario eliminado'],
+                    'causer' => $log->causer ? $log->causer->only(['id', 'name', 'email', 'profile_picture']) : ['name' => 'Sistema'],
                     'properties' => $properties,
                     'created_at' => $log->created_at->toDateTimeString(),
                 ];

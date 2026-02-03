@@ -26,7 +26,7 @@ return [
     ],
 
     'url_documentos' => [
-        'default' => 'https://drive.google.com/drive/folders/1KL5JUaprIHlCo6MNxVPwtk1VVq3FKvFZ?usp=sharing',
+        'default' => 'https://drive.google.com/drive/folders/1lmdHbP0VO5IFlU-DtWt-Wm-04dZiwJxe?usp=drive_link',
         'facultades' => [
             1 => 'https://drive.google.com/drive/folders/1_XarGM36EErGcNeTUOqtry7uuYi-rUW0?usp=sharing', // FIQUIA
             4 => 'https://drive.google.com/drive/folders/1N9tT000Ea8DyQLHg6IU4een08BMcAF7S', // FE

@@ -45,7 +45,7 @@ class InscripcionController extends BaseController
             $resultado = $this->inscripcionService->storeInscripcion($inscripcionData);
 
             if ($resultado['success']) {
-                $this->logActivity('Nueva inscripción registrada', null, $resultado['data'] ?? []);
+                // $this->logActivity('Nueva inscripción registrada', null, $resultado['data'] ?? []);
                 return $this->successResponse(
                     $resultado['data'] ?? [],
                     $resultado['message'],

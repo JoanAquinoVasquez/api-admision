@@ -105,8 +105,7 @@ class VoucherService
         $hora = substr($line, 87, 6);
         $cajero = substr($line, 93, 4);
         $agencia = substr($line, 97, 4);
-        $nombre = trim(substr($line, 104, 40));
-
+        $nombre = preg_replace('/[^\x20-\x7E\xA0-\xFF]/', '', trim(substr($line, 121, 35)));
         $monto = floatval(substr($montoSubstring, 0, 13)) + (floatval(substr($montoSubstring, 13, 2)) / 100);
 
         // BN TXT format is usually YYYYMMDD
