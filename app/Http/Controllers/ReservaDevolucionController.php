@@ -300,7 +300,7 @@ class ReservaDevolucionController extends BaseController
     public function reportDevolucion()
     {
         return $this->handleRequest(function () {
-            $this->logActivity('Reporte de devoluciones generado', null, []);
+            // $this->logActivity('Reporte de devoluciones generado', null, []);
             return $this->reservaDevolucionService->generateReportDevolucion();
         }, 'Error al generar el reporte de inscripciones');
     }

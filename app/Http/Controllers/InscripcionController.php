@@ -181,11 +181,6 @@ class InscripcionController extends BaseController
             $gradoId = intval($request->input('grado'));
             $programaId = intval($request->input('programa'));
 
-            $this->logActivity('Reporte de inscripciones generado', null, [
-                'grado_id' => $gradoId,
-                'programa_id' => $programaId,
-            ]);
-
             return $this->reportService->generateInscripcionReport($gradoId, $programaId);
         }, 'Error al generar el reporte de inscripciones');
     }

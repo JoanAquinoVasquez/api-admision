@@ -96,11 +96,6 @@ class VoucherController extends BaseController
                 return $this->errorResponse($resultado['message'], 422);
             }
 
-            $this->logActivity('Voucher validado', null, [
-                'num_iden' => $validated['num_iden'],
-                'voucher' => $validated['numero'],
-            ]);
-
             return $this->successResponse($resultado, 'Pago validado correctamente.');
         }, 'Error al validar el voucher');
     }
