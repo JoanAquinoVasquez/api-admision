@@ -199,9 +199,23 @@ class DocenteController extends BaseController
     public function registrarNota(Request $request)
     {
         return $this->handleRequest(function () use ($request) {
+            $postulanteId = $request->input('postulante_id');
+            $inscripcion = \App\Models\Inscripcion::where('postulante_id', $postulanteId)
+                ->with(['programa.grado', 'postulante'])
+                ->first();
+
+            if (!$inscripcion) {
+                return $this->errorResponse('No se encontró la inscripción del postulante', 404);
+            }
+
+            $gradoId = $inscripcion->programa->grado_id;
+            $maxNota = ($gradoId == 3) ? 20 : 30; // 3: SEGUNDA ESPECIALIDAD PROFESIONAL
+
             $validated = $request->validate([
                 'postulante_id' => 'required|exists:inscripcions,postulante_id',
-                'notaCv' => 'required|numeric|min:0|max:30',
+                'notaCv' => "required|numeric|min:0|max:{$maxNota}",
+            ], [
+                'notaCv.max' => "La nota máxima para este programa es {$maxNota}."
             ]);
 
             $nota = $this->docenteService->registrarNota(
@@ -209,9 +223,25 @@ class DocenteController extends BaseController
                 $validated['notaCv']
             );
 
+            // Obtener datos para el log claro
+            $docente = Auth::guard('docente')->user();
+            $postulante = $inscripcion->postulante;
+            $nombrePostulante = "{$postulante->ap_paterno} {$postulante->ap_materno}, {$postulante->nombres}";
+            $nombreDocente = "{$docente->ap_paterno} {$docente->ap_materno}, {$docente->nombres}";
+
             $this->logActivity('Nota CV registrada', null, [
-                'postulante_id' => $validated['postulante_id'],
+                'docente' => $nombreDocente,
+                'subject' => [
+                    'nombres' => $postulante->nombres,
+                    'ap_paterno' => $postulante->ap_paterno,
+                    'ap_materno' => $postulante->ap_materno,
+                    'tipo_doc' => $postulante->tipo_doc,
+                    'num_iden' => $postulante->num_iden,
+                ],
+                'programa' => $inscripcion->programa->nombre,
+                'grado' => $inscripcion->programa->grado->nombre,
                 'nota_cv' => $validated['notaCv'],
+                'mensaje' => "El docente {$nombreDocente} registró la nota CV de {$validated['notaCv']} al postulante {$nombrePostulante}"
             ]);
 
             return $this->successResponse($nota, 'Nota registrada correctamente');

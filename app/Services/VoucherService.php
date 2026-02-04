@@ -227,7 +227,7 @@ class VoucherService
      */
     protected function getPostulanteData(string $numIden, DniService $dniService): ?array
     {
-        $postulante = Postulante::with(['preInscripcion.programa', 'distrito.provincia'])->where('num_iden', $numIden)->first();
+        $postulante = Postulante::with(['preInscripcion.programa', 'distrito.provincia.departamento'])->where('num_iden', $numIden)->first();
 
         if ($postulante) {
             $data = [
@@ -238,8 +238,15 @@ class VoucherService
                 'email' => $postulante->email,
                 'celular' => $postulante->celular,
                 'distrito_id' => $postulante->distrito_id,
+                'distrito_nombre' => $postulante->distrito->nombre ?? null,
                 'provincia_id' => $postulante->distrito->provincia_id ?? null,
+                'provincia_nombre' => $postulante->distrito->provincia->nombre ?? null,
                 'departamento_id' => $postulante->distrito->provincia->departamento_id ?? null,
+                'departamento_nombre' => $postulante->distrito->provincia->departamento->nombre ?? null,
+                'fecha_nacimiento' => $postulante->fecha_nacimiento,
+                'sexo' => $postulante->sexo,
+                'tipo_doc' => $postulante->tipo_doc,
+                'direccion' => $postulante->direccion,
             ];
 
             if ($postulante->preInscripcion) {
@@ -248,6 +255,30 @@ class VoucherService
             }
 
             return $data;
+        }
+
+        // Fallback: Buscar en la tabla de PreInscripciones
+        $preInscripcion = \App\Models\PreInscripcion::with(['programa', 'distrito.provincia.departamento'])->where('num_iden', $numIden)->first();
+        if ($preInscripcion) {
+            return [
+                'num_iden' => $preInscripcion->num_iden,
+                'tipo_doc' => $preInscripcion->tipo_doc,
+                'nombres' => $preInscripcion->nombres,
+                'ap_paterno' => $preInscripcion->ap_paterno,
+                'ap_materno' => $preInscripcion->ap_materno,
+                'email' => $preInscripcion->email,
+                'celular' => $preInscripcion->celular,
+                'distrito_id' => $preInscripcion->distrito_id,
+                'distrito_nombre' => $preInscripcion->distrito->nombre ?? null,
+                'provincia_id' => $preInscripcion->distrito->provincia_id ?? null,
+                'provincia_nombre' => $preInscripcion->distrito->provincia->nombre ?? null,
+                'departamento_id' => $preInscripcion->distrito->provincia->departamento_id ?? null,
+                'departamento_nombre' => $preInscripcion->distrito->provincia->departamento->nombre ?? null,
+                'grado_id' => $preInscripcion->programa->grado_id ?? null,
+                'programa_id' => $preInscripcion->programa_id ?? null,
+                'fecha_nacimiento' => $preInscripcion->fecha_nacimiento,
+                'sexo' => $preInscripcion->sexo,
+            ];
         }
 
         $dniData = $dniService->getDniData($numIden);

@@ -20,7 +20,7 @@ class BitacoraExport implements FromCollection, WithHeadings, WithTitle, WithSty
     public function __construct(?string $fechaInicio = null, ?string $fechaFin = null)
     {
         $this->fechaInicio = $fechaInicio;
-        $this->fechaFin    = $fechaFin;
+        $this->fechaFin = $fechaFin;
     }
 
     public function collection()
@@ -35,42 +35,48 @@ class BitacoraExport implements FromCollection, WithHeadings, WithTitle, WithSty
         }
 
         return $query->get()->map(function ($log) {
-            $properties  = $log->properties->toArray();
-            $user        = User::find($log->causer_id);
+            $properties = $log->properties->toArray();
+            $user = User::find($log->causer_id);
 
-            $subject     = $properties['subject'] ?? [];
-            $dataOld     = $properties['data_old'] ?? [];
-            $dataNew     = $properties['data_new'] ?? [];
+            $subject = $properties['subject'] ?? [];
+            $dataOld = $properties['data_old'] ?? [];
+            $dataNew = $properties['data_new'] ?? [];
             $programaOld = $properties['programa_old'] ?? [];
             $programaNew = $properties['programa_new'] ?? [];
-            $archivo     = $properties['archivo_modificado'] ?? null;
+            $archivo = $properties['archivo_modificado'] ?? null;
+            $programa = $properties['programa'] ?? null;
+            $grado = $properties['grado'] ?? null;
+            $nota = $properties['nota'] ?? $properties['nota_cv'] ?? null;
 
             $valorAntiguo = $valorNuevo = $progAntiguo = $progNuevo = null;
 
             if (!empty($dataOld) || !empty($dataNew)) {
                 $valorAntiguo = json_encode($dataOld, JSON_UNESCAPED_UNICODE);
-                $valorNuevo   = json_encode($dataNew, JSON_UNESCAPED_UNICODE);
+                $valorNuevo = json_encode($dataNew, JSON_UNESCAPED_UNICODE);
             }
 
             if (!empty($programaOld) || !empty($programaNew)) {
-                $progAntiguo  = $programaOld['nombre'] ?? $programaOld['nombre_programa'] ?? null;
-                $progNuevo    = $programaNew['nombre'] ?? $programaNew['nombre_programa'] ?? null;
+                $progAntiguo = $programaOld['nombre'] ?? $programaOld['nombre_programa'] ?? null;
+                $progNuevo = $programaNew['nombre'] ?? $programaNew['nombre_programa'] ?? null;
             }
 
             return [
-                'Fecha'              => $log->created_at->format('Y-m-d H:i:s'),
-                'Acción'             => $log->description,
-                'Usuario'            => $user->name ?? 'Sistema',
-                'Email'              => $user->email ?? null,
-                'Postulante'         => isset($subject['nombres'])
+                'Fecha' => $log->created_at->format('Y-m-d H:i:s'),
+                'Acción' => $log->description,
+                'Usuario' => $user->name ?? 'Sistema',
+                'Email' => $user->email ?? null,
+                'Postulante' => isset($subject['nombres'])
                     ? trim($subject['nombres'] . ' ' . ($subject['ap_paterno'] ?? '') . ' ' . ($subject['ap_materno'] ?? ''))
                     : null,
-                'Documento'          => $subject['num_iden'] ?? null,
-                'Tipo Doc'           => $subject['tipo_doc'] ?? null,
-                'Valor Antiguo'      => $valorAntiguo,
-                'Valor Nuevo'        => $valorNuevo,
-                'Programa Antiguo'   => $progAntiguo,
-                'Programa Nuevo'     => $progNuevo,
+                'Documento' => $subject['num_iden'] ?? null,
+                'Tipo Doc' => $subject['tipo_doc'] ?? null,
+                'Valor Antiguo' => $valorAntiguo,
+                'Valor Nuevo' => $valorNuevo,
+                'Programa' => $programa,
+                'Grado' => $grado,
+                'Nota' => $nota,
+                'Programa Antiguo' => $progAntiguo,
+                'Programa Nuevo' => $progNuevo,
                 'Archivo Modificado' => $archivo,
             ];
         });
@@ -88,6 +94,9 @@ class BitacoraExport implements FromCollection, WithHeadings, WithTitle, WithSty
             'Tipo Doc',
             'Valor Antiguo',
             'Valor Nuevo',
+            'Programa',
+            'Grado',
+            'Nota',
             'Programa Antiguo',
             'Programa Nuevo',
             'Archivo Modificado',
@@ -124,17 +133,20 @@ class BitacoraExport implements FromCollection, WithHeadings, WithTitle, WithSty
     {
         return [
             'A' => 20, // Fecha
-            'B' => 20, // Acción
+            'B' => 25, // Acción
             'C' => 25, // Usuario
-            'D' => 20, // Email
-            'E' => 20, // Postulante
+            'D' => 25, // Email
+            'E' => 30, // Postulante
             'F' => 15, // Documento
-            'G' => 15, // Tipo Doc
-            'H' => 15, // Valor Antiguo
-            'I' => 15, // Valor Nuevo
-            'J' => 15, // Programa Antiguo
-            'K' => 15, // Programa Nuevo
-            'L' => 15, // Archivo Modificado
+            'G' => 10, // Tipo Doc
+            'H' => 20, // Valor Antiguo
+            'I' => 20, // Valor Nuevo
+            'J' => 30, // Programa
+            'K' => 15, // Grado
+            'L' => 10, // Nota
+            'M' => 20, // Programa Antiguo
+            'N' => 20, // Programa Nuevo
+            'O' => 20, // Archivo Modificado
         ];
     }
 }

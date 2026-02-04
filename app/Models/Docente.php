@@ -17,6 +17,7 @@ class Docente extends Authenticatable implements JWTSubject
         'ap_materno',
         'dni',
         'email',
+        'password',
         'estado',
     ];
 
@@ -28,6 +29,24 @@ class Docente extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Mutators to ensure names and surnames are stored in uppercase
+     */
+    public function setNombresAttribute($value)
+    {
+        $this->attributes['nombres'] = mb_strtoupper($value, 'UTF-8');
+    }
+
+    public function setApPaternoAttribute($value)
+    {
+        $this->attributes['ap_paterno'] = mb_strtoupper($value, 'UTF-8');
+    }
+
+    public function setApMaternoAttribute($value)
+    {
+        $this->attributes['ap_materno'] = mb_strtoupper($value, 'UTF-8');
+    }
 
     /**
      * Relación uno a muchos con la tabla de Programas

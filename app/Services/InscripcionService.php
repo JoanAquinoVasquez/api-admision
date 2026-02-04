@@ -7,6 +7,7 @@ use App\Jobs\SendInscripcionEmailJob;
 use App\Jobs\UploadDocumentosDriveJob;
 use App\Repositories\Contracts\InscripcionRepositoryInterface;
 use App\Repositories\Contracts\PostulanteRepositoryInterface;
+use App\Repositories\Contracts\PreInscripcionRepositoryInterface;
 use App\Repositories\Contracts\ProgramaRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -17,6 +18,7 @@ class InscripcionService
     public function __construct(
         protected InscripcionRepositoryInterface $inscripcionRepository,
         protected PostulanteRepositoryInterface $postulanteRepository,
+        protected PreInscripcionRepositoryInterface $preInscripcionRepository,
         protected ProgramaRepositoryInterface $programaRepository,
         protected VoucherService $voucherService,
         protected DocumentService $documentService
@@ -85,12 +87,12 @@ class InscripcionService
             // 7. Procesar uso del Voucher
             $this->voucherService->processVoucherUsage($voucher, $data->numIden);
 
-            // 8. Actualizar PreInscripcion si existe
-            if ($postulante->preInscripcion) {
-                // Ya está relacionado si usamos la relación, pero aquí actualizaban postulante_id en pre_inscripcion
-                // Si el postulante es nuevo, la preinscripcion podría estar huérfana de postulante_id?
-                // El código original buscaba por DNI en PreInscripcion
-                // Aquí asumimos que la lógica de negocio se mantiene
+            // 8. Actualizar PreInscripcion si existe para vincularlo con el postulante oficial
+            $preInscripcion = $this->preInscripcionRepository->findByNumIden($data->numIden);
+            if ($preInscripcion) {
+                $this->preInscripcionRepository->update($preInscripcion->id, [
+                    'postulante_id' => $postulante->id
+                ]);
             }
 
             // 9. Log Activity

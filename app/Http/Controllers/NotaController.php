@@ -6,6 +6,7 @@ use App\Services\NotaService;
 use App\Services\ReportService;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class NotaController extends BaseController
 {
@@ -44,14 +45,15 @@ class NotaController extends BaseController
     {
         return $this->handleRequest(function () use ($request) {
             $request->validate([
-                'file' => 'required|mimes:xlsx,xls|max:2048',
+                'notas_examen' => 'required|mimes:xlsx,xls|max:4096',
             ]);
 
-            $resultado = $this->notaService->importExamGrades($request->file('file'));
+            $file = $request->file('notas_examen');
+            $resultado = $this->notaService->importExamGrades($file);
 
             if ($resultado['success']) {
                 $this->logActivity('Notas de examen importadas', null, [
-                    'archivo' => $request->file('file')->getClientOriginalName(),
+                    'archivo' => $file->getClientOriginalName(),
                 ]);
             }
 
@@ -65,9 +67,19 @@ class NotaController extends BaseController
     public function guardarNotaEntrevista(Request $request)
     {
         return $this->handleRequest(function () use ($request) {
+            $inscripcionId = $request->input('inscripcion_id');
+            $inscripcion = \App\Models\Inscripcion::with(['programa.grado', 'postulante'])->find($inscripcionId);
+
+            if (!$inscripcion) {
+                return $this->errorResponse('Inscripción no encontrada', 404);
+            }
+
+            $gradoId = $inscripcion->programa->grado_id;
+            $maxNota = ($gradoId == 3) ? 30 : 40; // 3: SEGUNDA ESPECIALIDAD PROFESIONAL
+
             $validated = $request->validate([
                 'inscripcion_id' => 'required|exists:inscripcions,id',
-                'nota_entrevista' => 'required|numeric|min:0|max:20',
+                'nota_entrevista' => "required|numeric|min:0|max:{$maxNota}",
             ]);
 
             $resultado = $this->notaService->saveInterviewGrade(
@@ -76,9 +88,24 @@ class NotaController extends BaseController
             );
 
             if ($resultado['success']) {
+                $usuario = Auth::user();
+                $postulante = $inscripcion->postulante;
+                $nombrePostulante = "{$postulante->ap_paterno} {$postulante->ap_materno}, {$postulante->nombres}";
+                $nombreUsuario = $usuario->nombres; // Para admins el campo suele ser solo nombres
+
                 $this->logActivity('Nota de entrevista guardada', null, [
-                    'inscripcion_id' => $validated['inscripcion_id'],
+                    'usuario' => $nombreUsuario,
+                    'subject' => [
+                        'nombres' => $postulante->nombres,
+                        'ap_paterno' => $postulante->ap_paterno,
+                        'ap_materno' => $postulante->ap_materno,
+                        'tipo_doc' => $postulante->tipo_doc,
+                        'num_iden' => $postulante->num_iden,
+                    ],
+                    'programa' => $inscripcion->programa->nombre,
+                    'grado' => $inscripcion->programa->grado->nombre,
                     'nota' => $validated['nota_entrevista'],
+                    'mensaje' => "El usuario {$nombreUsuario} registró la nota de entrevista de {$validated['nota_entrevista']} al postulante {$nombrePostulante}"
                 ]);
             }
 

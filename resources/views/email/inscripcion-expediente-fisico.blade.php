@@ -229,7 +229,7 @@
                 <div class="congrats-text">
                     Su <strong>Expediente Físico</strong> ha sido validado y recepcionado con éxito. Ahora usted ya se
                     encuentra
-                    {{ $inscripcion->postulante->sexo == 'Masculino' ? 'apto' : 'apta' }} para dar el <strong>Examen
+                    {{ $inscripcion->postulante->sexo == 'M' ? 'apto' : 'apta' }} para dar el <strong>Examen
                         de Admisión</strong>!
                 </div>
             </div>

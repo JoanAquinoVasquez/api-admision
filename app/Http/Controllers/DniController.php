@@ -24,11 +24,15 @@ class DniController extends BaseController
 
             $payload = $this->dniService->getDniData($validated['dni']);
 
+            if (!$payload['success']) {
+                return $this->errorResponse('No se pudieron obtener datos para el DNI ingresado', 404);
+            }
+
             $this->logActivity('Consulta DNI realizada', null, [
                 'dni' => $validated['dni'],
             ]);
 
-            return $this->successResponse($payload);
+            return $this->successResponse($payload['data']);
         }, 'Error al consultar el DNI');
     }
 }
