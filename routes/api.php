@@ -99,10 +99,10 @@ Route::middleware(['auth:api', 'active'])->group(function () {
 
     //// Vouchers
     // Cargar Vouchers del BN para la Inscripcion
-    Route::apiResource('/vouchers', VoucherController::class)->except(['destroy'])->middleware(['role:super-admin']);
+    Route::apiResource('/vouchers', VoucherController::class)->except(['destroy'])->middleware(['role:super-admin|admin']);
     Route::get('/resumen-vouchers', [VoucherController::class, 'resumenVouchers'])->middleware(['role:super-admin|admin|comision']);
     // Route::post('/vouchers', [VoucherController::class, 'store']);
-    Route::get('/voucher/exportar', [VoucherController::class, 'export'])->middleware(['role:super-admin']);
+    Route::get('/voucher/exportar', [VoucherController::class, 'export'])->middleware(['role:super-admin|admin']);
     /**
      * Fin Modulo de Inscripciones
      */
@@ -175,9 +175,9 @@ Route::middleware(['auth:api', 'active'])->group(function () {
     // Resultados Ingresantes
     Route::get('/resultados-ingresantes', [ResultadosController::class, 'index'])->middleware(['role:super-admin|admin|comision']);
     // Data de la Bitacora
-    Route::get('/bitacora', [BitacoraController::class, 'index'])->middleware(['role:super-admin']);
-    Route::get('/bitacora-programa', [BitacoraController::class, 'programaUpdate'])->middleware(['role:super-admin']);
-    Route::get('/bitacora-export', [BitacoraController::class, 'export'])->middleware(['role:super-admin']);
+    Route::get('/bitacora', [BitacoraController::class, 'index'])->middleware(['role:super-admin|admin']);
+    Route::get('/bitacora-programa', [BitacoraController::class, 'programaUpdate'])->middleware(['role:super-admin|admin']);
+    Route::get('/bitacora-export', [BitacoraController::class, 'export'])->middleware(['role:super-admin|admin']);
     // Dashboard Evaluacion
     Route::get('/resumen-evaluacion', [NotaController::class, 'resumenEvaluacion'])->middleware(['role:super-admin|admin|comision']);
     Route::get('/notas-cv-diarias', [NotaController::class, 'resumenNotasDiarias'])->middleware(['role:super-admin|admin|comision']);

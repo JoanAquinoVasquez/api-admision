@@ -76,12 +76,6 @@ class PreInscripcionStatisticsService
         $programas = Programa::with(['grado', 'facultad'])->get();
 
         return $programas->map(function ($programa) {
-            $abreviatura_grado = match ($programa->grado->id) {
-                1 => 'DOC',
-                2 => 'MAE',
-                3 => 'SEG',
-                default => 'N/A'
-            };
 
             $preinscritos = $this->repository->countByPrograma($programa->id);
             $cobertura = $programa->vacantes > 0
@@ -90,7 +84,7 @@ class PreInscripcionStatisticsService
 
             return [
                 'id' => $programa->id,
-                'grado_programa' => $abreviatura_grado . ' - ' . $programa->nombre,
+                'grado_programa' =>  ucfirst(strtolower($programa->grado->nombre)) . ' en ' . $programa->nombre,
                 'facultad' => $programa->facultad->siglas,
                 'preinscritos' => $preinscritos,
                 'vacantes' => $programa->vacantes,

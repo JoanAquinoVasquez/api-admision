@@ -12,15 +12,15 @@ El proceso de admisión sigue fechas estrictas:
 • Inicio de clases: 02 de mayo de 2026.
 • Fin de clases (ciclo): 11 de octubre de 2026.
 3. Requisitos de Postulación
-Los documentos varían según el grado:
+Los documentos que se deben traer en físicovarían según el grado:
 • Maestrías: Copia simple del grado de Bachiller (registrado en SUNEDU), DNI o carné de extranjería, fotografía tamaño carné, CV documentado (anillado con tapa verde) y un perfil de proyecto tentativo de tesis (promedio de 5 páginas).
 • Doctorados: Copia simple del grado de Maestro (registrado en SUNEDU), DNI, foto, CV documentado y perfil de proyecto tentativo de tesis.
 • Segundas Especialidades: Copia simple del Título Profesional (registrado en SUNEDU), DNI, foto y CV documentado (anillado con tapa turquesa).
 4. Flujograma de Inscripción
 1. Informes: Descargar el prospecto en la web oficial (https://epgunprg.edu.pe/admision-epg/)
 2. Pago: Realizar el pago en el Banco de la Nación o Págalo.pe (esperar 24 horas para inscribirse).
-3. Registro: Inscribirse en la web (https://admision.epgunprg.edu.pe/admision-epg/inscripcion/)
-4. Entrega de documentos: Presentar formato impreso en la Escuela de Posgrado tras 48 horas de la confirmación digital:
+3. Registro: Inscribirse en la web (https://epgunprg.edu.pe/admision-epg/inscripcion/)
+4. Entrega de documentos: Presentar formato impreso en la Escuela de Posgrado tras 48 horas de la confirmación digital (durante el horario de atención presencial lunes a viernes de 08:00 am a 02:00 pm. ):
     - Constancia de inscripción.
     - Voucher original de pago en el Banco de la Nación.
     - Solicitud dirigida al rector.
@@ -56,3 +56,4 @@ Para más información de maestrías puede ir a (https://epgunprg.edu.pe/admisio
 Para más información de doctorados puede ir a (https://epgunprg.edu.pe/admision-epg/doctorados)
 Para más información de segundas especialidades puede ir a (https://epgunprg.edu.pe/admision-epg/segundas-especialidades)
 Para leer el prospecto completo puede ir a (https://epgunprg.edu.pe/admision-epg/prospecto)
+8. Si desea atención presencial de admisión, solo atendemos de lunes a viernes de 08:00 am a 02:00 pm.

@@ -132,8 +132,6 @@ class AuthController extends BaseController
             $user = $request->user('api');
             $resultado = $this->authService->logout($token, $user);
 
-            $this->logActivity('Logout', null, []);
-
             $response = $this->successResponse(['message' => 'Sesión cerrada correctamente']);
 
             if (isset($resultado['cookies'])) {
