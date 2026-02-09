@@ -39,14 +39,19 @@ class VoucherService
      */
     public function processVoucherUsage(Model $voucher, string $numIden): void
     {
-        // Si es concepto 00000971, buscar y actualizar voucher de carpeta
+        // Si el voucher principal es de concepto 00000971 (Validación)
+        // También debemos buscar y marcar como usado el voucher de concepto 00000970 (Carpeta)
         if ($voucher->conceptoPago->cod_concepto == '00000971') {
-            $voucherCarpeta = $this->voucherRepository->findCarpetaVoucher($numIden);
+            // Buscamos el voucher de carpeta (00000970) para este postulante
+            $voucherCarpeta = Voucher::where('num_iden', $numIden)
+                ->whereHas('conceptoPago', function ($query) {
+                    $query->where('cod_concepto', '00000970');
+                })
+                ->where('estado', true)
+                ->first();
 
             if ($voucherCarpeta) {
                 $this->voucherRepository->markAsUsed($voucherCarpeta->id);
-            } else {
-                throw new \Exception('Voucher carpeta no encontrado');
             }
         }
 
@@ -181,12 +186,49 @@ class VoucherService
             $query->where('numero', $codVoucher);
         }
 
+        // Solo permitir validar los de concepto 00000971 para iniciar inscripción
+        $query->whereHas('conceptoPago', function ($q) {
+            $q->where('cod_concepto', '00000971');
+        });
+
         $voucher = $query->first();
 
         if (!$voucher) {
+            // Buscamos si el voucher existe pero es de otro concepto (por ejemplo el 970)
+            $existsOther = Voucher::where('num_iden', $numIden)
+                ->where(function ($q) use ($codVoucher) {
+                    if (strlen($codVoucher) === 6) {
+                        $q->whereRaw('RIGHT(numero, 6) = ?', [$codVoucher]);
+                    } else {
+                        $q->where('numero', $codVoucher);
+                    }
+                })->first();
+
+            if ($existsOther && $existsOther->conceptoPago->cod_concepto == '00000970') {
+                return [
+                    'success' => false,
+                    'message' => 'Este voucher corresponde al concepto de CARPETA. Para inscribirse debe ingresar el voucher de concepto INSCRIPCIÓN (00000971).',
+                ];
+            }
+
             return [
                 'success' => false,
-                'message' => 'No encontramos su pago. Verifique que los datos ingresados sean correctos. Si ya realizó el pago, espere 24 horas hábiles.',
+                'message' => 'No encontramos su pago de INSCRIPCIÓN (00000971). Verifique los datos o espere 24 horas si recién realizó el pago.',
+            ];
+        }
+
+        // REQUISITO CRÍTICO: Debe tener también el voucher de CARPETA (0970)
+        $hasCarpeta = Voucher::where('num_iden', $numIden)
+            ->whereHas('conceptoPago', function ($q) {
+                $q->where('cod_concepto', '00000970');
+            })
+            ->where('estado', true)
+            ->exists();
+
+        if (!$hasCarpeta) {
+            return [
+                'success' => false,
+                'message' => 'Para inscribirse debe contar con ambos pagos realizados (CARPETA e INSCRIPCIÓN). No hemos detectado su pago de CARPETA (00000970) en nuestro sistema.',
             ];
         }
 
@@ -330,17 +372,20 @@ class VoucherService
     {
         $vouchers = Voucher::with('conceptoPago')
             ->whereHas('conceptoPago', function ($query) {
-                $query->whereNotIn('cod_concepto', ['00000001', '00000003']);
+                $query->whereNotIn('cod_concepto', ['00000001', '00000971', '00000970']);
             })
             ->get();
         // Cálculos en el backend
         $totalVouchers = $vouchers->count();
-        $totalRecaudado2026 = $vouchers->filter(function ($v) {
-            return \Carbon\Carbon::parse($v->fecha_pago)->year === 2026;
+
+        $cutoffDate = \Carbon\Carbon::parse('2025-04-27');
+
+        $totalRecaudado2026 = $vouchers->filter(function ($v) use ($cutoffDate) {
+            return \Carbon\Carbon::parse($v->fecha_pago)->greaterThan($cutoffDate);
         })->sum('monto');
 
-        $totalRecaudado2025 = $vouchers->filter(function ($v) {
-            return \Carbon\Carbon::parse($v->fecha_pago)->year <= 2025;
+        $totalRecaudado2025 = $vouchers->filter(function ($v) use ($cutoffDate) {
+            return \Carbon\Carbon::parse($v->fecha_pago)->lessThanOrEqualTo($cutoffDate);
         })->sum('monto');
 
         $inscritos = $vouchers->where('estado', 0)->count();
