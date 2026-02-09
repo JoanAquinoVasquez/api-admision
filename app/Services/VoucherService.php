@@ -186,51 +186,43 @@ class VoucherService
             $query->where('numero', $codVoucher);
         }
 
-        // Solo permitir validar los de concepto 00000971 para iniciar inscripción
-        $query->whereHas('conceptoPago', function ($q) {
-            $q->where('cod_concepto', '00000971');
-        });
-
         $voucher = $query->first();
 
         if (!$voucher) {
-            // Buscamos si el voucher existe pero es de otro concepto (por ejemplo el 970)
-            $existsOther = Voucher::where('num_iden', $numIden)
-                ->where(function ($q) use ($codVoucher) {
-                    if (strlen($codVoucher) === 6) {
-                        $q->whereRaw('RIGHT(numero, 6) = ?', [$codVoucher]);
-                    } else {
-                        $q->where('numero', $codVoucher);
-                    }
-                })->first();
+            return [
+                'success' => false,
+                'message' => 'No encontramos su pago. Verifique que los datos ingresados sean correctos. Si ya realizó el pago, espere 24 horas hábiles.',
+            ];
+        }
 
-            if ($existsOther && $existsOther->conceptoPago->cod_concepto == '00000970') {
+        $codConcepto = $voucher->conceptoPago->cod_concepto;
+
+        // 1. Si el voucher ingresado es de CARPETA (0970), no se puede usar solo para iniciar la inscripción
+        if ($codConcepto == '00000970') {
+            return [
+                'success' => false,
+                'message' => 'Este voucher corresponde al concepto de CARPETA. Para inscribirse debe ingresar el voucher de concepto INSCRIPCIÓN (00000971).',
+            ];
+        }
+
+        // 2. Si el voucher es de INSCRIPCIÓN (0971), REQUERIR que también tenga el de CARPETA (0970)
+        if ($codConcepto == '00000971') {
+            $hasCarpeta = Voucher::where('num_iden', $numIden)
+                ->whereHas('conceptoPago', function ($q) {
+                    $q->where('cod_concepto', '00000970');
+                })
+                ->where('estado', true)
+                ->exists();
+
+            if (!$hasCarpeta) {
                 return [
                     'success' => false,
-                    'message' => 'Este voucher corresponde al concepto de CARPETA. Para inscribirse debe ingresar el voucher de concepto INSCRIPCIÓN (00000971).',
+                    'message' => 'Para inscribirse con este concepto debe contar con ambos pagos realizados (CARPETA e INSCRIPCIÓN). No hemos detectado su pago de CARPETA (00000970) en nuestro sistema.',
                 ];
             }
-
-            return [
-                'success' => false,
-                'message' => 'No encontramos su pago de INSCRIPCIÓN (00000971). Verifique los datos o espere 24 horas si recién realizó el pago.',
-            ];
         }
 
-        // REQUISITO CRÍTICO: Debe tener también el voucher de CARPETA (0970)
-        $hasCarpeta = Voucher::where('num_iden', $numIden)
-            ->whereHas('conceptoPago', function ($q) {
-                $q->where('cod_concepto', '00000970');
-            })
-            ->where('estado', true)
-            ->exists();
-
-        if (!$hasCarpeta) {
-            return [
-                'success' => false,
-                'message' => 'Para inscribirse debe contar con ambos pagos realizados (CARPETA e INSCRIPCIÓN). No hemos detectado su pago de CARPETA (00000970) en nuestro sistema.',
-            ];
-        }
+        // 3. Otros conceptos (como 00000012, etc.) pasan directamente sin restricciones adicionales.
 
         if ($voucher->estado == 0) {
             return [
