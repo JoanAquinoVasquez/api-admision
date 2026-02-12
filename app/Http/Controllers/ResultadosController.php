@@ -6,7 +6,7 @@ use App\Services\ReportService;
 use App\Services\ResultadosService;
 use Illuminate\Http\Request;
 
-class ResultadosController extends Controller
+class ResultadosController extends BaseController
 {
     public function __construct(
         protected ResultadosService $resultadosService,
@@ -21,7 +21,7 @@ class ResultadosController extends Controller
     {
         try {
             $ranking = $this->resultadosService->getRankingMerito();
-            return response()->json($ranking, 200);
+            return $this->successResponse($ranking);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al obtener los postulantes con mérito',
@@ -39,7 +39,7 @@ class ResultadosController extends Controller
     {
         try {
             $resultado = $this->resultadosService->getIngresantesPorPrograma();
-            return response()->json($resultado);
+            return $this->successResponse($resultado);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
@@ -52,7 +52,7 @@ class ResultadosController extends Controller
     {
         try {
             $resumen = $this->resultadosService->getResumenPorEdad();
-            return response()->json($resumen);
+            return $this->successResponse($resumen);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -62,7 +62,7 @@ class ResultadosController extends Controller
     {
         try {
             $resumen = $this->resultadosService->getResumenGeneral();
-            return response()->json($resumen);
+            return $this->successResponse($resumen);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -80,7 +80,7 @@ class ResultadosController extends Controller
                 ]);
             }
 
-            return response()->json($resultado);
+            return $this->successResponse($resultado);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),

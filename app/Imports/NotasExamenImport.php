@@ -25,17 +25,17 @@ class NotasExamenImport implements ToModel, WithHeadingRow, WithChunkReading, Sh
     public function model(array $row)
     {
         // Buscar postulante por DNI
-        $postulante        = Postulante::where('num_iden', $row['dni'])->first();
+        $postulante = Postulante::where('num_iden', $row['dni'])->first();
         $id_programa_excel = $row['id_prog'];
 
-        if (! $postulante) {
+        if (!$postulante) {
             return null; // No existe el postulante
         }
 
         // Buscar inscripción
         $inscripcion = Inscripcion::where('postulante_id', $postulante->id)->first();
 
-        if (! $inscripcion) {
+        if (!$inscripcion) {
             return null; // No existe inscripción
         }
 
@@ -56,11 +56,11 @@ class NotasExamenImport implements ToModel, WithHeadingRow, WithChunkReading, Sh
 
             return new Nota([
                 'inscripcion_id' => $inscripcion->id,
-                'cv'             => null,
-                'entrevista'     => null,
-                'examen'         => $row['puntaje'] ?? null,
-                'final'          => null,
-                'estado'         => true,
+                'cv' => null,
+                'entrevista' => null,
+                'examen' => $row['puntaje'] ?? null,
+                'final' => null,
+                'estado' => true,
             ]);
         }
 

@@ -52,7 +52,7 @@ class ChatbotService
 
             if ($response->failed()) {
                 Log::error('Gemini API Error: ' . $response->body());
-                return "Lo siento, tuve un problema al procesar tu consulta. Por favor intenta más tarde.";
+                return "Lo siento, tuve un problema al procesar tu mensaje. Puedes escribirnos a admision_epg@unprg.edu.pe o al WhatsApp 995901454 / 924545013. Además únete a nuestra comunidad para estar informado de todas las novedades: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll";
             }
 
             $data = $response->json();

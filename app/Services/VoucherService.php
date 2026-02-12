@@ -224,7 +224,7 @@ class VoucherService
 
         // 3. Otros conceptos (como 00000012, etc.) pasan directamente sin restricciones adicionales.
 
-        if ($voucher->estado == 0) {
+        if (!$voucher->estado) {
             return [
                 'success' => false,
                 'message' => 'Su voucher ya fue utilizado.',
