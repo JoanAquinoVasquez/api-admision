@@ -1,0 +1,10 @@
+vendor
+.git
+.env
+Dockerfile
+.dockerignore
+storage/*.key
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
