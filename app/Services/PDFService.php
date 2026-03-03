@@ -13,6 +13,10 @@ class PDFService
      */
     public function generateConstancia(Postulante $postulante)
     {
+        // Aumentar el límite de memoria para la generación de PDF si es necesario
+        ini_set('memory_limit', '512M');
+        set_time_limit(60);
+
         $inscripcion = $postulante->inscripcion;
 
         if (!$inscripcion || $inscripcion->val_digital != 1) {
@@ -26,12 +30,14 @@ class PDFService
         $fotoBase64 = null;
         if ($foto && $foto->nombre_archivo) {
             try {
-                // Photos are stored locally in storage/app/public/fotos/
-                $fotoPath = storage_path('app/public/' . str_replace('storage/', '', $foto->nombre_archivo));
+                // Limpiar el path para obtener la ruta absoluta correcta
+                $cleandPath = str_replace('storage/', '', $foto->nombre_archivo);
+                $fotoPath = storage_path('app/public/' . $cleandPath);
 
                 if (file_exists($fotoPath)) {
                     $imageContent = file_get_contents($fotoPath);
                     $fotoBase64 = 'data:image/jpeg;base64,' . base64_encode($imageContent);
+                    unset($imageContent); // Liberar memoria
                 } else {
                     Log::warning('Photo file not found for constancia', [
                         'postulante_id' => $postulante->id,
@@ -56,18 +62,18 @@ class PDFService
             'direccion' => $postulante->direccion,
             'sexo' => $postulante->sexo,
             'fecha_nacimiento' => $postulante->fecha_nacimiento,
-            'departamento' => $postulante->distrito->provincia->departamento->nombre,
-            'provincia' => $postulante->distrito->provincia->nombre,
-            'distrito' => $postulante->distrito->nombre,
+            'departamento' => $postulante->distrito->provincia->departamento->nombre ?? 'N/A',
+            'provincia' => $postulante->distrito->provincia->nombre ?? 'N/A',
+            'distrito' => $postulante->distrito->nombre ?? 'N/A',
             'foto' => $fotoBase64,
-            'nombreGrado' => $programa->grado->nombre,
-            'nombrePrograma' => $programa->nombre,
+            'nombreGrado' => $programa->grado->nombre ?? 'N/A',
+            'nombrePrograma' => $programa->nombre ?? 'N/A',
             'cod_voucher' => $inscripcion->codigo,
             'updated_at' => $inscripcion->updated_at,
         ];
 
         $pdf = Pdf::loadView('constancia', $data);
-        $pdf->setOption('isRemoteEnabled', false); // Disabled since we use base64
+        $pdf->setOption('isRemoteEnabled', false);
         $pdf->setPaper('A4', 'portrait');
 
         return $pdf->stream("documento-{$postulante->num_iden}_" . now()->format('d-m-Y_His') . ".pdf");
