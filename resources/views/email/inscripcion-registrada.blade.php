@@ -289,7 +289,7 @@
         <div class="email-body">
             <div class="greeting">
                 {{ $data['sexo'] = 'M' ? 'Estimado' : 'Estimada' }},
-                <strong>{{ $data['nombres'] }} {{ $data['ap_paterno'] }}</strong>
+                <strong>{{ $data['nombres'] }} {{ $data['ap_paterno'] }} {{ $data['ap_materno'] }}</strong>
             </div>
 
             <p style="color: #4b5563; margin-bottom: 1.5rem;">
