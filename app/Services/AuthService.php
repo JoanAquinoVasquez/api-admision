@@ -54,6 +54,7 @@ class AuthService
                 'profile_picture' => $user->profile_picture,
             ],
             'token' => $tokens['access_token'],
+            'refresh_token' => $tokens['refresh_token'],
             'cookies' => $tokens['cookies'],
         ];
     }
@@ -111,6 +112,8 @@ class AuthService
                 'email' => $user->email,
                 'profile_picture' => $user->profile_picture,
             ],
+            'token' => $tokens['access_token'],
+            'refresh_token' => $tokens['refresh_token'],
             'cookies' => $tokens['cookies'],
         ];
     }

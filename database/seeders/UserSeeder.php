@@ -36,6 +36,7 @@ class UserSeeder extends Seeder
         ])->roles()->attach($superAdminRole->id);
 
         User::create([
+            'name' => 'ALEXANDER ROJAS FALEN',
             'email' => 'arojasf@unprg.edu.pe',
         ])->roles()->attach($superAdminRole->id);
 
@@ -59,6 +60,7 @@ class UserSeeder extends Seeder
             'email' => 'jarevaloc@unprg.edu.pe',
         ])->roles()->attach($adminRole->id);
         User::create([
+            'name' => 'LEANDRO AGAPITO AZNARAN CASTILLO',
             'email' => 'laznaran@unprg.edu.pe',
         ])->roles()->attach($comisionRole->id);
         User::create([

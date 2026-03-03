@@ -77,9 +77,9 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
             ->map(function ($programa) {
                 // Asignar abreviatura del grado
                 $abreviatura_grado = match ($programa->grado->id) {
-                    1 => 'DOC',
-                    2 => 'MAE',
-                    3 => 'SEG',
+                    1 => 'Doctorado',
+                    2 => 'Maestria',
+                    3 => 'Segunda Especialidad Profesional',
                     default => 'N/A'
                 };
 

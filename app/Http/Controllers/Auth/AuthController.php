@@ -60,7 +60,15 @@ class AuthController extends BaseController
                 'email' => $credentials['email'],
             ]);
 
-            return $this->successResponse($resultado);
+            $cookies = $resultado['cookies'] ?? [];
+            unset($resultado['cookies']);
+            $response = $this->successResponse($resultado);
+
+            foreach ($cookies as $cookie) {
+                $response->withCookie($cookie);
+            }
+
+            return $response;
         }, 'Error en el login');
     }
 
@@ -80,13 +88,12 @@ class AuthController extends BaseController
                 return $this->errorResponse($resultado['message'], 401);
             }
 
+            $cookies = $resultado['cookies'] ?? [];
+            unset($resultado['cookies']);
             $response = $this->successResponse($resultado);
-            
 
-            if (isset($resultado['cookies'])) {
-                foreach ($resultado['cookies'] as $cookie) {
-                    $response->withCookie($cookie);
-                }
+            foreach ($cookies as $cookie) {
+                $response->withCookie($cookie);
             }
 
             return $response;
@@ -132,12 +139,12 @@ class AuthController extends BaseController
             $user = $request->user('api');
             $resultado = $this->authService->logout($token, $user);
 
+            $cookies = $resultado['cookies'] ?? [];
+            unset($resultado['cookies']);
             $response = $this->successResponse(['message' => 'Sesión cerrada correctamente']);
 
-            if (isset($resultado['cookies'])) {
-                foreach ($resultado['cookies'] as $cookie) {
-                    $response->withCookie($cookie);
-                }
+            foreach ($cookies as $cookie) {
+                $response->withCookie($cookie);
             }
 
             return $response;
@@ -162,12 +169,12 @@ class AuthController extends BaseController
                 return $this->errorResponse($resultado['message'], 401);
             }
 
+            $cookies = $resultado['cookies'] ?? [];
+            unset($resultado['cookies']);
             $response = $this->successResponse($resultado);
 
-            if (isset($resultado['cookies'])) {
-                foreach ($resultado['cookies'] as $cookie) {
-                    $response->withCookie($cookie);
-                }
+            foreach ($cookies as $cookie) {
+                $response->withCookie($cookie);
             }
 
             return $response;
@@ -268,10 +275,10 @@ class AuthController extends BaseController
         return $this->handleRequest(function () use ($request) {
             $user = $request->user('api');
             if (!$user) {
-          
+
                 return $this->successResponse(['authenticated' => false]);
             }
-          
+
             return $this->successResponse([
                 'authenticated' => true,
                 'user' => $user,

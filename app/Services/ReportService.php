@@ -446,9 +446,9 @@ class ReportService
                 $totalGeneral += $cantidad;
 
                 $abreviatura_grado = match ($programa->grado->id) {
-                    1 => 'DOC',
-                    2 => 'MAE',
-                    3 => 'SEG',
+                    1 => 'Doctorado',
+                    2 => 'Maestria',
+                    3 => 'Segunda Especialidad Profesional',
                     default => 'N/A'
                 };
 
@@ -532,9 +532,9 @@ class ReportService
         return $programas->map(function ($programa) {
             // Asignar abreviatura del grado
             $abreviatura_grado = match ($programa->grado->id) {
-                1 => 'DOC',
-                2 => 'MAE',
-                3 => 'SEG',
+                1 => 'Doctorado',
+                2 => 'Maestria',
+                3 => 'Segunda Especialidad Profesional',
                 default => 'N/A'
             };
 
@@ -556,7 +556,7 @@ class ReportService
 
             return [
                 'id' => $programa->id,
-                'grado_programa' => $abreviatura_grado . ' - ' . $programa->nombre,
+                'grado_programa' => $abreviatura_grado . ' en ' . $programa->nombre,
                 'facultad' => $programa->facultad->siglas,
                 'inscritos' => $programa->inscripciones->count(),
                 'vacantes' => $programa->vacantes,
@@ -613,9 +613,9 @@ class ReportService
                 ],
             ],
             'grados' => [
-                'doc' => $grado1,
-                'mae' => $grado2,
-                'seg' => $grado3
+                'doctorado' => $grado1,
+                'maestria' => $grado2,
+                'segunda_especialidad_profesional' => $grado3
             ]
         ];
     }

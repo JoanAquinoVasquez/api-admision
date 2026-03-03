@@ -16,7 +16,7 @@ use App\Http\Middleware\AuthenticateDocenteFromCookie;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__ . '/../routes/web.php',
+        // web: __DIR__ . '/../routes/web.php',
         api: __DIR__ . '/../routes/api.php',
         channels: __DIR__ . '/../routes/channels.php',
         commands: __DIR__ . '/../routes/console.php',
@@ -29,6 +29,11 @@ return Application::configure(basePath: dirname(__DIR__))
     // )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(at: '*');
+
+        $middleware->encryptCookies(except: [
+            'token',
+            'refresh_token',
+        ]);
 
         $middleware->appendToGroup('web', [
             EncryptCookies::class,

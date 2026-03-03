@@ -197,9 +197,9 @@ class InscripcionRepository extends BaseRepository implements InscripcionReposit
                 ],
             ],
             'grados' => [
-                'doc' => $grado1,
-                'mae' => $grado2,
-                'seg' => $grado3
+                'doctorado' => $grado1,
+                'maestria' => $grado2,
+                'segunda_especialidad profesional' => $grado3
             ]
         ];
     }

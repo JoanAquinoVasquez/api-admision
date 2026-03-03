@@ -49,6 +49,7 @@ class ResultadosService
 
             return [
                 'inscripcion_id' => $inscripcion->id,
+                'postulante_id' => $inscripcion->postulante_id,
                 'programa_id' => $inscripcion->programa->id,
                 'grado_id' => $inscripcion->programa->grado->id,
                 'apellidos' => $inscripcion->postulante->ap_paterno . ' ' . $inscripcion->postulante->ap_materno,
@@ -159,9 +160,9 @@ class ResultadosService
 
             return [
                 'grado_programa' => match ($programa->grado_id) {
-                    1 => 'DOC - ' . $programa->nombre,
-                    2 => 'MAE - ' . $programa->nombre,
-                    3 => 'SEG - ' . $programa->nombre,
+                    1 => 'Doctorado en ' . $programa->nombre,
+                    2 => 'Maestria en ' . $programa->nombre,
+                    3 => 'Segunda Especialidad Profesional en ' . $programa->nombre,
                     default => $programa->nombre,
                 },
                 'ingresantes_total' => $ingresantes->count(),

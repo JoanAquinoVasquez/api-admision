@@ -72,6 +72,55 @@ class AuthDocenteController extends BaseController
         }, 'Error en el login de docente');
     }
 
+    /**
+     * Login para pruebas Cypress: devuelve el token JWT en el body (no en cookie HttpOnly).
+     * Solo debe estar disponible en entornos de testing.
+     */
+    public function loginCypress(Request $request)
+    {
+        return $this->handleRequest(function () use ($request) {
+            $credentials = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
+
+            $docente = Docente::where('email', $credentials['email'])->first();
+
+            if (!$docente || !Hash::check($credentials['password'], $docente->password)) {
+                return $this->errorResponse('Credenciales incorrectas', 401);
+            }
+
+            if ($docente->estado == false) {
+                return $this->errorResponse('Usuario inactivo', 403);
+            }
+
+            $token = Auth::guard('docente')->attempt($credentials);
+
+            if (!$token) {
+                return $this->errorResponse('Error al generar token', 500);
+            }
+
+            // Crear refresh token y guardarlo
+            $refreshToken = JWTAuth::fromUser($docente, ['exp' => now()->addDays(30)->timestamp]);
+            $docente->refreshTokens()->updateOrCreate(
+                [],
+                ['token' => $refreshToken, 'expires_at' => now()->addDays(30), 'last_used_at' => now()]
+            );
+
+            // Establecer cookies igual que el login normal
+            // (cy.request() en Cypress captura automáticamente los Set-Cookie)
+            $accessCookie = $this->cookieService->makeAccessCookie($token, 'token_docente');
+            $refreshCookie = $this->cookieService->makeRefreshCookie($refreshToken, 'refresh_token_docente');
+
+            // Devolver el token EN EL BODY además de las cookies
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'docente' => $docente
+            ])->withCookie($accessCookie)->withCookie($refreshCookie);
+        }, 'Error en el login cypress de docente');
+    }
+
     public function refreshDocente(Request $request)
     {
         return $this->handleRequest(function () use ($request) {
@@ -151,7 +200,7 @@ class AuthDocenteController extends BaseController
                     return response()->json(['authenticated' => false]);
                 }
 
-                $docente = JWTAuth::setToken($token)->authenticate();
+                $docente = auth('docente')->setToken($token)->authenticate();
                 if (!$docente) {
                     return response()->json(['authenticated' => false]);
                 }

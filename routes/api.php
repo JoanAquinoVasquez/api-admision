@@ -252,6 +252,9 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/login-cypress', [AuthController::class, 'loginCypress']);
 Route::post('/login-rpa', [AuthController::class, 'loginRPA']);
 
+// Login Cypress para Docentes (devuelve JWT en body, no en cookie)
+Route::post('/docente-login-cypress', [AuthDocenteController::class, 'loginCypress']);
+
 
 // Chatbot con Gemini
 Route::post('/chat', [ChatbotController::class, 'chat']);
