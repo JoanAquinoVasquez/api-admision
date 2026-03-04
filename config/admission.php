@@ -39,8 +39,8 @@ return [
         'barra_colores' => 'https://drive.google.com/uc?export=view&id=1bXqmf32tJmjzpoG90fJJwkGN9N2_fKyQ',
     ],
     'cronograma' => [
-        'examen_admision' => 'domingo 19 de Abril',
-        'inicio_conceptos' => '17 de febrero',
+        'examen_admision' => 'domingo 17 de Mayo',
+        'inicio_conceptos' => '23 de mayo',
         'periodo' => '2026-I',
         // Control de Etapas (Automatización)
         // Si 'etapa_manual' tiene valor, se usará ese. Si es null, se calculará por fechas.
@@ -53,14 +53,14 @@ return [
 
             // Inscripción
             'inicio_inscripcion' => '2026-02-02',
-            'fin_inscripcion' => '2026-04-15',
+            'fin_inscripcion' => '2026-05-13',
 
             // Evaluación (Examen y Entrevista)
-            'inicio_evaluacion' => '2026-04-16',
-            'fin_evaluacion' => '2026-04-18',
+            'inicio_evaluacion' => '2026-05-14',
+            'fin_evaluacion' => '2026-05-16',
 
             // Resultados
-            'resultados_publicacion' => '2026-04-19',
+            'resultados_publicacion' => '2026-05-20',
         ],
     ],
 ];
