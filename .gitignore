@@ -31,3 +31,4 @@ cypress/evidencias/videos/
 cypress/downloads/
 cypress/fixtures/
 PREINSCRIPCIONES.xlsx
+*.sql
