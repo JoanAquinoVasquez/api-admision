@@ -80,6 +80,11 @@ class ChatbotService
         }
     }
 
+    public function getContextForBot(): string
+    {
+        return $this->buildContext();
+    }
+
     private function buildContext(): string
     {
         // 1. Obtener programas habilitados de la BD

@@ -258,6 +258,7 @@ Route::post('/docente-login-cypress', [AuthDocenteController::class, 'loginCypre
 
 // Chatbot con Gemini
 Route::post('/chat', [ChatbotController::class, 'chat']);
+Route::get('/chatbot-context', [ChatbotController::class, 'getContext']);
 
 // Ruta de fallback para rutas no encontradas
 Route::fallback(function () {
