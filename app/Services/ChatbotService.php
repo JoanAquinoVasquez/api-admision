@@ -47,6 +47,13 @@ class ChatbotService
                         'generationConfig' => [
                             'temperature' => 0.4,
                             'maxOutputTokens' => 2048,
+                        ],
+                        // Añadimos esto para evitar bloqueos por agradecimientos o frases cortas
+                        'safetySettings' => [
+                            ['category' => 'HARM_CATEGORY_HARASSMENT', 'threshold' => 'BLOCK_NONE'],
+                            ['category' => 'HARM_CATEGORY_HATE_SPEECH', 'threshold' => 'BLOCK_NONE'],
+                            ['category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold' => 'BLOCK_NONE'],
+                            ['category' => 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold' => 'BLOCK_NONE'],
                         ]
                     ]);
 
@@ -58,8 +65,13 @@ class ChatbotService
             $data = $response->json();
 
             // Extraer respuesta
-            $botReply = $data['candidates'][0]['content']['parts'][0]['text'] ?? "No pude generar una respuesta.";
-           
+            $botReply = $data['candidates'][0]['content']['parts'][0]['text'] ?? null;
+
+            if (!$botReply) {
+                // Si Gemini bloqueó la respuesta por filtros, damos una respuesta amable por defecto
+                return "¡De nada! Si tienes más dudas sobre el proceso de Admisión 2026-I o algún programa de la UNPRG, estoy para ayudarte.";
+            }
+
             return $botReply;
 
         } catch (\Exception $e) {

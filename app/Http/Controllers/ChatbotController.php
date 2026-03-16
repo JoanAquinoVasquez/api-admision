@@ -16,6 +16,11 @@ class ChatbotController extends BaseController
     public function chat(Request $request)
     {
         return $this->handleRequest(function () use ($request) {
+            $token = $request->header('X-Chatbot-Token');
+            if ($token !== env('CHATBOT_TOKEN')) {
+                return response()->json(['success' => false, 'message' => 'No autorizado'], 401);
+            }
+
             $validated = $request->validate([
                 'message' => 'required|string|max:1000',
             ]);
