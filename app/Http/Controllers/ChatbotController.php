@@ -16,16 +16,22 @@ class ChatbotController extends BaseController
     public function chat(Request $request)
     {
         return $this->handleRequest(function () use ($request) {
-            $token = $request->header('X-Chatbot-Token');
-            if ($token !== env('CHATBOT_TOKEN')) {
-                return response()->json(['success' => false, 'message' => 'No autorizado'], 401);
-            }
-
             $validated = $request->validate([
                 'message' => 'required|string|max:1000',
+                'source' => 'nullable|string'
             ]);
 
-            $response = $this->chatbotService->chat($validated['message']);
+            $source = $validated['source'] ?? 'web';
+
+            // Solo validamos token si viene de WhatsApp
+            if ($source === 'whatsapp') {
+                $token = $request->header('X-Chatbot-Token');
+                if ($token !== env('CHATBOT_TOKEN')) {
+                    return response()->json(['success' => false, 'message' => 'No autorizado'], 401);
+                }
+            }
+
+            $response = $this->chatbotService->chat($validated['message'], $source);
 
             return $this->successResponse(['reply' => $response]);
         }, 'Error al procesar el mensaje');

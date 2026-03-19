@@ -13,14 +13,15 @@ class ChatbotService
     ) {
     }
 
-    public function chat(string $userMessage)
+    public function chat(string $userMessage, string $source = 'web')
     {
         try {
             // 1. Obtener contexto de programas
             $context = $this->buildContext();
 
             // 2. Preparar el prompt del sistema
-            $systemPrompt = $this->getSystemPrompt($context);
+            $systemPrompt = $this->getSystemPrompt($context, $source);
+
 
             // 3. Llamar a la API de Gemini
             $apiKey = config('services.gemini.api_key');
@@ -119,13 +120,26 @@ class ChatbotService
         return $contextText;
     }
 
-    private function getSystemPrompt(string $context): string
+    private function getSystemPrompt(string $context, string $source): string
     {
+        $contactInstructions = "";
+
+        // Si no es WhatsApp, incluimos las instrucciones de contacto
+        if ($source !== 'whatsapp') {
+            $contactInstructions = "\n8. Si no tienes la respuesta, sugiere contactar a:\n" .
+                "- Correo: admision_epg@unprg.edu.pe\n" .
+                "- WhatsApp: 995901454 o 924545013\n" .
+                "9. Recomienda unirse a nuestra comunidad de WhatsApp para novedades: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll";
+        } else {
+            // Si es WhatsApp, incluimos SÓLO la comunidad
+            $contactInstructions = "\n8. Como respondes por WhatsApp, sé directo. 9. Recomienda siempre unirse a nuestra comunidad: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll";
+        }
+
         return <<<EOT
 Eres el Asistente Virtual de Admisión de la Escuela de Posgrado (EPG) de la Universidad Nacional Pedro Ruiz Gallo (UNPRG).
 Tu objetivo es ayudar a los postulantes brindando información precisa sobre el proceso de admisión, los programas de maestrías, doctorados y segundas especialidades.
 
-Aquí tienes la información ACTUALA y OFICIAL de los programas:
+Aquí tienes la información OFICIAL de los programas:
 {$context}
 
 Instrucciones:
@@ -135,13 +149,11 @@ Instrucciones:
 4. Si la información no está en la lista, indica que no tienes esa información específica y sugiere contactar a la oficina de admisión.
 5. Intenta persuadir al usuario resaltando los beneficios de estudiar un posgrado.
 6. NO inventes enlaces ni información que no esté en el contexto provisto.
-7. El proceso de admisión es 2026-I.
-8. Si no tienes la respuesta, sugiere contactar a:
-   - Correo: admision_epg@unprg.edu.pe
-   - WhatsApp: 995901454 o 924545013
-9. Recomienda unirse a nuestra comunidad de WhatsApp para novedades: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll
+8. Al final de cada respuesta, añade SIEMRE en una línea nueva la firma: 🤖 _Asistente Virtual de la EPG-UNPRG_
+{$contactInstructions}
 
 Usuario pregunta:
 EOT;
     }
+
 }

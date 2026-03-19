@@ -13,9 +13,9 @@ El proceso de admisión sigue fechas estrictas:
 • Fin de clases (ciclo): 25 de octubre de 2026.
 3. Requisitos de Postulación
 Los documentos que se deben traer en físicovarían según el grado:
-• Maestrías: Copia simple del grado de Bachiller (registrado en SUNEDU), DNI o carné de extranjería, fotografía tamaño carné, CV documentado (anillado con tapa verde) y un perfil de proyecto tentativo de tesis (promedio de 5 páginas).
-• Doctorados: Copia simple del grado de Maestro (registrado en SUNEDU), DNI, foto, CV documentado y perfil de proyecto tentativo de tesis.
-• Segundas Especialidades: Copia simple del Título Profesional (registrado en SUNEDU), DNI, foto y CV documentado (anillado con tapa turquesa).
+• Maestrías: Copia simple del grado de Bachiller (registrado en SUNEDU), DNI o carné de extranjería, fotografía tamaño carné y CV documentado (foliado de atrás hacia delante y anillado con tapa verde).
+• Doctorados: Copia simple del grado de Maestro (registrado en SUNEDU), DNI, foto, CV documentado (foliado de atrás hacia delante y anillado con tapa verde) y perfil de proyecto tentativo de tesis.
+• Segundas Especialidades: Copia simple del Título Profesional (registrado en SUNEDU), DNI, foto y CV documentado (foliado de atrás hacia delante y anillado con tapa turquesa).
 4. Flujograma de Inscripción
 1. Informes: Descargar el prospecto en la web oficial (https://epgunprg.edu.pe/admision-epg/)
 2. Pago: Realizar el pago en el Banco de la Nación o Págalo.pe (esperar 24 horas para inscribirse).
@@ -28,17 +28,17 @@ Los documentos que se deben traer en físicovarían según el grado:
     - Una fotografía a color tamaño carné.
     - Copia simple del grado de Bachiller e impresión de la captura de pantalla del registro en SUNEDU.
 5. Inversión Económica (Costos)
-• Inscripción: S/ 250.00 para maestrías y S/. 300.00 para doctorados, para segunda especialidades S/. 50.00 y pago de carpeta de inscripción S/. 150.00.
+• Solo para Inscripción: S/ 250.00 para maestrías y S/. 300.00 para doctorados, para segunda especialidades S/. 50.00 y pago de carpeta de inscripción S/. 150.00.
 • Maestría depende de su duración: Para programas de 3 semestres, el costo total es de S/ 9,750, desglosado en 3 matrículas de S/ 250 (S/ 750 total) y 18 pensiones de S/ 500 (S/ 9,000 total). Para programas de 4 semestres, la inversión total es de S/ 13,000, la cual consiste en 4 matrículas de S/ 250 (S/ 1,000 total) y 24 pensiones de S/ 500 (S/ 12,000 total).
 • Doctorados (6 semestres): Matrícula total S/ 1,800 (6 cuotas de S/ 300) y enseñanza S/ 21,600 (36 cuotas de S/ 600). Total: S/ 23,400.
-• Segundas Especialidades: Inversión total aproximada entre S/ 4,500 y S/ 4,600, dependiendo del programa.
+• Segundas Especialidades: Inversión total S/ 4,600 (12 cuotas de S/ 350 y 2 matrículas de S/ 200).
 6. Procedimientos de Evaluación
 La evaluación se basa en un sistema de 100 puntos:
 • Maestrías y Doctorados:
     ◦ Evaluación de méritos (CV): 20 puntos. (Se evalúa unicamente Grados académicos, Capacitación (Cursos y Diplomados) Acumulando total mínimo 100 horas y
 Antigüedad máxima 5 años, Publicación de revistas.)
     ◦ Examen de conocimientos (cultura general): 40 puntos.
-    ◦ Entrevista personal (basada en el perfil de proyecto de tesis (solo para doctorados)): 40 puntos.
+    ◦ Entrevista personal (basada en el perfil de proyecto tentativo de tesis (solo para doctorados)): 40 puntos.
 • Segundas Especialidades: CV (20 pts), Examen (50 pts) y Entrevista (30 pts).
 7. Oferta Académica, Vacantes y Horarios
 • Vacantes: La mayoría de los programas (Maestrías, Doctorados y Segundas Especialidades) ofrecen un mínimo de 30 vacantes.
@@ -51,7 +51,7 @@ examen es a partir de las 7:00 a.m. e inicia a las 9:00 a.m. hasta las 11:00
 a.m. No olvide su lápiz 2B, tajador y borrador para marcar la tarjeta óptica.
 ENTREVISTA PERSONAL
 Inicia a las 11:00 am. El postulante debe portar su perfil de proyecto tentativo
-de tesis (para maestrías y doctorados).
+de tesis (solo para doctorados).
 Para más información de maestrías puede ir a (https://epgunprg.edu.pe/admision-epg/maestrias)
 Para más información de doctorados puede ir a (https://epgunprg.edu.pe/admision-epg/doctorados)
 Para más información de segundas especialidades puede ir a (https://epgunprg.edu.pe/admision-epg/segundas-especialidades)
