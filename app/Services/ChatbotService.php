@@ -60,6 +60,9 @@ class ChatbotService
 
             if ($response->failed()) {
                 Log::error('Gemini API Error: ' . $response->body());
+                if ($source === 'whatsapp') {
+                    return "";
+                }
                 return "Lo siento, tuve un problema al procesar tu mensaje. Puedes escribirnos a admision_epg@unprg.edu.pe o al WhatsApp 995901454 / 924545013. Además únete a nuestra comunidad para estar informado de todas las novedades: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll";
             }
 
@@ -77,7 +80,10 @@ class ChatbotService
 
         } catch (\Exception $e) {
             Log::error('Chatbot Service Error: ' . $e->getMessage());
-            return "Ocurrió un error interno. Por favor contacta a soporte.";
+            if ($source === 'whatsapp') {
+                return "";
+            }
+            return "Lo siento, tuve un problema al responderte. Puedes escribirnos a admision_epg@unprg.edu.pe o al WhatsApp 995901454 / 924545013. Además únete a nuestra comunidad para estar informado de todas las novedades: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll";
         }
     }
 

@@ -18,7 +18,8 @@ class ChatbotController extends BaseController
         return $this->handleRequest(function () use ($request) {
             $validated = $request->validate([
                 'message' => 'required|string|max:1000',
-                'source' => 'nullable|string'
+                'source' => 'nullable|string',
+                'user_number' => 'nullable|string'
             ]);
 
             $source = $validated['source'] ?? 'web';
@@ -32,6 +33,15 @@ class ChatbotController extends BaseController
             }
 
             $response = $this->chatbotService->chat($validated['message'], $source);
+
+            // Log de la conversación en BD
+            \App\Models\ChatbotLog::create([
+                'message_user' => $validated['message'],
+                'message_bot' => $response,
+                'source' => $source,
+                'ip_address' => $request->ip(),
+                'user_identifier' => $validated['user_number'] ?? null
+            ]);
 
             return $this->successResponse(['reply' => $response]);
         }, 'Error al procesar el mensaje');
