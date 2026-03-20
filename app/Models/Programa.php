@@ -25,6 +25,8 @@ class Programa extends Model
         'concepto_pago_id',
         'docente_id',
         'nombre',
+        'duracion_meses',
+        'modalidad',
         'vacantes',
         'estado',
         'plan_estudio',

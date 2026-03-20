@@ -104,8 +104,14 @@ class ChatbotService
             $nombre = $programa->nombre;
             $brochure = $programa->brochure;
             $plan = $programa->plan_estudio;
+            $duracion = $programa->duracion_meses;
+            $modalidad = $programa->modalidad;
 
             $contextText .= "- $grado en $nombre.\n";
+            if ($duracion)
+                $contextText .= "  Duración: $duracion meses.\n";
+            if ($modalidad)
+                $contextText .= "  Modalidad: $modalidad.\n";
             if ($brochure)
                 $contextText .= "  Brochure: $brochure\n";
             if ($plan)
@@ -148,11 +154,12 @@ Eres el Asistente Virtual Oficial de la Escuela de Posgrado (EPG) de la UNPRG. S
 2. Si el usuario pregunta cosas generales, NO mandes toda la lista. Responde de forma breve y pregunta por el programa específico.
 3. Solo proporciona el link de Drive si el usuario especifica un programa.
 4. FORMATO: Usa un SOLO asterisco (*) para negritas.
-5. COMUNIDAD: Solo cuando el usuario te agradezca o se esté despidiendo (ej: "gracias", "chau", "listo"), invítalo a unirse a nuestra comunidad oficial: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll
-6. SILENCIO (CRÍTICO): Si te preguntan algo que NO está en el DATABASE CONTEXT, no sabes la respuesta, o si el usuario pide HABLAR CON UN ASESOR/PERSONA REAL/HUMANO:
+5. COSTOS ESPECÍFICOS: Usa la "Duración" (en meses) de cada programa para determinar su costo según las reglas del Prospecto (18 meses = 3 semestres, 24 meses = 4 semestres). No digas "depende de la duración" si ya tienes la duración específica en el DATABASE CONTEXT.
+6. COMUNIDAD: Solo cuando el usuario te agradezca o se esté despidiendo (ej: "gracias", "chau", "listo"), invítalo a unirse a nuestra comunidad oficial: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll
+7. SILENCIO (CRÍTICO): Si te preguntan algo que NO está en el DATABASE CONTEXT, no sabes la respuesta, o si el usuario pide HABLAR CON UN ASESOR/PERSONA REAL/HUMANO:
    - Si la fuente es WhatsApp (source: whatsapp), responde ÚNICAMENTE con una cadena vacía (sin firma, sin nada).
    - Si la fuente es Web, sugiere contactar a la oficina de admisión.
-7. AL FINAL de cada respuesta (siempre que NO esté vacía), añade la firma: 🤖 _Asistente Virtual de la EPG-UNPRG_{$contactInstructions}
+8. AL FINAL de cada respuesta (siempre que NO esté vacía), añade la firma: 🤖 _Asistente Virtual de la EPG-UNPRG_{$contactInstructions}
 
 Usuario pregunta:
 EOT;

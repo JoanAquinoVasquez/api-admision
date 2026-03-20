@@ -17,6 +17,8 @@ class ProgramaResource extends JsonResource
         return [
             'id' => $this->id,
             'nombre' => $this->nombre,
+            'duracion_meses' => $this->duracion_meses,
+            'modalidad' => $this->modalidad,
             'vacantes' => $this->vacantes,
             'estado' => $this->estado,
             'plan_estudio' => $this->plan_estudio,

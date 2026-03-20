@@ -12,14 +12,19 @@ El proceso de admisión sigue fechas estrictas:
 • Inicio de clases: 30 de mayo de 2026.
 • Fin de clases (ciclo): 25 de octubre de 2026.
 3. Requisitos de Postulación
-Los documentos que se deben traer en físico varían según el grado:
-• Maestrías: Copia simple del grado de Bachiller (registrado en SUNEDU), DNI o carné de extranjería, fotografía tamaño carné y CV documentado (foliado de atrás hacia delante y anillado con tapa verde).
-• Doctorados: Copia simple del grado de Maestro (registrado en SUNEDU), DNI, foto, CV documentado (foliado de atrás hacia delante y anillado con tapa verde) y perfil de proyecto tentativo de tesis.
-• Segundas Especialidades: Copia simple del Título Profesional (registrado en SUNEDU), DNI, foto y CV documentado (foliado de atrás hacia delante y anillado con tapa turquesa).
-Nota: Si no puedes venir personalmente, un familiar puede entregar tu expediente, siempre que la ficha de inscripción y la solicitud dirigida al Rector estén debidamente firmadas y con huella digital.
+Los documentos que se deben traer en físico a la Oficina de Admisión de Posgrado varían según el grado:
+• Maestrías: Copia simple del grado de Bachiller (registrado en SUNEDU), DNI o carné de extranjería, fotografía tamaño carné y CV documentado (foliado de manera digital o con lapicero azul o negro de atrás hacia delante y anillado con tapa verde).
+• Doctorados: Copia simple del grado de Maestro (registrado en SUNEDU), DNI, foto, CV documentado(foliado de manera digital o con lapicero azul o negro de atrás hacia delante y anillado con tapa verde) y perfil de proyecto tentativo de tesis.
+• Segundas Especialidades: Copia simple del Título Profesional (registrado en SUNEDU), DNI, foto y CV documentado (foliado de manera digital o con lapicero azul o negro de atrás hacia delante y anillado con tapa turquesa).
+Nota: Si no puedes venir personalmente, un familiar puede entregar tu expediente, siempre que la ficha de inscripción y la solicitud dirigida al Rector estén debidamente firmadas y con huella digital. La Oficina de Admisión se encuentra en el segundo piso del edificio del Cafetín.
 4. Flujograma de Inscripción
-1. Informes: Descargar el prospecto en la web oficial (https://epgunprg.edu.pe/admision-epg/)
-2. Pago: Realizar el pago en el Banco de la Nación o Págalo.pe (esperar 24 horas para inscribirse).
+1. Informes: Descargar el prospecto en la web oficial (https://epgunprg.edu.pe/admision-epg/prospecto)
+2. Pago de Inscripción: Realizar el pago en el Banco de la Nación o Págalo.pe (esperar 24 horas para inscribirse).
+Conceptos de Pago de Inscripción para Maestrías y Doctorados y Segundas Especialidades de la Facultad de Ciencias Biológicas (Microbiología Clínica):
+Código de Transacción 9135, Código de Concepto 0012, Monto S/. 250.00
+Conceptos de Pago de Inscripción para Segundas Especialidades de la Facultad de Ingeniería Química e Industrias Alimentarias (Gestión ambiental y Educación Ambiental Intercultural):
+Código de Transacción 9135, Código de Concepto 970, Monto S/. 150.00, Rubro: Carpeta de Inscripción y Código de Concepto 971, Monto S/. 50.00, Rubro: Inscripción. (Se debe pagar los dos conceptos para poder inscribirse vía web (https://epgunprg.edu.pe/admision-epg/inscripcion))
+Recuerde que todos los pagos se realizan con su número de DNI.
 3. Registro: Inscribirse en la web (https://epgunprg.edu.pe/admision-epg/inscripcion/)
 4. Entrega de documentos: Presentar formato impreso en la Escuela de Posgrado tras 48 horas de la confirmación digital (durante el horario de atención presencial lunes a viernes de 08:00 am a 02:00 pm. ):
     - Constancia de inscripción.
@@ -32,7 +37,10 @@ Nota: Si no puedes venir personalmente, un familiar puede entregar tu expediente
 • Solo para Inscripción: S/ 250.00 para maestrías y S/. 300.00 para doctorados, para segunda especialidades S/. 50.00 y pago de carpeta de inscripción S/. 150.00.
 • Maestría depende de su duración: Para programas de 3 semestres, el costo total es de S/ 9,750, desglosado en 3 matrículas de S/ 250 (S/ 750 total) y 18 pensiones de S/ 500 (S/ 9,000 total). Para programas de 4 semestres, la inversión total es de S/ 13,000, la cual consiste en 4 matrículas de S/ 250 (S/ 1,000 total) y 24 pensiones de S/ 500 (S/ 12,000 total).
 • Doctorados (6 semestres): Matrícula total S/ 1,800 (6 cuotas de S/ 300) y enseñanza S/ 21,600 (36 cuotas de S/ 600). Total: S/ 23,400.
-• Segundas Especialidades: Inversión total S/ 4,600 (12 cuotas de S/ 350 y 2 matrículas de S/ 200).
+• Segundas Especialidades: 
+    - Si es Gestión Ambiental o Educación Ambiental Intercultural, la inversión total es de S/ 4,500 (12 cuotas de S/ 350 y 2 matrículas de S/ 150).
+    - Si es la Microbiología Clínica, la inversión total es de S/ 4,600 (12 cuotas de S/ 350 y 2 matrículas de S/ 200).
+Nota. El pago de la inversión económica puede realizarlo en su totalidad o mensualmente, siempre que inicie el ciclo debe pagar la primera matrícula y la primera pensión. No hay ningún tipo de descuento.
 6. Procedimientos de Evaluación
 La evaluación se basa en un sistema de 100 puntos:
 • Maestrías y Doctorados:
@@ -43,7 +51,7 @@ Antigüedad máxima 5 años, Publicación de revistas.)
 • Segundas Especialidades: CV (20 pts), Examen (50 pts) y Entrevista (30 pts).
 7. Oferta Académica, Vacantes y Horarios
 • Vacantes: La mayoría de los programas (Maestrías, Doctorados y Segundas Especialidades) ofrecen un mínimo de 30 vacantes.
-• Horarios de clases: Sábados y domingos de 08:00 a.m. a 01:00 p.m. y de 02:00 p.m. a 06:00 p.m.
+• Horarios de clases: Sábados y domingos de 08:00 a.m. a 01:00 p.m. y de 02:00 p.m. a 06:00 p.m (Tener en cuenta que en caso de los programas que tienen modalidad SEMIPRESENCIAL, una semana es virtual y la otra presencial).
 • Modalidad: Varía entre presencial, semipresencial y virtual dependiendo del programa específico.
 • Programas destacados: Incluye maestrías en Ciencias de la Educación (diversas menciones), Derecho, Ingeniería, Administración y programas de salud animal y agraria.
 Nota importante para el chatbot: Debe advertir a los usuarios que los programas solo se abrirán con un mínimo de 30 participantes; de lo contrario, el postulante puede trasladarse de programa o solicitar la devolución de su dinero
@@ -58,3 +66,4 @@ Para más información de doctorados puede ir a (https://epgunprg.edu.pe/admisio
 Para más información de segundas especialidades puede ir a (https://epgunprg.edu.pe/admision-epg/segundas-especialidades)
 Para leer el prospecto completo puede ir a (https://epgunprg.edu.pe/admision-epg/prospecto)
 8. Si desea atención presencial de admisión, solo atendemos de lunes a viernes de 08:00 am a 02:00 pm.
+9. Para obtener el grado de maestría o doctorado, se requiere la acreditación de un idioma extranjero en nivel intermedio. Este requisito puede cumplirse de dos formas: mediante la convalidación, presentando un certificado oficial y aprobando el examen correspondiente, o cursando el programa de inglés de tres meses dictado por la Escuela de Posgrado (EPG).

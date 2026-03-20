@@ -57,6 +57,8 @@ class ProgramaController extends BaseController
                 'grado_id' => 'required|exists:grados,id',
                 'facultad_id' => 'required|exists:facultads,id',
                 'nombre' => 'required|string|max:255',
+                'duracion_meses' => 'nullable|integer',
+                'modalidad' => 'nullable|string|max:255',
                 'vacantes' => 'required|string|max:255',
                 'estado' => 'nullable|boolean',
             ]);
@@ -96,6 +98,8 @@ class ProgramaController extends BaseController
                 'grado_id' => 'sometimes|exists:grados,id',
                 'facultad_id' => 'sometimes|exists:facultads,id',
                 'nombre' => 'sometimes|string|max:255',
+                'duracion_meses' => 'sometimes|integer|nullable',
+                'modalidad' => 'sometimes|string|max:255|nullable',
                 'vacantes' => 'sometimes|string|max:255',
                 'estado' => 'sometimes|boolean',
             ]);

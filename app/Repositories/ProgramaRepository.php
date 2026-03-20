@@ -198,7 +198,7 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
     public function getForLandingPages(): \Illuminate\Support\Collection
     {
         return $this->model
-            ->select(['id', 'grado_id', 'facultad_id', 'nombre', 'plan_estudio', 'brochure', 'estado'])
+            ->select(['id', 'grado_id', 'facultad_id', 'nombre', 'plan_estudio', 'brochure', 'duracion_meses', 'modalidad', 'estado'])
             ->with(['facultad:id,siglas'])
             ->where('estado', true)
             ->orderBy('nombre', 'asc')
@@ -210,6 +210,8 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
                     'nombre' => mb_convert_case($programa->grado->nombre, MB_CASE_TITLE, "UTF-8") . ' en ' . $programa->nombre,
                     'plan_estudio' => $programa->plan_estudio,
                     'brochure' => $programa->brochure,
+                    'duracion_meses' => $programa->duracion_meses,
+                    'modalidad' => $programa->modalidad,
                     'facultad' => [
                         'siglas' => $programa->facultad?->siglas ?? 'N/A'
                     ]
