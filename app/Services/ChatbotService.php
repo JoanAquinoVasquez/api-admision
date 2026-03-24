@@ -22,6 +22,11 @@ class ChatbotService
             // 2. Preparar el prompt del sistema
             $systemPrompt = $this->getSystemPrompt($context, $source);
 
+            // 2b. Manejo especial para el comando #epg si llega aquí
+            if (trim($userMessage) === '#epg') {
+                return "🤖 El Asistente Virtual ya se encuentra activo para este chat. ¿En qué puedo ayudarte?";
+            }
+
 
             // 3. Llamar a la API de Gemini
             $apiKey = config('services.gemini.api_key');
@@ -59,7 +64,7 @@ class ChatbotService
                     ]);
 
             if ($response->failed()) {
-                Log::error('Gemini API Error: ' . $response->body());
+                Log::warning('Gemini API Error (failed): ' . $response->body());
                 if ($source === 'whatsapp') {
                     return "";
                 }
@@ -71,8 +76,9 @@ class ChatbotService
             // Extraer respuesta
             $botReply = $data['candidates'][0]['content']['parts'][0]['text'] ?? null;
 
-            if (!$botReply) {
-                // Si Gemini bloqueó la respuesta por filtros, damos una respuesta amable por defecto
+            if (!$botReply || trim($botReply) === '') {
+                Log::info("Gemini devolvió respuesta vacía o filtrada para: '{$userMessage}'");
+                // Si Gemini bloqueó la respuesta por filtros o devolvió vacío
                 return "¡De nada! Si tienes más dudas sobre el proceso de Admisión 2026-I o algún programa de la UNPRG, estoy para ayudarte.";
             }
 
@@ -158,9 +164,10 @@ Eres el Asistente Virtual Oficial de la Escuela de Posgrado (EPG) de la UNPRG. S
 4. Solo proporciona el link de Drive si el usuario especifica un programa.
 5. FORMATO: Usa un SOLO asterisco (*) para negritas.
 6. COMUNIDAD: Solo cuando el usuario te agradezca o se esté despidiendo (ej: "gracias", "chau", "listo"), invítalo a unirse a nuestra comunidad oficial: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll
-7. SILENCIO (CRÍTICO): Si te preguntan algo que NO está en el DATABASE CONTEXT, no sabes la respuesta, o si el usuario pide HABLAR CON UN ASESOR/PERSONA REAL/HUMANO:
-   - Si la fuente es WhatsApp (source: whatsapp), responde ÚNICAMENTE con una cadena vacía (sin firma, sin nada).
-   - Si la fuente es Web, sugiere contactar a la oficina de admisión.
+7. SI NO SABES LA RESPUESTA o si el usuario pide HABLAR CON UN ASESOR/PERSONA REAL/HUMANO:
+   - Responde de forma amable indicando que como asistente virtual no tienes esa información o que el usuario debe contactar a un asesor humano a los números brindados al final.
+   - NO inventes información.
+   - Solo mantente en SILENCIO (cadena vacía) si te preguntan algo COMPLETAMENTE ajeno a la UNPRG o la educación (ej: recetas, deportes internacionales, etc).
 8. AL FINAL de cada respuesta (siempre que NO esté vacía), añade la firma: 🤖 _Asistente Virtual de la EPG-UNPRG_{$contactInstructions}
 
 Usuario pregunta:
