@@ -28,44 +28,31 @@ class ChatbotService
             }
 
 
-            // 3. Llamar a la API de Gemini
-            $apiKey = config('services.gemini.api_key');
-            // Asegurarse de tener esto en config/services.php o usar env directamente si se prefiere rapido, 
-            // pero lo correcto es config. Usaremos env por ahora para no modificar config si no es necesario, o checkearemos.
-            // Mejor usar env('GEMINI_API_KEY') directo si no estoy seguro del config.
-            $apiKey = env('GEMINI_API_KEY');
+            // 3. Llamar a la API de OpenRouter (Estabilidad superior con modelos gratuitos)
+            $apiKey = env('OPENROUTER_API_KEY');
 
             if (!$apiKey) {
-                throw new \Exception('GEMINI_API_KEY no está configurada.');
+                throw new \Exception('OPENROUTER_API_KEY no está configurada.');
             }
 
             $response = Http::retry(3, 1000)
                 ->withHeaders([
+                    'Authorization' => 'Bearer ' . $apiKey,
+                    'HTTP-Referer' => 'https://epgunprg.edu.pe', // Requerido por OpenRouter
+                    'X-Title' => 'EPG UNPRG Chatbot',
                     'Content-Type' => 'application/json',
-                ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key={$apiKey}", [
-                        'contents' => [
-                            [
-                                'role' => 'user',
-                                'parts' => [
-                                    ['text' => $systemPrompt . "\n\nUsuario: " . $userMessage]
-                                ]
-                            ]
+                ])->post("https://openrouter.ai/api/v1/chat/completions", [
+                        'model' => 'openrouter/free', // Usa la IA gratuita automática
+                        'messages' => [
+                            ['role' => 'system', 'content' => $systemPrompt],
+                            ['role' => 'user', 'content' => $userMessage],
                         ],
-                        'generationConfig' => [
-                            'temperature' => 0.4,
-                            'maxOutputTokens' => 2048,
-                        ],
-                        // Añadimos esto para evitar bloqueos por agradecimientos o frases cortas
-                        'safetySettings' => [
-                            ['category' => 'HARM_CATEGORY_HARASSMENT', 'threshold' => 'BLOCK_NONE'],
-                            ['category' => 'HARM_CATEGORY_HATE_SPEECH', 'threshold' => 'BLOCK_NONE'],
-                            ['category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold' => 'BLOCK_NONE'],
-                            ['category' => 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold' => 'BLOCK_NONE'],
-                        ]
+                        'temperature' => 0.4,
+                        'max_tokens' => 2048,
                     ]);
 
             if ($response->failed()) {
-                Log::warning('Gemini API Error (failed): ' . $response->body());
+                Log::warning('OpenRouter API Error: ' . $response->body());
                 if ($source === 'whatsapp') {
                     return "";
                 }
@@ -74,8 +61,8 @@ class ChatbotService
 
             $data = $response->json();
 
-            // Extraer respuesta
-            $botReply = $data['candidates'][0]['content']['parts'][0]['text'] ?? null;
+            // Extraer respuesta (Standard OpenAI format for OpenRouter)
+            $botReply = $data['choices'][0]['message']['content'] ?? null;
 
             if (!$botReply || trim($botReply) === '') {
                 Log::info("Gemini devolvió respuesta vacía o filtrada para: '{$userMessage}'");
@@ -157,7 +144,7 @@ Eres el Asistente Virtual Oficial de la Escuela de Posgrado (EPG) de la UNPRG. S
 {$context}
 
 ### REGLAS DE ORO
-1. EXCLUSIVIDAD (CRÍTICO): Este canal es ÚNICAMENTE para ADMISIÓN e INSCRIPCIONES.
+1. EXCLUSIVIDAD (CRÍTICO): Este canal es ÚNICAMENTE para ADMISIÓN.
    - Si preguntan sobre ESTADO DE DEUDA, REANUDAR MAESTRÍA/ESTUDIOS, TRÁMITES DE SUSTENTACIÓN/GRADO o CUALQUER OTRO TRÁMITE ADMINISTRATIVO:
      * Responde que: "Este canal atiende exclusivamente procesos de Admisión. Para tu solicitud (deudas, expedientes, reingresos o grados), favor de coordinar con Mesa de Partes vía correo: mesadepartes_epg@unprg.edu.pe".
 2. NO SALUDES ni uses introducciones. Ve DIRECTO a la información.
