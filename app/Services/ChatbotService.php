@@ -39,9 +39,10 @@ class ChatbotService
                 throw new \Exception('GEMINI_API_KEY no está configurada.');
             }
 
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key={$apiKey}", [
+            $response = Http::retry(3, 1000)
+                ->withHeaders([
+                    'Content-Type' => 'application/json',
+                ])->post("https://generativelanguage.googleapis.com/v1/models/gemini-3.1-flash-lite:generateContent?key={$apiKey}", [
                         'contents' => [
                             [
                                 'role' => 'user',
