@@ -87,7 +87,23 @@ class ChatbotService
             return $botReply;
 
         } catch (\Exception $e) {
-            Log::error('Chatbot Service Error: ' . $e->getMessage());
+            $message = $e->getMessage();
+            Log::error('Chatbot Service Error: ' . $message);
+
+            // Si el error capturado en el catch parece un error de cuota o servidor (429, 402, 500), intentamos fallback
+            if (str_contains($message, '429') || str_contains($message, '402') || str_contains($message, '500') || str_contains($message, '503')) {
+                Log::info("Excepción detectada (posible error de API). Intentando fallback a Gemini...");
+
+                // Re-calculamos contexto y prompt si falló antes de las líneas 20-23 (poco probable pero por seguridad)
+                $context = $context ?? $this->buildContext();
+                $systemPrompt = $systemPrompt ?? $this->getSystemPrompt($context, $source);
+
+                $fallbackReply = $this->callGeminiDirectly($systemPrompt, $userMessage);
+                if ($fallbackReply) {
+                    return $fallbackReply;
+                }
+            }
+
             if ($source === 'whatsapp') {
                 return "";
             }
