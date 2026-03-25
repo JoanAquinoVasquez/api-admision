@@ -43,12 +43,25 @@ Recuerde que todos los pagos se realizan con su número de DNI.
 Nota. El pago de la inversión económica puede realizarlo en su totalidad o mensualmente, siempre que inicie el ciclo debe pagar la primera matrícula y la primera pensión. No hay ningún tipo de descuento.
 6. Procedimientos de Evaluación
 La evaluación se basa en un sistema de 100 puntos:
-• Maestrías y Doctorados:
-    ◦ Evaluación de méritos (CV): 20 puntos. (Se evalúa unicamente Grados académicos, Capacitación (Cursos y Diplomados) Acumulando total mínimo 100 horas y
-Antigüedad máxima 5 años, Publicación de revistas.)
-    ◦ Examen de conocimientos (30 preguntas en total incluyendo cultura general, razonamiento verbal y matemático): 40 puntos.
-    ◦ Entrevista personal (basada en el perfil de proyecto tentativo de tesis (solo para doctorados)): 40 puntos.
-• Segundas Especialidades: CV (20 pts), Examen (50 pts) y Entrevista (30 pts).
+1. Currículum Vitae (Evaluación de Méritos)
+- Puntaje Máximo: 20 Puntos (Aplica a todos los grados)
+- Grados Académicos: Evaluación de títulos y grados previos.
+- Capacitación (Cursos y Diplomados):
+    - Requisito de Vigencia: Antigüedad no mayor a 5 años.
+- Investigación: Publicación de artículos en revistas.
+2. Examen de Admisión
+- Puntaje según Grado Académico:
+    - Maestrías y Doctorados [40 Puntos]
+    - Segundas Especialidades [50 Puntos]
+- Temario para todos los programas (Maestrías, Doctorados y Segundas Especialidades): Cultura general, razonamiento verbal y razonamiento matemático.
+3. Entrevista Personal
+- Puntaje según Grado Académico:
+    - Doctorados [40 Puntos]:
+        - Enfoque: Basada estrictamente en el Perfil de Proyecto Tentativo de Tesis.
+    - Maestrías [40 Puntos]:
+        - Enfoque: Perfil profesional y aptitud académica.
+    - Segundas Especialidades [30 Puntos]:
+        - Enfoque: Evaluación de perfil y competencias específicas.
 7. Oferta Académica, Vacantes y Horarios
 • Vacantes: La mayoría de los programas (Maestrías, Doctorados y Segundas Especialidades) ofrecen un mínimo de 30 vacantes.
 • Horarios de clases: Sábados y domingos de 08:00 a.m. a 01:00 p.m. y de 02:00 p.m. a 06:00 p.m (Tener en cuenta que en caso de los programas que tienen modalidad SEMIPRESENCIAL, una semana es virtual y la otra presencial).

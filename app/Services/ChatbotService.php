@@ -35,6 +35,8 @@ class ChatbotService
                 throw new \Exception('OPENROUTER_API_KEY no está configurada.');
             }
 
+            $model = env('OPENROUTER_MODEL', 'google/gemini-2.0-flash-001');
+
             $response = Http::retry(3, 1000)
                 ->withHeaders([
                     'Authorization' => 'Bearer ' . $apiKey,
@@ -42,17 +44,29 @@ class ChatbotService
                     'X-Title' => 'EPG UNPRG Chatbot',
                     'Content-Type' => 'application/json',
                 ])->post("https://openrouter.ai/api/v1/chat/completions", [
-                        'model' => 'openrouter/free', // Usa la IA gratuita automática
+                        'model' => $model,
                         'messages' => [
                             ['role' => 'system', 'content' => $systemPrompt],
                             ['role' => 'user', 'content' => $userMessage],
                         ],
-                        'temperature' => 0.4,
-                        'max_tokens' => 2048,
+                        'temperature' => 0.2, // Menor temperatura = respuestas más precisas y menos "creativas"
+                        'max_tokens' => 1500,
                     ]);
 
             if ($response->failed()) {
-                Log::warning('OpenRouter API Error: ' . $response->body());
+                $status = $response->status();
+                Log::warning("OpenRouter API Error (Status $status): " . $response->body());
+
+                // Si es un error de límite de cuota (429) o falta de saldo (402), intentamos Gemini directo
+                if ($status === 429 || $status === 402 || $status === 503 || $status === 500) {
+                    Log::info("Iniciando fallback directo a Gemini API para el mensaje: '{$userMessage}'");
+                    $fallbackReply = $this->callGeminiDirectly($systemPrompt, $userMessage);
+
+                    if ($fallbackReply) {
+                        return $fallbackReply;
+                    }
+                }
+
                 if ($source === 'whatsapp') {
                     return "";
                 }
@@ -65,8 +79,8 @@ class ChatbotService
             $botReply = $data['choices'][0]['message']['content'] ?? null;
 
             if (!$botReply || trim($botReply) === '') {
-                Log::info("Gemini devolvió respuesta vacía o filtrada para: '{$userMessage}'");
-                // Si Gemini bloqueó la respuesta por filtros o devolvió vacío
+                Log::info("El modelo devolvió respuesta vacía o filtrada para: '{$userMessage}'");
+                // Fallback amigable
                 return "¡De nada! Si tienes más dudas sobre el proceso de Admisión 2026-I o algún programa de la UNPRG, estoy para ayudarte.";
             }
 
@@ -138,28 +152,100 @@ class ChatbotService
         }
 
         return <<<EOT
-Eres el Asistente Virtual Oficial de la Escuela de Posgrado (EPG) de la UNPRG. Solo respondes basándote en la información ACTUAL y OFICIAL proporcionada.
+Eres el Asistente Virtual Oficial de la Escuela de Posgrado (EPG) de la UNPRG. Tu objetivo es ayudar a los postulantes con información PRECISA, ACTUAL y OFICIAL sobre el proceso de ADMISIÓN 2026-I.
 
-### DATABASE CONTEXT
+### CONTEXTO DE INFORMACIÓN (Única fuente de verdad)
 {$context}
 
-### REGLAS DE ORO
-1. EXCLUSIVIDAD (CRÍTICO): Este canal es ÚNICAMENTE para ADMISIÓN.
-   - Si preguntan sobre ESTADO DE DEUDA, REANUDAR MAESTRÍA/ESTUDIOS, TRÁMITES DE SUSTENTACIÓN/GRADO o CUALQUER OTRO TRÁMITE ADMINISTRATIVO:
-     * Responde que: "Este canal atiende exclusivamente procesos de Admisión. Para tu solicitud (deudas, reingresos o grados), favor de coordinar con Mesa de Partes vía correo: mesadepartes_epg@unprg.edu.pe".
-2. NO SALUDES ni uses introducciones. Ve DIRECTO a la información.
-3. Si el usuario pregunta cosas generales, NO mandes toda la lista. Responde de forma breve y pregunta por el programa específico.
-4. Solo proporciona el link de Drive si el usuario especifica un programa.
-5. FORMATO: Usa un SOLO asterisco (*) para negritas.
-6. COMUNIDAD: Solo cuando el usuario te agradezca o se esté despidiendo (ej: "gracias", "chau", "listo"), invítalo a unirse a nuestra comunidad oficial: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll
-7. SI NO SABES LA RESPUESTA o si el usuario pide HABLAR CON UN ASESOR/PERSONA REAL/HUMANO:
-   - Responde de forma amable indicando que como asistente virtual no tienes esa información o que el usuario debe contactar a un asesor humano a los números brindados al final.
-   - NO inventes información.
-   - Solo mantente en SILENCIO (cadena vacía) si te preguntan algo COMPLETAMENTE ajeno a la UNPRG o la educación (ej: recetas, deportes internacionales, etc).
-8. AL FINAL de cada respuesta (siempre que NO esté vacía), añade la firma: 🤖 _Asistente Virtual de la EPG-UNPRG_{$contactInstructions}
+### REGLAS DE RESPUESTA (Obligatorias)
+1. EXCLUSIVIDAD DE ADMISIÓN: Este canal es SOLO para ADMISIÓN.
+   - Si detectas intención sobre: ESTADO DE DEUDA, REANUDAR ESTUDIOS, TRÁMITES DE GRADO, o CUALQUIER trámite administrativo de alumnos regulares.
+   - RESPONDE: "Este canal atiende exclusivamente procesos de Admisión de Posgrado. Para tu solicitud (deudas, reingresos o grados), por favor contacta a Mesa de Partes: mesadepartes_epg@unprg.edu.pe".
 
-Usuario pregunta:
+2. ESTILO Y FORMATO:
+   - Sé directo, amable y profesional.
+   - NO uses introducciones como "Claro, con gusto te ayudo" o "Según la información...". Ve directo al grano.
+   - Usa un SOLO asterisco (*) para poner en negrita palabras clave (ej: *Inscripciones*).
+   - Máximo 3-4 párrafos cortos por respuesta. Usa listas si hay varios puntos.
+
+3. MANEJO DE PROGRAMAS:
+   - Si preguntan en general, menciona que tenemos Maestrías, Doctorados y Segundas Especialidades, y pregunta qué área le interesa.
+   - Solo da el link del Brochure/Drive si el usuario pregunta por un programa específico.
+   - ADVERTENCIA CRÍTICA: Recuerda siempre que los programas requieren un MÍNIMO de 30 inscritos para aperturarse.
+
+4. CIERRE Y COMUNIDAD:
+   - Solo cuando detectes agradecimiento o despedida (gracias, chau, etc.), invita a la comunidad: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll
+
+5. ESCALAMIENTO:
+   - Si no tienes la información exacta en el contexto, NO INVENTES. 
+   - Di: "Lo siento, como asistente virtual de admisión no cuento con esa información específica. Por favor, contacta a un asesor humano..." (usa los datos de contacto al final).
+
+6. FILTRO DE IDIOMA/CONTENIDO:
+   - Responde siempre en Español.
+   - Ignora y devuelve vacío si el mensaje es ofensivo o totalmente ajeno a educación/UNPRG.
+
+AL FINAL de cada respuesta (siempre que NO esté vacía), añade la firma:
+🤖 *Asistente Virtual de la EPG-UNPRG*{$contactInstructions}
+
+Pregunta del postulante:
 EOT;
     }
 
+    private function callGeminiDirectly(string $systemPrompt, string $userMessage): ?string
+    {
+        $apiKey = env('GEMINI_API_KEY');
+        if (!$apiKey) {
+            Log::error('Fallback fallido: GEMINI_API_KEY no configurada.');
+            return null;
+        }
+
+        // Lista de modelos a intentar en orden de prioridad
+        $models = [
+            'gemini-3.1-flash-lite-preview',
+            'gemini-2.5-flash'
+        ];
+
+        foreach ($models as $modelName) {
+            try {
+                Log::info("Intentando fallback directo con el modelo: {$modelName}");
+
+                $url = "https://generativelanguage.googleapis.com/v1beta/models/{$modelName}:generateContent?key=" . $apiKey;
+
+                $response = Http::timeout(10)->post($url, [
+                    'system_instruction' => [
+                        'parts' => [
+                            ['text' => $systemPrompt]
+                        ]
+                    ],
+                    'contents' => [
+                        [
+                            'role' => 'user',
+                            'parts' => [
+                                ['text' => $userMessage]
+                            ]
+                        ]
+                    ],
+                    'generationConfig' => [
+                        'temperature' => 0.4,
+                        'maxOutputTokens' => 2000,
+                    ]
+                ]);
+
+                if ($response->successful()) {
+                    $botReply = $response->json('candidates.0.content.parts.0.text');
+                    if ($botReply) {
+                        return $botReply;
+                    }
+                }
+
+                Log::warning("Error con el modelo {$modelName}: " . $response->body());
+                // Si llegamos aquí, el modelo falló, el bucle intentará el siguiente
+
+            } catch (\Exception $e) {
+                Log::error("Excepción con el modelo {$modelName}: " . $e->getMessage());
+            }
+        }
+
+        return null;
+    }
 }
