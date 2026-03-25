@@ -1,9 +1,16 @@
+# Usar versión específica de PHP 8.2 (CloudLinux)
+<IfModule mime_module>
+  AddHandler application/x-httpd-alt-php82 .php .php8 .phtml
+</IfModule>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
 
     RewriteEngine On
+    # Importante: Si estás usando el enlace simbólico api-admision
+    RewriteBase /api-admision/
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
@@ -20,6 +27,10 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>
 
 
 ############## EPG ##############
