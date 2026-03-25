@@ -1,0 +1,31 @@
+name: Deploy API to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Server via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_API_DIR }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/vendor/**
+            **/.env
+            **/storage/**/*.php
+            **/storage/framework/**
+            **/storage/logs/**
+            **/bootstrap/cache/**
