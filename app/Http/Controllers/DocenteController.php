@@ -208,8 +208,7 @@ class DocenteController extends BaseController
                 return $this->errorResponse('No se encontró la inscripción del postulante', 404);
             }
 
-            $gradoId = $inscripcion->programa->grado_id;
-            $maxNota = ($gradoId == 3) ? 20 : 30; // 3: SEGUNDA ESPECIALIDAD PROFESIONAL
+            $maxNota = 20; // Puntaje máximo de CV para todos los grados (Maestría, Doctorado y Segunda Especialidad)
 
             $validated = $request->validate([
                 'postulante_id' => 'required|exists:inscripcions,postulante_id',

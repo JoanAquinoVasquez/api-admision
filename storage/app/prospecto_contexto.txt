@@ -44,23 +44,20 @@ Nota. El pago de la inversión económica puede realizarlo en su totalidad o men
 6. Procedimientos de Evaluación
 La evaluación se basa en un sistema de 100 puntos:
 1. Currículum Vitae (Evaluación de Méritos)
-- Puntaje Máximo: 20 Puntos (Aplica a todos los grados)
+- Puntaje Máximo: 20 Puntos (Aplica a todos los grados: Maestrías, Doctorados y Segundas Especialidades)
 - Grados Académicos: Evaluación de títulos y grados previos.
 - Capacitación (Cursos y Diplomados):
     - Requisito de Vigencia: Antigüedad no mayor a 5 años.
 - Investigación: Publicación de artículos en revistas.
 2. Examen de Admisión
-- Puntaje según Grado Académico:
-    - Maestrías y Doctorados [40 Puntos]
-    - Segundas Especialidades [50 Puntos]
-- Temario para todos los programas (Maestrías, Doctorados y Segundas Especialidades): Cultura general, razonamiento verbal y razonamiento matemático.
+- Duración de 1 hora y puntaje de 45 puntos, temario para todos los programas (Maestrías, Doctorados y Segundas Especialidades): Cultura general, razonamiento verbal y razonamiento matemático.
 3. Entrevista Personal
 - Puntaje según Grado Académico:
-    - Doctorados [40 Puntos]:
+    - Doctorados [35 Puntos]:
         - Enfoque: Basada estrictamente en el Perfil de Proyecto Tentativo de Tesis.
-    - Maestrías [40 Puntos]:
+    - Maestrías [35 Puntos]:
         - Enfoque: Perfil profesional y aptitud académica.
-    - Segundas Especialidades [30 Puntos]:
+    - Segundas Especialidades [35 Puntos]:
         - Enfoque: Evaluación de perfil y competencias específicas.
 7. Oferta Académica, Vacantes y Horarios
 • Vacantes: La mayoría de los programas (Maestrías, Doctorados y Segundas Especialidades) ofrecen un mínimo de 30 vacantes.

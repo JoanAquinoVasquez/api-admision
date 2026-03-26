@@ -74,8 +74,7 @@ class NotaController extends BaseController
                 return $this->errorResponse('Inscripción no encontrada', 404);
             }
 
-            $gradoId = $inscripcion->programa->grado_id;
-            $maxNota = ($gradoId == 3) ? 30 : 40; // 3: SEGUNDA ESPECIALIDAD PROFESIONAL
+            $maxNota = 35; // Puntaje máximo para entrevista personal en todos los grados (Maestría, Doctorado y Segunda Especialidad)
 
             $validated = $request->validate([
                 'inscripcion_id' => 'required|exists:inscripcions,id',
