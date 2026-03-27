@@ -27,20 +27,53 @@ class ChatbotService
                 return "🤖 El Asistente Virtual ya se encuentra activo para este chat. ¿En qué puedo ayudarte?";
             }
 
+            // 3. INTENTO 1: LLamada directa a Gemini (Prioridad del Usuario)
+            Log::info("Chatbot: Intentando Gemini como proveedor principal.");
+            $botReply = $this->callGeminiDirectly($systemPrompt, $userMessage);
 
-            // 3. Llamar a la API de OpenRouter (Estabilidad superior con modelos gratuitos)
+            if ($botReply && trim($botReply) !== '') {
+                return $botReply;
+            }
+
+            // 4. FALLBACK: Llamar a OpenRouter si Gemini falló
+            Log::warning("Chatbot: Gemini falló o devolvió respuesta vacía. Intentando fallback a OpenRouter.");
+            $botReply = $this->callOpenRouter($systemPrompt, $userMessage);
+
+            if ($botReply && trim($botReply) !== '') {
+                return $botReply;
+            }
+
+            // Si todo falla
+            if ($source === 'whatsapp') {
+                return "";
+            }
+            return "Lo siento, tuve un problema al procesar tu mensaje. Puedes escribirnos a admision_epg@unprg.edu.pe o al WhatsApp 995901454 / 924545013. Además únete a nuestra comunidad para estar informado de todas las novedades: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll";
+
+        } catch (\Exception $e) {
+            Log::error('Chatbot Service Error: ' . $e->getMessage());
+
+            if ($source === 'whatsapp') {
+                return "";
+            }
+            return "Lo siento, tuve un problema al responderte. Puedes escribirnos a admision_epg@unprg.edu.pe o al WhatsApp 995901454 / 924545013. Además únete a nuestra comunidad para estar informado de todas las novedades: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll";
+        }
+    }
+
+    private function callOpenRouter(string $systemPrompt, string $userMessage): ?string
+    {
+        try {
             $apiKey = env('OPENROUTER_API_KEY');
-
             if (!$apiKey) {
-                throw new \Exception('OPENROUTER_API_KEY no está configurada.');
+                Log::error('OpenRouter Error: API Key no configurada.');
+                return null;
             }
 
             $model = env('OPENROUTER_MODEL', 'google/gemini-2.0-flash-001');
 
-            $response = Http::retry(3, 1000)
+            $response = Http::retry(2, 500)
                 ->withHeaders([
                     'Authorization' => 'Bearer ' . $apiKey,
-                    'HTTP-Referer' => 'https://epgunprg.edu.pe', // Requerido por OpenRouter
+                    'HTTP-Referer' => 'https://epgunprg.edu.pe',
                     'X-Title' => 'EPG UNPRG Chatbot',
                     'Content-Type' => 'application/json',
                 ])->post("https://openrouter.ai/api/v1/chat/completions", [
@@ -49,67 +82,23 @@ class ChatbotService
                             ['role' => 'system', 'content' => $systemPrompt],
                             ['role' => 'user', 'content' => $userMessage],
                         ],
-                        'temperature' => 0.2, // Menor temperatura = respuestas más precisas y menos "creativas"
+                        'temperature' => 0.2,
                         'max_tokens' => 1500,
                     ]);
 
-            if ($response->failed()) {
-                $status = $response->status();
-                Log::warning("OpenRouter API Error (Status $status): " . $response->body());
-
-                // Si es un error de límite de cuota (429) o falta de saldo (402), intentamos Gemini directo
-                if ($status === 429 || $status === 402 || $status === 503 || $status === 500) {
-                    Log::info("Iniciando fallback directo a Gemini API para el mensaje: '{$userMessage}'");
-                    $fallbackReply = $this->callGeminiDirectly($systemPrompt, $userMessage);
-
-                    if ($fallbackReply) {
-                        return $fallbackReply;
-                    }
-                }
-
-                if ($source === 'whatsapp') {
-                    return "";
-                }
-                return "Lo siento, tuve un problema al procesar tu mensaje. Puedes escribirnos a admision_epg@unprg.edu.pe o al WhatsApp 995901454 / 924545013. Además únete a nuestra comunidad para estar informado de todas las novedades: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll";
+            if ($response->successful()) {
+                $data = $response->json();
+                return $data['choices'][0]['message']['content'] ?? null;
             }
 
-            $data = $response->json();
-
-            // Extraer respuesta (Standard OpenAI format for OpenRouter)
-            $botReply = $data['choices'][0]['message']['content'] ?? null;
-
-            if (!$botReply || trim($botReply) === '') {
-                Log::info("El modelo devolvió respuesta vacía o filtrada para: '{$userMessage}'");
-                // Fallback amigable
-                return "¡De nada! Si tienes más dudas sobre el proceso de Admisión 2026-I o algún programa de la UNPRG, estoy para ayudarte.";
-            }
-
-            return $botReply;
-
+            Log::error("OpenRouter API Error: " . $response->body());
+            return null;
         } catch (\Exception $e) {
-            $message = $e->getMessage();
-            Log::error('Chatbot Service Error: ' . $message);
-
-            // Si el error capturado en el catch parece un error de cuota o servidor (429, 402, 500), intentamos fallback
-            if (str_contains($message, '429') || str_contains($message, '402') || str_contains($message, '500') || str_contains($message, '503')) {
-                Log::info("Excepción detectada (posible error de API). Intentando fallback a Gemini...");
-
-                // Re-calculamos contexto y prompt si falló antes de las líneas 20-23 (poco probable pero por seguridad)
-                $context = $context ?? $this->buildContext();
-                $systemPrompt = $systemPrompt ?? $this->getSystemPrompt($context, $source);
-
-                $fallbackReply = $this->callGeminiDirectly($systemPrompt, $userMessage);
-                if ($fallbackReply) {
-                    return $fallbackReply;
-                }
-            }
-
-            if ($source === 'whatsapp') {
-                return "";
-            }
-            return "Lo siento, tuve un problema al responderte. Puedes escribirnos a admision_epg@unprg.edu.pe o al WhatsApp 995901454 / 924545013. Además únete a nuestra comunidad para estar informado de todas las novedades: https://chat.whatsapp.com/FQjt9M0b5hn56cQ8NrYlll";
+            Log::error("Excepción en callOpenRouter: " . $e->getMessage());
+            return null;
         }
     }
+
 
     public function getContextForBot(): string
     {
