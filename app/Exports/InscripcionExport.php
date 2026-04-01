@@ -28,6 +28,7 @@ class InscripcionExport implements FromCollection, WithHeadings, WithStyles
     {
         $query = Inscripcion::with([
             'postulante.distrito.provincia.departamento',
+            'postulante.documentos',
             'programa.grado',
             'programa.facultad',
         ]);
@@ -67,6 +68,10 @@ class InscripcionExport implements FromCollection, WithHeadings, WithStyles
                 'Validad Física' => $inscripcion->val_fisico ? 'Validado' : 'Pendiente',
                 'Observación' => $inscripcion->observacion,
                 'Fecha de Inscripción' => $inscripcion->created_at,
+                'Link CV' => collect($inscripcion->postulante->documentos)->firstWhere('tipo', 'Curriculum')->url ?? 'N/A',
+                'Link Foto' => collect($inscripcion->postulante->documentos)->firstWhere('tipo', 'Foto')->url ?? 'N/A',
+                'Link DNI' => collect($inscripcion->postulante->documentos)->firstWhere('tipo', 'DocumentoIdentidad')->url ?? 'N/A',
+                'Link Voucher' => collect($inscripcion->postulante->documentos)->firstWhere('tipo', 'Voucher')->url ?? 'N/A',
             ];
         });
     }
@@ -98,6 +103,10 @@ class InscripcionExport implements FromCollection, WithHeadings, WithStyles
                 'Validación Física',
                 'Observación',
                 'Fecha Inscripción',
+                'Link CV',
+                'Link Foto',
+                'Link DNI',
+                'Link Voucher',
             ],
         ];
     }
@@ -105,10 +114,10 @@ class InscripcionExport implements FromCollection, WithHeadings, WithStyles
     public function styles(Worksheet $sheet)
     {
         // Ajustar el formato de texto a la izquierda para todas las celdas
-        $sheet->getStyle('A:S')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-        $sheet->mergeCells('A1:S1'); // Fusionar celdas desde A1 hasta L1
-        $sheet->setAutoFilter('A2:S2'); // Aplicar estilo a la primera fila (encabezados)
-        $sheet->getStyle('A1:S1')->applyFromArray([
+        $sheet->getStyle('A:W')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->mergeCells('A1:W1'); // Fusionar celdas desde A1 hasta W1
+        $sheet->setAutoFilter('A2:W2'); // Aplicar estilo a la primera fila (encabezados)
+        $sheet->getStyle('A1:W1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'], // Color de texto blanco
@@ -123,7 +132,7 @@ class InscripcionExport implements FromCollection, WithHeadings, WithStyles
             ],
         ]);
 
-        $sheet->getStyle('A2:S2')->applyFromArray([
+        $sheet->getStyle('A2:W2')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'], // Color de texto blanco
@@ -138,7 +147,7 @@ class InscripcionExport implements FromCollection, WithHeadings, WithStyles
         $standardHeadings = $this->headings()[1];
 
         $columnIndex = 'A';
-        $lastColumnIndex = 'S'; // Última columna a la que deseas aplicar el ajuste
+        $lastColumnIndex = 'W'; // Última columna a la que deseas aplicar el ajuste
 
         while ($columnIndex <= $lastColumnIndex) {
             $dimension = $sheet->getColumnDimension($columnIndex);

@@ -7,7 +7,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Queue\SerializesModels;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AdmisionAccessEmail extends Mailable
 {
@@ -50,6 +52,12 @@ class AdmisionAccessEmail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        // Generar el PDF dinámicamente con los datos del usuario
+        $pdf = Pdf::loadView('pdf.manual_usuario', ['user' => $this->user]);
+
+        return [
+            Attachment::fromData(fn () => $pdf->output(), 'Manual_Usuario_Sistema_Admision.pdf')
+                ->withMime('application/pdf'),
+        ];
     }
 }

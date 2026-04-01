@@ -25,6 +25,19 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\Auth\AuthDocenteController;
 use Illuminate\Support\Facades\Route;
 
+// Ruta temporal para previsualizar el diseño del manual en PDF
+Route::get('/preview-manual', function () {
+    $user = (object) [
+        'name' => 'Usuario de Prueba (Previsualización)',
+        'email' => 'admin_prueba@unprg.edu.pe',
+        'roles' => [
+            (object) ['nombre' => 'Comisión de Admisión']
+        ]
+    ];
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.manual_usuario', ['user' => $user]);
+    return $pdf->stream('Previsualizacion_Manual_Sistema.pdf');
+});
+
 Route::middleware(['auth:api', 'active'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->middleware(['role:super-admin']);
     Route::get('users/{id}', [UserController::class, 'show'])->middleware(['role:super-admin']);
