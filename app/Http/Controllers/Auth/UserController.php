@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AdmisionAccessEmail;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -79,8 +81,15 @@ class UserController extends Controller
 
             DB::commit();
 
+            // Enviar correo de bienvenida al nuevo usuario
+            try {
+                Mail::to($user->email)->send(new AdmisionAccessEmail($user));
+            } catch (\Exception $mailException) {
+                Log::error('Error al enviar correo al usuario: ' . $mailException->getMessage());
+            }
+
             return response()->json([
-                'message' => 'Usuario creado exitosamente',
+                'message' => 'Usuario creado exitosamente. Se ha enviado un correo de acceso.',
                 'data'    => $user->load('roles'), // cargar roles asignados
             ], 201);
         } catch (\Exception $e) {
