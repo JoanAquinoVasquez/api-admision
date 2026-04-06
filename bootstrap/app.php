@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -62,12 +64,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (AuthenticationException $e, Request $request) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'authenticated' => false,
-                    'error' => 'No autenticado'
-                ], 401);
-            }
+            return response()->json([
+                'authenticated' => false,
+                'error' => 'No autenticado'
+            ], 401);
         });
 
         $exceptions->render(function (TokenExpiredException $e, Request $request) {
@@ -89,5 +89,19 @@ return Application::configure(basePath: dirname(__DIR__))
                 'authenticated' => false,
                 'error' => 'Error de autenticación: ' . $e->getMessage()
             ], 401);
+        });
+
+        $exceptions->render(function (AuthorizationException $e, Request $request) {
+            return response()->json([
+                'success' => false,
+                'error' => 'No tienes permisos para realizar esta acción'
+            ], 403);
+        });
+
+        $exceptions->render(function (ModelNotFoundException $e, Request $request) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Recurso no encontrado'
+            ], 404);
         });
     })->create();
