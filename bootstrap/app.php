@@ -30,6 +30,9 @@ return Application::configure(basePath: dirname(__DIR__))
     //     ['prefix' => 'api', 'middleware' => ['api', 'auth:api']],
     // )
     ->withMiddleware(function (Middleware $middleware) {
+        // API pura: nunca redirigir a 'login', lanzar AuthenticationException directamente
+        $middleware->redirectGuestsTo(fn() => null);
+
         $middleware->trustProxies(at: '*');
 
         $middleware->encryptCookies(except: [
@@ -63,45 +66,61 @@ return Application::configure(basePath: dirname(__DIR__))
     })
 
     ->withExceptions(function (Exceptions $exceptions) {
+
+        // 401 - No autenticado
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             return response()->json([
-                'authenticated' => false,
-                'error' => 'No autenticado'
+                'success' => false,
+                'message' => 'No autenticado',
             ], 401);
         });
 
+        // 401 - Token JWT expirado
         $exceptions->render(function (TokenExpiredException $e, Request $request) {
             return response()->json([
-                'authenticated' => false,
-                'error' => 'El token ha expirado'
+                'success' => false,
+                'message' => 'El token ha expirado',
             ], 401);
         });
 
+        // 401 - Token JWT inválido
         $exceptions->render(function (TokenInvalidException $e, Request $request) {
             return response()->json([
-                'authenticated' => false,
-                'error' => 'Token inválido'
+                'success' => false,
+                'message' => 'Token inválido',
             ], 401);
         });
 
+        // 401 - Error JWT genérico
         $exceptions->render(function (JWTException $e, Request $request) {
             return response()->json([
-                'authenticated' => false,
-                'error' => 'Error de autenticación: ' . $e->getMessage()
+                'success' => false,
+                'message' => 'Error de autenticación: ' . $e->getMessage(),
             ], 401);
         });
 
+        // 403 - Sin permisos
         $exceptions->render(function (AuthorizationException $e, Request $request) {
             return response()->json([
                 'success' => false,
-                'error' => 'No tienes permisos para realizar esta acción'
+                'message' => 'No tienes permisos para realizar esta acción',
             ], 403);
         });
 
+        // 404 - Modelo no encontrado
         $exceptions->render(function (ModelNotFoundException $e, Request $request) {
             return response()->json([
                 'success' => false,
-                'error' => 'Recurso no encontrado'
+                'message' => 'Recurso no encontrado',
             ], 404);
         });
+
+        // 500 - Cualquier otro error no manejado (red de seguridad)
+        $exceptions->render(function (\Throwable $e, Request $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error interno del servidor',
+            ], 500);
+        });
+
     })->create();
