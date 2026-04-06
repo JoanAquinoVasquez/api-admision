@@ -362,27 +362,22 @@ class VoucherService
      */
     public function getVoucherSummary(): array
     {
-        $vouchers = Voucher::with('conceptoPago')
-            ->whereHas('conceptoPago', function ($query) {
-                $query->whereNotIn('cod_concepto', ['00000001', '00000971', '00000970']);
-            })
-            ->get();
-        // Cálculos en el backend
-        $totalVouchers = $vouchers->count();
+        $baseQuery = Voucher::whereHas('conceptoPago', function ($query) {
+            $query->whereNotIn('cod_concepto', ['00000001', '00000971', '00000970']);
+        });
 
-        $cutoffDate = \Carbon\Carbon::parse('2025-04-27');
+        // Cálculos delegados a DB en lugar de hidratar todos los modelos a RAM
+        $totalVouchers = (clone $baseQuery)->count();
 
-        $totalRecaudado2026 = $vouchers->filter(function ($v) use ($cutoffDate) {
-            return \Carbon\Carbon::parse($v->fecha_pago)->greaterThan($cutoffDate);
-        })->sum('monto');
+        $cutoffDate = \Carbon\Carbon::parse('2025-04-27')->format('Y-m-d');
 
-        $totalRecaudado2025 = $vouchers->filter(function ($v) use ($cutoffDate) {
-            return \Carbon\Carbon::parse($v->fecha_pago)->lessThanOrEqualTo($cutoffDate);
-        })->sum('monto');
+        $totalRecaudado2026 = (clone $baseQuery)->whereDate('fecha_pago', '>', $cutoffDate)->sum('monto');
+        $totalRecaudado2025 = (clone $baseQuery)->whereDate('fecha_pago', '<=', $cutoffDate)->sum('monto');
 
-        $inscritos = $vouchers->where('estado', 0)->count();
+        $inscritos = (clone $baseQuery)->where('estado', 0)->count();
         $noInscritos = $totalVouchers - $inscritos;
-        $pagaloPeCount = $vouchers->where('agencia', '0987')->count();
+        
+        $pagaloPeCount = (clone $baseQuery)->where('agencia', '0987')->count();
         $bancoNacionCount = $totalVouchers - $pagaloPeCount;
 
         // Calcular porcentajes
@@ -390,11 +385,10 @@ class VoucherService
             return $totalVouchers > 0 ? round(($count / $totalVouchers) * 100, 1) : 0;
         };
 
-        // Datos a devolver al frontend
         return [
             'totalVouchers' => $totalVouchers,
-            'totalRecaudado2026' => $totalRecaudado2026,
-            'totalRecaudado2025' => $totalRecaudado2025,
+            'totalRecaudado2026' => (float) $totalRecaudado2026,
+            'totalRecaudado2025' => (float) $totalRecaudado2025,
             'inscritos' => $inscritos,
             'noInscritos' => $noInscritos,
             'pagaloPeCount' => $pagaloPeCount,

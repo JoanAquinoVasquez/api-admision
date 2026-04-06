@@ -31,21 +31,25 @@ class ResultadosService
             })
             ->get();
 
-        // Obtener todos los vouchers relevantes (solo matrícula y pensión)
-        $vouchers = Voucher::with('conceptoPago')
-            ->whereHas('conceptoPago', function ($q) {
-                $q->whereIn('cod_concepto', ['00000001', '00000003']);
-            })
-            ->get()
-            ->groupBy('num_iden');
+        // Extraemos conteos agrupados de vouchers usando DB raw para evitar N+1 o exceso de RAM
+        $vouchersCount = \Illuminate\Support\Facades\DB::table('vouchers')
+            ->join('concepto_pagos', 'vouchers.concepto_pago_id', '=', 'concepto_pagos.id')
+            ->whereIn('concepto_pagos.cod_concepto', ['00000001', '00000003'])
+            ->select('vouchers.num_iden', 'concepto_pagos.cod_concepto', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->groupBy('vouchers.num_iden', 'concepto_pagos.cod_concepto')
+            ->get();
+
+        $pagosLookup = [];
+        foreach ($vouchersCount as $row) {
+            $pagosLookup[$row->num_iden][$row->cod_concepto] = $row->total;
+        }
 
         // Mapear con nota final, datos requeridos y pagos
-        $postulantes = $inscripciones->map(function ($inscripcion) use ($vouchers) {
+        $postulantes = $inscripciones->map(function ($inscripcion) use ($pagosLookup) {
             $dni = $inscripcion->postulante->num_iden;
-            $pagos = $vouchers->get($dni, collect());
 
-            $pagosMatricula = $pagos->filter(fn($v) => $v->conceptoPago->cod_concepto === '00000001')->count();
-            $pagosPension = $pagos->filter(fn($v) => $v->conceptoPago->cod_concepto === '00000003')->count();
+            $pagosMatricula = $pagosLookup[$dni]['00000001'] ?? 0;
+            $pagosPension = $pagosLookup[$dni]['00000003'] ?? 0;
 
             return [
                 'inscripcion_id' => $inscripcion->id,

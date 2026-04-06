@@ -426,9 +426,13 @@ class ReportService
 
     public function getResumenGeneralInscripcion()
     {
-        $programas = Programa::with(['grado', 'inscripciones', 'facultad'])->get();
+        $programas = Programa::with(['grado', 'facultad'])->withCount('inscripciones')->get();
         $comision = ComisionAdmision::all();
-        $vouchers = Voucher::all();
+
+        // Extraer calculos de Vouchers a SQL
+        $totalVouchers = Voucher::count();
+        $vouchersPY = Voucher::where('agencia', '0987')->count();
+        $vouchersBN = $totalVouchers - $vouchersPY;
 
         $resumen = [];
 
@@ -442,7 +446,7 @@ class ReportService
             $totalGeneral = 0;
 
             foreach ($programasFiltrados as $programa) {
-                $cantidad = $programa->inscripciones->count();
+                $cantidad = $programa->inscripciones_count ?? 0;
                 $totalGeneral += $cantidad;
 
                 $abreviatura_grado = match ($programa->grado->id) {
@@ -474,9 +478,9 @@ class ReportService
             $totales['TOTAL'] = $totalGeneral;
 
             $vouchersArray = [];
-            $vouchersArray['VOUCHERS_BN'] = $vouchers->where('agencia', '!=', '0987')->count();
-            $vouchersArray['VOUCHERS_PY'] = $vouchers->where('agencia', '0987')->count();
-            $vouchersArray['VOUCHERS_TOTAL'] = $vouchers->count();
+            $vouchersArray['VOUCHERS_BN'] = $vouchersBN;
+            $vouchersArray['VOUCHERS_PY'] = $vouchersPY;
+            $vouchersArray['VOUCHERS_TOTAL'] = $totalVouchers;
 
             $resumen[] = [
                 'comision' => [
@@ -527,7 +531,16 @@ class ReportService
      */
     public function getResumenInscripcionData()
     {
-        $programas = Programa::with(['grado', 'facultad', 'conceptoPago', 'inscripciones'])->get();
+        $programas = Programa::with(['grado', 'facultad', 'conceptoPago'])
+            ->withCount([
+                'inscripciones',
+                'inscripciones as val_digital_count' => function ($query) {
+                    $query->where('val_digital', 1);
+                },
+                'inscripciones as val_fisico_count' => function ($query) {
+                    $query->where('val_fisico', 1);
+                }
+            ])->get();
 
         return $programas->map(function ($programa) {
             // Asignar abreviatura del grado
@@ -539,26 +552,27 @@ class ReportService
             };
 
             // Calcular cobertura
+            $inscripcionesCount = $programa->inscripciones_count ?? 0;
             $cobertura = $programa->vacantes > 0
-                ? round(($programa->inscripciones->count() / $programa->vacantes) * 100, 2)
+                ? round(($inscripcionesCount / $programa->vacantes) * 100, 2)
                 : 0;
 
             // Calcular recaudación de 0970 y 0971
             if ($programa->concepto_pago_id === 3) {
-                $recaudacion = 'S/. ' . number_format($programa->inscripciones->count() * 200, 2, '.', ',');
+                $recaudacion = 'S/. ' . number_format($inscripcionesCount * 200, 2, '.', ',');
             } else {
-                $recaudacion = 'S/. ' . number_format($programa->inscripciones->count() * ($programa->conceptoPago->monto ?? 0), 2, '.', ',');
+                $recaudacion = 'S/. ' . number_format($inscripcionesCount * ($programa->conceptoPago->monto ?? 0), 2, '.', ',');
             }
 
-            // Contar validados
-            $val_digital = $programa->inscripciones->where('val_digital', 1)->count();
-            $val_fisico = $programa->inscripciones->where('val_fisico', 1)->count();
+            // Contar validados usando withCount variables
+            $val_digital = $programa->val_digital_count ?? 0;
+            $val_fisico = $programa->val_fisico_count ?? 0;
 
             return [
                 'id' => $programa->id,
                 'grado_programa' => $abreviatura_grado . ' en ' . $programa->nombre,
                 'facultad' => $programa->facultad->siglas,
-                'inscritos' => $programa->inscripciones->count(),
+                'inscritos' => $inscripcionesCount,
                 'vacantes' => $programa->vacantes,
                 'cobertura' => $cobertura,
                 'recaudacion' => $recaudacion,
@@ -573,30 +587,28 @@ class ReportService
      */
     public function getEstadoInscripcionData()
     {
-        $inscripciones = Inscripcion::with([
-            'programa.grado',
-            'programa.facultad',
-            'postulante.documentos',
-            'postulante.distrito.provincia.departamento',
-            'voucher.conceptoPago'
-        ])->get();
-
-        // Totales generales
-        $totalInscritos = $inscripciones->count();
+        // Totales generales optimizados a DB raw counts
+        $totalInscritos = Inscripcion::count();
 
         // Contadores de validaciones digitales
-        $valDigital0 = $inscripciones->where('val_digital', 0)->count();
-        $valDigital1 = $inscripciones->where('val_digital', 1)->count();
-        $valDigital2 = $inscripciones->where('val_digital', 2)->count();
+        $valDigital0 = Inscripcion::where('val_digital', 0)->count();
+        $valDigital1 = Inscripcion::where('val_digital', 1)->count();
+        $valDigital2 = Inscripcion::where('val_digital', 2)->count();
 
         // Contadores de validaciones físicas
-        $valFisico0 = $inscripciones->where('val_fisico', 0)->count();
-        $valFisico1 = $inscripciones->where('val_fisico', 1)->count();
+        $valFisico0 = Inscripcion::where('val_fisico', 0)->count();
+        $valFisico1 = Inscripcion::where('val_fisico', 1)->count();
 
-        // Contadores por grado
-        $grado1 = $inscripciones->where('programa.grado_id', 1)->count();
-        $grado2 = $inscripciones->where('programa.grado_id', 2)->count();
-        $grado3 = $inscripciones->where('programa.grado_id', 3)->count();
+        // Contadores por grado mediante agrupación en BD SQL
+        $gradoCounts = \Illuminate\Support\Facades\DB::table('inscripcions')
+                        ->join('programas', 'inscripcions.programa_id', '=', 'programas.id')
+                        ->select('programas.grado_id', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+                        ->groupBy('programas.grado_id')
+                        ->pluck('total', 'grado_id');
+                        
+        $grado1 = $gradoCounts[1] ?? 0;
+        $grado2 = $gradoCounts[2] ?? 0;
+        $grado3 = $gradoCounts[3] ?? 0;
 
         return [
             'total_inscritos' => $totalInscritos,

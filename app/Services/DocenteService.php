@@ -246,9 +246,19 @@ class DocenteService
     public function getResumenDocenteNotas()
     {
         $docentes = Docente::with([
-            'programas.grado',
-            'programas.inscripciones' => function ($query) {
-                $query->where('val_fisico', 1)->with('nota');
+            'programas' => function ($query) {
+                $query->with('grado')
+                      ->withCount([
+                          'inscripciones as total_postulantes' => function($query) {
+                              $query->where('val_fisico', 1);
+                          },
+                          'inscripciones as con_nota_cv' => function($query) {
+                              $query->where('val_fisico', 1)
+                                    ->whereHas('nota', function($q){
+                                        $q->whereNotNull('cv');
+                                    });
+                          }
+                      ]);
             }
         ])->get();
 
@@ -260,10 +270,8 @@ class DocenteService
             $evaluadosGeneral = 0;
 
             foreach ($docente->programas as $programa) {
-                $totalPostulantes = $programa->inscripciones->count();
-                $conNota = $programa->inscripciones->filter(function ($inscripcion) {
-                    return $inscripcion->nota !== null && $inscripcion->nota->cv !== null;
-                })->count();
+                $totalPostulantes = $programa->total_postulantes ?? 0;
+                $conNota = $programa->con_nota_cv ?? 0;
 
                 $totalGeneral += $totalPostulantes;
                 $evaluadosGeneral += $conNota;
