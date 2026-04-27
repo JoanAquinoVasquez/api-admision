@@ -44,6 +44,13 @@ Route::middleware(['auth:api', 'active'])->group(function () {
     Route::post('users', [UserController::class, 'store'])->middleware(['role:super-admin']);
     Route::post('users/{id}', [UserController::class, 'update'])->middleware(['role:super-admin']);
 
+    // Gestión de Docentes
+    Route::get('/docentes', [DocenteController::class, 'index'])->middleware(['role:super-admin|admin']);
+    Route::post('/docentes', [DocenteController::class, 'store'])->middleware(['role:super-admin|admin']);
+    Route::get('/docentes/{id}', [DocenteController::class, 'show'])->middleware(['role:super-admin|admin']);
+    Route::post('/docentes/{id}', [DocenteController::class, 'update'])->middleware(['role:super-admin|admin']);
+    Route::delete('/docentes/{id}', [DocenteController::class, 'destroy'])->middleware(['role:super-admin|admin']);
+
     Route::get('/programas-aperturados-pdf', [InscripcionController::class, 'reportProgramasAperturadosPDF']);
     Route::get('/programas-no-aperturados-pdf', [InscripcionController::class, 'reportProgramasNoAperturadosPDF']);
     Route::get('/preinscritos-totales', [ProgramaController::class, 'preInscritosTotales']);
@@ -212,7 +219,12 @@ Route::middleware(['auth.docente.cookie', 'active:docente'])->group(function () 
     Route::post('/registrar-nota', [DocenteController::class, 'registrarNota']);
     Route::get('/postulantes-notasCV/{idPrograma}', [DocenteController::class, 'reportNotasCV']);
     Route::post('/postulantes-notasCV-multiple', [DocenteController::class, 'reportNotasCVMultiple']);
+
+    // Nuevas rutas para Reportes de Entrevista
+    Route::get('/postulantes-notasEntrevista/{idPrograma}', [DocenteController::class, 'reportNotasEntrevista']);
+    Route::post('/postulantes-notasEntrevista-multiple', [DocenteController::class, 'reportNotasEntrevistaMultiple']);
 });
+
 
 // Login y Logout de Docente
 Route::post('docente-login', [AuthDocenteController::class, 'login']);

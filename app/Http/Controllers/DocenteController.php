@@ -54,6 +54,7 @@ class DocenteController extends BaseController
                 'dni' => 'required|string|max:8|unique:docentes,dni',
                 'email' => 'required|email|max:255|unique:docentes,email',
                 'password' => 'required|string|min:8',
+                'tipo' => 'required|string|in:cv,entrevista',
             ]);
 
             $docente = $this->docenteService->create($validated);
@@ -81,6 +82,7 @@ class DocenteController extends BaseController
                 'email' => 'sometimes|email|max:255|unique:docentes,email,' . $id,
                 'password' => 'sometimes|string|min:8',
                 'estado' => 'sometimes|boolean',
+                'tipo' => 'sometimes|string|in:cv,entrevista',
             ]);
 
             $docente = $this->docenteService->update($id, $validated);
@@ -208,18 +210,20 @@ class DocenteController extends BaseController
                 return $this->errorResponse('No se encontró la inscripción del postulante', 404);
             }
 
-            $maxNota = 20; // Puntaje máximo de CV para todos los grados (Maestría, Doctorado y Segunda Especialidad)
+            $docente = Auth::guard('docente')->user();
+            $maxNota = $docente->tipo === 'entrevista' ? 35 : 20;
 
             $validated = $request->validate([
                 'postulante_id' => 'required|exists:inscripcions,postulante_id',
-                'notaCv' => "required|numeric|min:0|max:{$maxNota}",
+                'notaValue' => "required|numeric|min:0|max:{$maxNota}",
             ], [
-                'notaCv.max' => "La nota máxima para este programa es {$maxNota}."
+                'notaValue.max' => "La nota máxima para este programa es {$maxNota}."
             ]);
 
             $nota = $this->docenteService->registrarNota(
                 $validated['postulante_id'],
-                $validated['notaCv']
+                $validated['notaValue'],
+                $docente->tipo
             );
 
             // Obtener datos para el log claro
@@ -228,7 +232,9 @@ class DocenteController extends BaseController
             $nombrePostulante = "{$postulante->ap_paterno} {$postulante->ap_materno}, {$postulante->nombres}";
             $nombreDocente = "{$docente->ap_paterno} {$docente->ap_materno}, {$docente->nombres}";
 
-            $this->logActivity('Nota CV registrada', null, [
+            $notaSlug = $docente->tipo === 'entrevista' ? 'entrevista' : 'CV';
+
+            $this->logActivity('Nota ' . $notaSlug . ' registrada', null, [
                 'docente' => $nombreDocente,
                 'subject' => [
                     'nombres' => $postulante->nombres,
@@ -239,8 +245,8 @@ class DocenteController extends BaseController
                 ],
                 'programa' => $inscripcion->programa->nombre,
                 'grado' => $inscripcion->programa->grado->nombre,
-                'nota_cv' => $validated['notaCv'],
-                'mensaje' => "El docente {$nombreDocente} registró la nota CV de {$validated['notaCv']} al postulante {$nombrePostulante}"
+                'nota' => $validated['notaValue'],
+                'mensaje' => "El docente {$nombreDocente} registró la nota {$notaSlug} de {$validated['notaValue']} al postulante {$nombrePostulante}"
             ]);
 
             return $this->successResponse($nota, 'Nota registrada correctamente');
@@ -298,9 +304,60 @@ class DocenteController extends BaseController
     }
 
     /**
+     * Generate Entrevista grades report PDF
+     */
+    public function reportNotasEntrevista($idPrograma)
+    {
+        try {
+            $pdf = $this->docenteService->generateReportNotasEntrevista($idPrograma);
+
+            if (!$pdf) {
+                return $this->errorResponse('No hay notas de entrevista registradas', 404);
+            }
+
+            $this->logActivity('Reporte de notas Entrevista generado', null, [
+                'programa_id' => $idPrograma,
+            ]);
+
+            return $pdf->stream("notasEntrevista-postulantes_" . now()->format('d-m-Y_His') . ".pdf");
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al generar el reporte de entrevista: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Generate multiple Entrevista grades report PDF
+     */
+    public function reportNotasEntrevistaMultiple(Request $request)
+    {
+        try {
+            $idProgramas = $request->input('ids');
+
+            if (empty($idProgramas) || !is_array($idProgramas)) {
+                return $this->errorResponse('No se enviaron programas válidos', 400);
+            }
+
+            $pdf = $this->docenteService->generateReportNotasEntrevistaMultiple($idProgramas);
+
+            if (!$pdf) {
+                return $this->errorResponse('No hay postulantes evaluados para los programas seleccionados', 404);
+            }
+
+            $this->logActivity('Reporte múltiple de notas Entrevista generado', null, [
+                'programas_count' => count($idProgramas),
+            ]);
+
+            return $pdf->stream("plantilla_entrevista_" . now()->format('d-m-Y_His') . ".pdf");
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al generar el reporte múltiple de entrevista: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
      * Get summary of docente grades
      */
     public function resumenDocenteNotas()
+
     {
         return $this->handleRequest(function () {
             $resumen = $this->docenteService->getResumenDocenteNotas();

@@ -102,7 +102,23 @@ class ProgramaController extends BaseController
                 'modalidad' => 'sometimes|string|max:255|nullable',
                 'vacantes' => 'sometimes|string|max:255',
                 'estado' => 'sometimes|boolean',
+                'docente_id' => 'sometimes|nullable|exists:docentes,id',
+                'docente_entrevista_id' => [
+                    'sometimes',
+                    'nullable',
+                    'exists:docentes,id',
+                    function ($attribute, $value, $fail) use ($id) {
+                        if (
+                            $value && \App\Models\Programa::where('docente_entrevista_id', $value)
+                                ->where('id', '!=', $id)
+                                ->exists()
+                        ) {
+                            $fail('Este docente ya está asignado como evaluador de entrevista en otro programa.');
+                        }
+                    }
+                ],
             ]);
+
 
             $programa = $this->programaService->updateProgram($id, $validated);
 

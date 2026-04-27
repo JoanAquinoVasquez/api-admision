@@ -18,6 +18,7 @@ class Docente extends Authenticatable implements JWTSubject
         'dni',
         'email',
         'password',
+        'tipo',
         'estado',
     ];
 
@@ -49,11 +50,19 @@ class Docente extends Authenticatable implements JWTSubject
     }
 
     /**
-     * Relación uno a muchos con la tabla de Programas
+     * Relación uno a muchos con la tabla de Programas (como evaluador de CV)
      */
     public function programas()
     {
-        return $this->hasMany(Programa::class);
+        return $this->hasMany(Programa::class, 'docente_id');
+    }
+
+    /**
+     * Relación uno a muchos con la tabla de Programas (como evaluador de Entrevista)
+     */
+    public function programasEntrevista()
+    {
+        return $this->hasMany(Programa::class, 'docente_entrevista_id');
     }
 
     // Métodos requeridos por JWTAuth

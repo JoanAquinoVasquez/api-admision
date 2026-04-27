@@ -1,71 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('pdf.layout')
 
-<head>
-    <meta charset="UTF-8">
-    <title>Reporte de Programas Académicos No Aperturados</title>
-    <style>
-        @page {
-            margin: 25px;
-        }
+@section('content')
+    <div class="report-title">
+        <h3>REPORTE DE PROGRAMAS ACADÉMICOS NO APERTURADOS</h3>
+        </div>
 
-        body {
-            font-family: DejaVu Sans, sans-serif;
-            font-size: 11px;
-            margin: 0;
-            padding: 0;
-        }
-
-        h2,
-        p {
-            text-align: center;
-            margin: 4px 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        tr {
-            page-break-inside: avoid;
-        }
-
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 4.2px;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            text-align: center;
-        }
-
-        .grado-academico {
-            font-size: 13px;
-            font-weight: bold;
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .footer {
-            margin-top: 10px;
-            text-align: center;
-            font-style: italic;
-        }
-    </style>
-</head>
-
-<body>
- <div style="text-align: center;">
-        <img src="{{ public_path('img/isotipo_color_epg.webp') }}" alt="Logo UNPRG" width="100px">
-        <h2>REPORTE DE PROGRAMAS ACADÉMICOS NO APERTURADOS</h2>
-        <p>Examen de Admisión {{ config('admission.cronograma.periodo') }}</p>
-    </div>
-
-    <table>
+    <table class="data-table">
         <thead>
             <tr>
                 <th style="width: 30%;">GRADO ACADÉMICO</th>
@@ -74,7 +14,7 @@
         </thead>
         <tbody>
             @php
-                $grados = ['DOCTORADO', 'MAESTRIA', 'SEGUNDA ESPECIALIDAD'];
+                $grados = ['DOCTORADO', 'MAESTRIA', 'SEGUNDA ESPECIALIDAD PROFESIONAL'];
                 $agrupados = collect($programas)->groupBy('grado');
             @endphp
 
@@ -85,27 +25,22 @@
 
                 @if ($items->isNotEmpty())
                     <tr>
-                        <td class="grado-academico" rowspan="{{ $items->count() }}">
+                        <td class="text-center fw-bold" style="vertical-align: middle; font-size: 11px;" rowspan="{{ $items->count() }}">
                             {{ strtoupper($grado) }}
                         </td>
-                        <td>{{ $items[0]->programa }}</td>
+                        <td>{{ mb_strtoupper($items[0]->programa) }}</td>
                     </tr>
                     @foreach ($items->slice(1) as $prog)
                         <tr>
-                            <td>{{ $prog->programa }}</td>
+                            <td>{{ mb_strtoupper($prog->programa) }}</td>
                         </tr>
                     @endforeach
                 @endif
             @endforeach
-
-
         </tbody>
     </table>
 
-    <div class="footer">
+    <div class="text-right mt-2" style="font-size: 10px; font-style: italic;">
         <p>Fecha de generación: {{ $fechaHora->format('d/m/Y H:i') }}</p>
     </div>
-
-</body>
-
-</html>
+@endsection

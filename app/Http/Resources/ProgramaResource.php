@@ -28,6 +28,8 @@ class ProgramaResource extends JsonResource
             'facultad_id' => $this->facultad_id,
             'concepto_pago_id' => $this->concepto_pago_id,
             'docente_id' => $this->docente_id,
+            'docente_entrevista_id' => $this->docente_entrevista_id,
+
 
             // Simple relations loaded
             'grado' => $this->whenLoaded('grado'),

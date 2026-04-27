@@ -1,55 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('pdf.layout')
 
-<head>
-    <meta charset="UTF-8">
-    <title>Reporte de Programas</title>
-    <style>
-        /* ... tus estilos base ... */
-        body {
-            font-family: DejaVu Sans, sans-serif;
-            font-size: 11px;
-        }
+@section('content')
+    <div class="report-title">
+        <h3>REPORTE DE PROGRAMAS ACADÉMICOS APERTURADOS</h3>
+        </div>
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 8px;
-        }
-
-        /* Estilo para el encabezado de la tabla */
-        th {
-            background-color: #444;
-            color: white;
-            text-align: center;
-        }
-
-        /* Estilo para la fila separadora del Grado */
-        .grado-header {
-            background-color: #f2f2f2;
-            font-weight: bold;
-            text-align: left;
-            padding-left: 15px;
-            font-size: 12px;
-        }
-    </style>
-</head>
-
-<body>
-    <div style="text-align: center; margin-bottom: 10px;">
-        <img src="{{ public_path('img/isotipo_color_epg.webp') }}" alt="Logo UNPRG" width="100px">
-        <h2>REPORTE DE PROGRAMAS ACADÉMICOS APERTURADOS</h2>
-        <p>Examen de Admisión {{ config('admission.cronograma.periodo') }}</p>
-    </div>
-
-
-    <table>
+    <table class="data-table">
         <thead>
             <tr>
                 <th style="width: 10%;">N°</th>
@@ -66,16 +22,16 @@
                 @php $items = $agrupados->get($grado, collect()); @endphp
 
                 @if ($items->isNotEmpty())
-                    <tr>
-                        <td colspan="2" class="grado-header">
+                    <tr style="background-color: #e8ecf1;">
+                        <td colspan="2" class="fw-bold" style="padding-left: 15px; color: #003366;">
                             {{ strtoupper($grado) }}
                         </td>
                     </tr>
 
                     @foreach ($items as $index => $prog)
                         <tr>
-                            <td style="text-align: center;">{{ $index + 1 }}</td>
-                            <td> {{($grado) }} en {{ $prog->programa }}</td>
+                            <td class="text-center">{{ $index + 1 }}</td>
+                            <td>{{ mb_strtoupper($grado) }} EN {{ mb_strtoupper($prog->programa) }}</td>
                         </tr>
                     @endforeach
                 @endif
@@ -83,10 +39,7 @@
         </tbody>
     </table>
 
-    <div class="footer">
+    <div class="text-right mt-2" style="font-size: 10px; font-style: italic;">
         <p>Fecha de generación: {{ $fechaHora->format('d/m/Y H:i') }}</p>
     </div>
-
-</body>
-
-</html>
+@endsection

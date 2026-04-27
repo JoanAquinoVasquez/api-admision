@@ -24,6 +24,7 @@ class Programa extends Model
         'grado_id',
         'concepto_pago_id',
         'docente_id',
+        'docente_entrevista_id',
         'nombre',
         'duracion_meses',
         'modalidad',
@@ -54,7 +55,13 @@ class Programa extends Model
     // Relación muchos a uno con Docente
     public function docente()
     {
-        return $this->belongsTo(Docente::class);
+        return $this->belongsTo(Docente::class, 'docente_id');
+    }
+
+    // Relación muchos a uno con Docente de Entrevista
+    public function docenteEntrevista()
+    {
+        return $this->belongsTo(Docente::class, 'docente_entrevista_id');
     }
 
     // Relación uno a muchos con Inscripcion

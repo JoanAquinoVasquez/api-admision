@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="report-title">
-        <h3>NOTAS DE CURRICULUM VITAE</h3>
+        <h3>NOTAS DE ENTREVISTA PERSONAL</h3>
         <h4 class="mt-1 fw-bold">{{ mb_strtoupper($programaData['grado'], 'UTF-8') }} EN {{ mb_strtoupper($programaData['programa'], 'UTF-8') }}</h4>
     </div>
 
@@ -12,7 +12,7 @@
                 <th style="width: 40px; text-align: center;">N°</th>
                 <th style="width: 80px;">N. IDEN</th>
                 <th style="text-align: left;">APELLIDOS Y NOMBRES</th>
-                <th style="width: 100px;">PUNTAJE</th>
+                <th style="width: 90px;">PUNTAJE</th>
             </tr>
         </thead>
         <tbody>
@@ -29,7 +29,7 @@
                         'UTF-8',
                     ) }}
                     </td>
-                    <td class="text-center">{{ $inscripcion->nota->cv ?? 'Pendiente' }}</td>
+                    <td class="text-center">{{ $inscripcion->nota->entrevista ?? 'Pendiente' }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -47,7 +47,7 @@
                 'UTF-8',
             ) }}
         </p>
-        <p class="firma-text">DOCENTE EVALUADOR DE EXPEDIENTE</p>
+        <p class="firma-text">DOCENTE EVALUADOR DE ENTREVISTA</p>
         <p class="firma-text"><strong>DNI:</strong> {{ $programaData['docente']->dni ?? '' }}</p>
     </div>
 

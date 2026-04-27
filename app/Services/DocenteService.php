@@ -39,6 +39,7 @@ class DocenteService
             'dni' => $data['dni'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'tipo' => $data['tipo'] ?? 'cv',
             'estado' => true,
         ]);
     }
@@ -85,7 +86,14 @@ class DocenteService
     public function assignProgramas(int $docenteId, array $programaIds)
     {
         $docente = Docente::findOrFail($docenteId);
-        Programa::whereIn('id', $programaIds)->update(['docente_id' => $docente->id]);
+        
+        $column = $docente->tipo === 'entrevista' ? 'docente_entrevista_id' : 'docente_id';
+        
+        // Limpiamos asignaciones previas de este docente en otros programas para mantener consistencia si es necesario, 
+        // o simplemente actualizamos los seleccionados.
+        // En este caso, el comportamiento actual es actualizar los programas seleccionados para que este docente sea su evaluador.
+        Programa::whereIn('id', $programaIds)->update([$column => $docente->id]);
+        
         return $docente;
     }
 
@@ -94,24 +102,35 @@ class DocenteService
      */
     public function getProgramasAsignados(int $docenteId)
     {
-        $programas = Programa::where('docente_id', $docenteId)
-            ->with([
+        $docente = Docente::findOrFail($docenteId);
+
+        $query = Programa::query();
+        if ($docente->tipo === 'entrevista') {
+            $query->where('docente_entrevista_id', $docenteId);
+        } else {
+            $query->where('docente_id', $docenteId);
+        }
+
+        $programas = $query->with([
                 'inscripciones' => function ($query) {
                     $query->select('id', 'programa_id', 'val_fisico');
                 },
-                'inscripciones.nota'
+                'inscripciones.nota',
+                'grado'
             ])
             ->get();
 
-        return $programas->map(function ($programa) {
+        return $programas->map(function ($programa) use ($docente) {
             $inscripcionesValFisico = $programa->inscripciones->filter(fn($i) => $i->val_fisico == 1);
 
-            $conNota = $inscripcionesValFisico->filter(function ($inscripcion) {
-                return $inscripcion->nota && is_numeric($inscripcion->nota->cv);
+            $column = $docente->tipo === 'entrevista' ? 'entrevista' : 'cv';
+
+            $conNota = $inscripcionesValFisico->filter(function ($inscripcion) use ($column) {
+                return $inscripcion->nota && is_numeric($inscripcion->nota->$column);
             })->count();
 
-            $sinNota = $inscripcionesValFisico->filter(function ($inscripcion) {
-                return !$inscripcion->nota || !is_numeric($inscripcion->nota->cv);
+            $sinNota = $inscripcionesValFisico->filter(function ($inscripcion) use ($column) {
+                return !$inscripcion->nota || !is_numeric($inscripcion->nota->$column);
             })->count();
 
             return [
@@ -121,6 +140,7 @@ class DocenteService
                 'nombre_grado' => $programa->grado->nombre,
                 'con_nota' => $conNota,
                 'sin_nota' => $sinNota,
+                'tipo_docente' => $docente->tipo
             ];
         });
     }
@@ -130,15 +150,18 @@ class DocenteService
      */
     public function getPostulantesAptos(int $programaId)
     {
+        $docenteType = auth()->guard('docente')->user()->tipo ?? 'cv';
+        $column = $docenteType === 'entrevista' ? 'entrevista' : 'cv';
+
         return Inscripcion::where('programa_id', $programaId)
             ->where('val_fisico', 1)
             ->with(['postulante', 'nota'])
             ->get()
-            ->map(function ($inscripcion) {
+            ->map(function ($inscripcion) use ($column) {
                 return [
                     'postulante' => $inscripcion->postulante,
-                    'cv' => optional($inscripcion->nota)->cv,
-                    'foto' => $inscripcion->postulante->documentos()->where('tipo', 'foto')->first()->url,
+                    'notaValue' => optional($inscripcion->nota)->$column,
+                    'foto' => $inscripcion->postulante->documentos()->where('tipo', 'foto')->first()->url ?? null,
                 ];
             });
     }
@@ -146,13 +169,15 @@ class DocenteService
     /**
      * Register CV grade for postulante
      */
-    public function registrarNota(int $postulanteId, float $notaCv)
+    public function registrarNota(int $postulanteId, float $valorNota, string $tipo = 'cv')
     {
         $inscripcion = Inscripcion::where('postulante_id', $postulanteId)->firstOrFail();
 
+        $column = $tipo === 'entrevista' ? 'entrevista' : 'cv';
+
         $nota = Nota::updateOrCreate(
             ['inscripcion_id' => $inscripcion->id],
-            ['cv' => $notaCv]
+            [$column => $valorNota]
         );
 
         return $nota;
@@ -241,37 +266,126 @@ class DocenteService
     }
 
     /**
+     * Generate Entrevista grades report PDF
+     */
+    public function generateReportNotasEntrevista(int $programaId)
+    {
+        $inscripciones = Inscripcion::with([
+            'postulante',
+            'programa.grado',
+            'programa.docenteEntrevista',
+            'nota'
+        ])
+            ->where('programa_id', $programaId)
+            ->where('val_fisico', 1)
+            ->get();
+
+        if ($inscripciones->isEmpty()) {
+            return null;
+        }
+
+        $inscripciones = $inscripciones->sortBy(function ($inscripcion) {
+            return strtolower($inscripcion->postulante->ap_paterno) . ' ' .
+                strtolower($inscripcion->postulante->ap_materno) . ' ' .
+                strtolower($inscripcion->postulante->nombres);
+        })->values();
+
+        $programaData = [
+            'programa' => $inscripciones->first()->programa->nombre ?? 'Desconocido',
+            'grado' => $inscripciones->first()->programa->grado->nombre ?? 'Desconocido',
+            'inscripciones' => $inscripciones,
+            'docente' => $inscripciones->first()->programa->docenteEntrevista,
+        ];
+
+        $pdf = Pdf::loadView('notas.postulantes-entrevista', ['programaData' => $programaData]);
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf;
+    }
+
+    /**
+     * Generate multiple Entrevista grades report PDF
+     */
+    public function generateReportNotasEntrevistaMultiple(array $programaIds)
+    {
+        $programasData = [];
+
+        foreach ($programaIds as $idPrograma) {
+            $inscripciones = Inscripcion::with([
+                'postulante',
+                'programa.grado',
+                'programa.docenteEntrevista',
+                'nota'
+            ])
+                ->where('programa_id', $idPrograma)
+                ->where('val_fisico', 1)
+                ->get();
+
+            $inscripciones = $inscripciones->sortBy(function ($inscripcion) {
+                return strtolower($inscripcion->postulante->ap_paterno) . ' ' .
+                    strtolower($inscripcion->postulante->ap_materno) . ' ' .
+                    strtolower($inscripcion->postulante->nombres);
+            })->values();
+
+            if ($inscripciones->isNotEmpty()) {
+                $programasData[] = [
+                    'programa' => $inscripciones->first()->programa->nombre ?? 'Desconocido',
+                    'grado' => $inscripciones->first()->programa->grado->nombre ?? 'Desconocido',
+                    'inscripciones' => $inscripciones,
+                    'docente' => $inscripciones->first()->programa->docenteEntrevista,
+                ];
+            }
+        }
+
+        if (empty($programasData)) {
+            return null;
+        }
+
+        $pdf = Pdf::loadView('notas.postulantes-entrevista-multiple', ['programasData' => $programasData]);
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf;
+    }
+
+    /**
      * Get summary of docente grades
      */
     public function getResumenDocenteNotas()
+
     {
-        $docentes = Docente::with([
-            'programas' => function ($query) {
-                $query->with('grado')
-                      ->withCount([
-                          'inscripciones as total_postulantes' => function($query) {
-                              $query->where('val_fisico', 1);
-                          },
-                          'inscripciones as con_nota_cv' => function($query) {
-                              $query->where('val_fisico', 1)
-                                    ->whereHas('nota', function($q){
-                                        $q->whereNotNull('cv');
-                                    });
-                          }
-                      ]);
-            }
-        ])->get();
+        $docentes = Docente::all();
 
         $resumen = [];
 
         foreach ($docentes as $docente) {
+            $isEntrevista = $docente->tipo === 'entrevista';
+            $relationship = $isEntrevista ? 'programasEntrevista' : 'programas';
+            $noteColumn = $isEntrevista ? 'entrevista' : 'cv';
+
+            $docente->load([
+                $relationship => function ($query) use ($noteColumn) {
+                    $query->with('grado')
+                          ->withCount([
+                              'inscripciones as total_postulantes' => function($query) {
+                                  $query->where('val_fisico', 1);
+                              },
+                              'inscripciones as con_nota' => function($query) use ($noteColumn) {
+                                  $query->where('val_fisico', 1)
+                                        ->whereHas('nota', function($q) use ($noteColumn){
+                                            $q->whereNotNull($noteColumn);
+                                        });
+                              }
+                          ]);
+                }
+            ]);
+
             $detalleProgramas = [];
             $totalGeneral = 0;
             $evaluadosGeneral = 0;
 
-            foreach ($docente->programas as $programa) {
+            foreach ($docente->$relationship as $programa) {
                 $totalPostulantes = $programa->total_postulantes ?? 0;
-                $conNota = $programa->con_nota_cv ?? 0;
+                $conNota = $programa->con_nota ?? 0;
 
                 $totalGeneral += $totalPostulantes;
                 $evaluadosGeneral += $conNota;
@@ -279,8 +393,8 @@ class DocenteService
                 $detalleProgramas[] = [
                     'programa' => mb_strtoupper($programa->grado->nombre . ' EN ' . $programa->nombre),
                     'total_postulantes' => $totalPostulantes,
-                    'con_nota_cv' => $conNota,
-                    'sin_nota_cv' => $totalPostulantes - $conNota,
+                    'con_nota' => $conNota,
+                    'sin_nota' => $totalPostulantes - $conNota,
                     'avance' => $totalPostulantes > 0
                         ? round(($conNota / $totalPostulantes) * 100, 2) . '%'
                         : '0%',
@@ -292,6 +406,7 @@ class DocenteService
                     'docente' => [
                         'nombre' => $docente->ap_paterno . ' ' . $docente->ap_materno . ', ' . $docente->nombres,
                         'email' => $docente->email,
+                        'tipo' => $docente->tipo,
                     ],
                     'resumen_general' => [
                         'total_postulantes' => $totalGeneral,

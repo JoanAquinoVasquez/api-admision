@@ -669,7 +669,7 @@ class ReportService
                     });
 
                     return (object) [
-                        'facultad' => $programa->facultad ? $programa->facultad->siglas : 'N/A',
+                        'facultad' => $programa->facultad ? $programa->facultad->nombre : 'N/A',
                         'grado' => $programa->grado ? $programa->grado->nombre : 'N/A',
                         'programa' => $programa->nombre,
                         'total_ingresantes' => $ingresantes->count(),
