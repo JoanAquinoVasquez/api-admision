@@ -23,7 +23,7 @@ class ApiResponse
             $response['data'] = $data;
         }
 
-        return response()->json($response, $code);
+        return response()->json($response, $code, [], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
     }
 
     /**
@@ -43,7 +43,7 @@ class ApiResponse
             $response['errors'] = $errors;
         }
 
-        return response()->json($response, $code);
+        return response()->json($response, $code, [], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
     }
 
     /**

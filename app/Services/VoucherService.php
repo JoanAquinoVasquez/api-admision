@@ -74,10 +74,9 @@ class VoucherService
         }
 
         foreach ($allLines as $line) {
-            $encoding = mb_detect_encoding($line, ['UTF-8', 'ISO-8859-1', 'Windows-1252'], true);
-            if ($encoding) {
-                $line = mb_convert_encoding($line, 'UTF-8', $encoding);
-            }
+            // Los archivos del BN suelen venir en Windows-1252 o ISO-8859-1
+            // Intentamos convertir a UTF-8 de forma segura
+            $line = mb_convert_encoding($line, 'UTF-8', 'Windows-1252, ISO-8859-1, UTF-8');
 
             $codPago = substr($line, 35, 8);
             $validCodes = ['00000012', '00001005', '00000971', '00000970'];
@@ -110,7 +109,10 @@ class VoucherService
         $hora = substr($line, 87, 6);
         $cajero = substr($line, 93, 4);
         $agencia = substr($line, 97, 4);
-        $nombre = preg_replace('/[^\x20-\x7E\xA0-\xFF]/', '', trim(substr($line, 121, 35)));
+        $rawName = substr($line, 121, 35);
+        $nombre = trim($rawName);
+        // Limpiar caracteres no imprimibles pero mantener tildes y Ñ
+        $nombre = preg_replace('/[\x00-\x1F\x7F]/u', '', $nombre);
         $monto = floatval(substr($montoSubstring, 0, 13)) + (floatval(substr($montoSubstring, 13, 2)) / 100);
 
         // BN TXT format is usually YYYYMMDD

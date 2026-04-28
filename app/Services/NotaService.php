@@ -128,12 +128,9 @@ class NotaService
         return $programas;
     }
 
-    /**
-     * Get evaluation summary by program
-     */
     public function getEvaluationSummary(): Collection
     {
-        $programas = Programa::with(['facultad', 'grado', 'docente', 'inscripciones.nota'])->get();
+        $programas = Programa::with(['facultad', 'grado', 'docente', 'docenteEntrevista', 'inscripciones.nota'])->get();
 
         return $programas->map(function ($programa) {
             $inscripciones = $programa->inscripciones;
@@ -141,13 +138,20 @@ class NotaService
             $total_inscritos = $inscripciones->count();
             $aptos = $inscripciones->where('val_fisico', 1)->count();
 
-            // Evaluated inscriptions: those with valid CV grade
-            $evaluados = $inscripciones->filter(function ($inscripcion) {
+            // Evaluados CV: con puntaje CV válido
+            $evaluados_cv = $inscripciones->filter(function ($inscripcion) {
                 $nota = $inscripcion->nota;
                 return $nota && is_numeric($nota->cv);
             })->count();
 
-            $cobertura = $aptos > 0 ? round(($evaluados / $aptos) * 100, 2) : 0;
+            // Evaluados Entrevista: con puntaje Entrevista válido
+            $evaluados_entrevista = $inscripciones->filter(function ($inscripcion) {
+                $nota = $inscripcion->nota;
+                return $nota && is_numeric($nota->entrevista);
+            })->count();
+
+            $cobertura_cv = $aptos > 0 ? round(($evaluados_cv / $aptos) * 100, 2) : 0;
+            $cobertura_entrevista = $aptos > 0 ? round(($evaluados_entrevista / $aptos) * 100, 2) : 0;
 
             $abreviatura_grado = match ($programa->grado->id) {
                 1 => 'Doctorado',
@@ -159,15 +163,23 @@ class NotaService
             return [
                 'id' => $programa->id,
                 'grado_id' => $programa->grado->id,
-                'grado_programa' => $abreviatura_grado . ' - ' . $programa->nombre,
+                'grado_programa' => $abreviatura_grado . ' en ' . $programa->nombre,
                 'facultad' => $programa->facultad->siglas,
-                'docente_id' => $programa->docente?->id ?? null,
-                'docente_apellidos' => ($programa->docente?->ap_paterno . ' ' . $programa->docente?->ap_materno) ?? 'No asignado',
-                'docente' => $programa->docente?->nombres ?? 'No asignado',
+                // Docente CV
+                'docente_cv_id' => $programa->docente?->id ?? null,
+                'docente_cv_nombres' => $programa->docente?->nombres ?? 'No asignado',
+                'docente_cv_apellidos' => ($programa->docente?->ap_paterno . ' ' . $programa->docente?->ap_materno) ?? '',
+                // Docente Entrevista
+                'docente_entrevista_id' => $programa->docenteEntrevista?->id ?? null,
+                'docente_entrevista_nombres' => $programa->docenteEntrevista?->nombres ?? 'No asignado',
+                'docente_entrevista_apellidos' => ($programa->docenteEntrevista?->ap_paterno . ' ' . $programa->docenteEntrevista?->ap_materno) ?? '',
+                
                 'inscritos' => $total_inscritos,
                 'aptos' => $aptos,
-                'evaluados' => $evaluados,
-                'cobertura' => $cobertura,
+                'evaluados_cv' => $evaluados_cv,
+                'evaluados_entrevista' => $evaluados_entrevista,
+                'cobertura_cv' => $cobertura_cv,
+                'cobertura_entrevista' => $cobertura_entrevista,
             ];
         });
     }
