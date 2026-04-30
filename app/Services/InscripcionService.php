@@ -27,6 +27,7 @@ class InscripcionService
 
     public function storeInscripcion(InscripcionData $data)
     {
+        Log::info("Iniciando proceso de inscripción para DNI: {$data->numIden}");
         try {
             DB::beginTransaction();
 
