@@ -23,9 +23,9 @@ class StoreInscripcionRequest extends FormRequest
     {
         return [
             'programa_id' => 'required|exists:programas,id',
-            'nombres' => 'required|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$/',
-            'ap_paterno' => 'required|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$/',
-            'ap_materno' => 'required|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$/',
+            'nombres' => 'required|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$/u',
+            'ap_paterno' => 'required|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$/u',
+            'ap_materno' => 'required|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$/u',
             'email' => 'required|email',
             'tipo_doc' => 'required|string',
             'num_iden' => 'required|max:20',
