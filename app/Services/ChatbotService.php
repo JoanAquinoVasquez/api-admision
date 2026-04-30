@@ -28,15 +28,14 @@ class ChatbotService
             }
 
             // 3. INTENTO 1: LLamada directa a Gemini (Prioridad del Usuario)
-            Log::info("Chatbot: Intentando Gemini como proveedor principal.");
+          
             $botReply = $this->callGeminiDirectly($systemPrompt, $userMessage);
 
             if ($botReply && trim($botReply) !== '') {
                 return $botReply;
             }
 
-            // 4. FALLBACK: Llamar a OpenRouter si Gemini falló
-            Log::warning("Chatbot: Gemini falló o devolvió respuesta vacía. Intentando fallback a OpenRouter.");
+           
             $botReply = $this->callOpenRouter($systemPrompt, $userMessage);
 
             if ($botReply && trim($botReply) !== '') {
@@ -199,7 +198,7 @@ EOT;
     {
         $apiKey = env('GEMINI_API_KEY');
         if (!$apiKey) {
-            Log::error('Fallback fallido: GEMINI_API_KEY no configurada.');
+            
             return null;
         }
 
@@ -211,7 +210,7 @@ EOT;
 
         foreach ($models as $modelName) {
             try {
-                Log::info("Intentando fallback directo con el modelo: {$modelName}");
+                
 
                 $url = "https://generativelanguage.googleapis.com/v1beta/models/{$modelName}:generateContent?key=" . $apiKey;
 

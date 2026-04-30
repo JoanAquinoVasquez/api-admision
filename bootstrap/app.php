@@ -117,9 +117,16 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // 500 - Cualquier otro error no manejado (red de seguridad)
         $exceptions->render(function (\Throwable $e, Request $request) {
+            Log::error('Error no manejado: ' . $e->getMessage(), [
+                'exception' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error interno del servidor',
+                'message' => 'Error interno del servidor: ' . $e->getMessage(),
             ], 500);
         });
 
