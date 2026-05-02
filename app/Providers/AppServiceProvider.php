@@ -25,15 +25,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Definir un limitador para la API
         Schema::defaultStringLength(191);
-        RateLimiter::for('api', function () {
-            return Limit::perMinute(120);  // Limita a 60 solicitudes por minuto
+
+        // Rate Limiter general (catálogos, consultas públicas)
+        // 300 req/min por IP — suficiente para periodo de inscripciones
+        RateLimiter::for('api', function ($request) {
+            return Limit::perMinute(300)->by($request->ip());
+        });
+
+        // Rate Limiter estricto (login, inscripción, validar-voucher)
+        // 10 req/min por IP — previene ataques de fuerza bruta
+        RateLimiter::for('sensitive', function ($request) {
+            return Limit::perMinute(10)->by($request->ip());
         });
 
         Relation::morphMap([
             'Docente' => Docente::class,
-            'User' => User::class,  
+            'User' => User::class,
         ]);
     }
 }

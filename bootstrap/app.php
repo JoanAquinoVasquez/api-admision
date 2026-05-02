@@ -115,6 +115,14 @@ return Application::configure(basePath: dirname(__DIR__))
             ], 404);
         });
 
+        // 429 - Too Many Requests (Rate Limit)
+        $exceptions->render(function (\Illuminate\Http\Exceptions\ThrottleRequestsException $e, Request $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Demasiadas solicitudes. Por favor, intenta más tarde.',
+            ], 429);
+        });
+
         // 500 - Cualquier otro error no manejado (red de seguridad)
         $exceptions->render(function (\Throwable $e, Request $request) {
             Log::error('Error no manejado: ' . $e->getMessage(), [

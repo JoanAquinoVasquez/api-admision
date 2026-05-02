@@ -1,6 +1,6 @@
 FROM php:8.3-fpm
 
-# Install system dependencies
+# Install system dependencies + Nginx
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libzip-dev \
-    libicu-dev
+    libicu-dev \
+    nginx
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -35,8 +36,15 @@ COPY . /var/www
 # Finish composer
 RUN composer dump-autoload --optimize
 
+# Copy Nginx and PHP-FPM configs
+COPY docker/nginx.conf /etc/nginx/sites-available/default
+COPY docker/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+COPY docker/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 # Expose port 8000
 EXPOSE 8000
 
-# Start PHP server
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# Start Nginx + PHP-FPM
+CMD ["/usr/local/bin/start.sh"]
+

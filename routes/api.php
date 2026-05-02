@@ -226,33 +226,43 @@ Route::middleware(['auth.docente.cookie', 'active:docente'])->group(function () 
 });
 
 
-// Login y Logout de Docente
-Route::post('docente-login', [AuthDocenteController::class, 'login']);
+// Rutas sensibles con rate limit estricto
+Route::middleware(['throttle:sensitive'])->group(function () {
+    // Login y Logout de Docente
+    Route::post('docente-login', [AuthDocenteController::class, 'login']);
+    Route::post('docente-login-cypress', [AuthDocenteController::class, 'loginCypress']);
+    
+    // Rutas de Inscripción y Validación
+    Route::post('/validar-voucher', [VoucherController::class, 'validarVoucher']);
+    Route::post('/inscripcion', [InscripcionController::class, 'store']);
+    Route::post('/pre-inscripcion', [PreInscripcionController::class, 'store']);
+    Route::post('/pre-inscripcion/registrado', [PreInscripcionController::class, 'preInscrito']);
+    Route::post('/consulta-dni', [DniController::class, 'consultarDni']);
+    
+    // Autenticación de Google
+    Route::post('/google-login', [AuthController::class, 'googleLogin']);
+    
+    // Robots RPA / Cypress
+    Route::post('/login-cypress', [AuthController::class, 'loginCypress']);
+    Route::post('/login-rpa', [AuthController::class, 'loginRPA']);
+    
+    // Chatbot (Gemini)
+    Route::post('/chat', [ChatbotController::class, 'chat']);
+});
+
 Route::post('/refresh-user', [AuthController::class, 'refresh']);
 Route::post('/refresh-docente', [AuthDocenteController::class, 'refreshDocente']);
 Route::post('docente-logout', [AuthDocenteController::class, 'logout']);
-Route::get('/check-auth-docente', [AuthDocenteController::class, 'checkAuthDocente']); // Nueva ruta para verificar autenticación
+Route::get('/check-auth-docente', [AuthDocenteController::class, 'checkAuthDocente']);
 
-
-//Route::post('/vouchers', [VoucherController::class, 'store']);
-/////////////////////////////////////////////////////////////
-
-
-// Rutas de Inscripción para formularios Externos
-Route::post('/validar-voucher', [VoucherController::class, 'validarVoucher']);
-Route::post('/inscripcion', [InscripcionController::class, 'store']);
-
+// Rutas de Autenticación de Google con correo Institucional
+Route::get('/check-auth', [AuthController::class, 'checkAuth']);
+Route::post('/logout', [AuthController::class, 'logout']);
 
 // Test de prueba para subir a Drive
 Route::post('/test', [CorreoController::class, 'uploadFile']);
 Route::get('/test', [CorreoController::class, 'testing']);
 Route::get('/list-files', [CorreoController::class, 'listFiles']);
-
-
-// Rutas de Pre-Inscripción para formularios Externos
-Route::post('/pre-inscripcion', [PreInscripcionController::class, 'store']);
-Route::post('/pre-inscripcion/registrado', [PreInscripcionController::class, 'preInscrito']);
-Route::post('/consulta-dni', [DniController::class, 'consultarDni']);
 
 
 //Rutas para obtener datos de la BD
@@ -268,21 +278,7 @@ Route::get('/programa-grado/{id}', [ProgramaController::class, 'showGrado']);
 Route::apiResource('/programas', ProgramaController::class);
 
 
-// Rutas de Autenticación de Google con correo Institucional
-Route::get('/check-auth', [AuthController::class, 'checkAuth']); // Nueva ruta para verificar autenticación
-Route::post('/google-login', [AuthController::class, 'googleLogin']);
-Route::post('/logout', [AuthController::class, 'logout']);
-
-//Login Robot RPA UiPath
-Route::post('/login-cypress', [AuthController::class, 'loginCypress']);
-Route::post('/login-rpa', [AuthController::class, 'loginRPA']);
-
-// Login Cypress para Docentes (devuelve JWT en body, no en cookie)
-Route::post('/docente-login-cypress', [AuthDocenteController::class, 'loginCypress']);
-
-
 // Chatbot con Gemini
-Route::post('/chat', [ChatbotController::class, 'chat']);
 Route::get('/chatbot-context', [ChatbotController::class, 'getContext']);
 
 // Ruta de fallback para rutas no encontradas
