@@ -82,7 +82,7 @@ class AuthService
         if (!$user) {
             return [
                 'success' => false,
-                'message' => 'Usuario no encontrado',
+                'message' => 'Usuario no autorizado para ingresar al Sistema de Admisión',
             ];
         }
 
