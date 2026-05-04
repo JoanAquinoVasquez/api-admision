@@ -109,13 +109,13 @@ Route::middleware(['auth:api', 'active'])->group(function () {
     //Evaluacion postulantes
     Route::get('/inscripcion-nota', [InscripcionController::class, 'inscripcionNota'])->middleware(['role:super-admin|admin']);
     // Reportes
-    Route::get('/reporte-inscripcion', [InscripcionController::class, 'report'])->middleware(['role:super-admin|admin']);
-    Route::get('/reporte-inscripcion-diario', [InscripcionController::class, 'reportDiario'])->middleware(['role:super-admin|admin']);
-    Route::get('/reporte-inscripcion-facultad', [InscripcionController::class, 'reportDiarioFacultad'])->middleware(['role:super-admin|admin']);
-    Route::get('/reporte-programas-top', [InscripcionController::class, 'reportProgramasTop'])->middleware(['role:super-admin|admin']);
+    Route::get('/reporte-inscripcion', [InscripcionController::class, 'report'])->middleware(['role:super-admin|admin|comision']);
+    Route::get('/reporte-inscripcion-diario', [InscripcionController::class, 'reportDiario'])->middleware(['role:super-admin|admin|comision']);
+    Route::get('/reporte-inscripcion-facultad', [InscripcionController::class, 'reportDiarioFacultad'])->middleware(['role:super-admin|admin|comision']);
+    Route::get('/reporte-programas-top', [InscripcionController::class, 'reportProgramasTop'])->middleware(['role:super-admin|admin|comision']);
     // Reporte por facultad en pdf
-    Route::get('/reporte-inscripcion-facultad-pdf', [InscripcionController::class, 'reportFacultadPDF'])->middleware(['role:super-admin|admin']);
-    Route::get('/reporte-preinscriptos-sin-pagar', [InscripcionController::class, 'reportPreinscritosSinPagar'])->middleware(['role:super-admin|admin']);
+    Route::get('/reporte-inscripcion-facultad-pdf', [InscripcionController::class, 'reportFacultadPDF'])->middleware(['role:super-admin|admin|comision']);
+    Route::get('/reporte-preinscriptos-sin-pagar', [InscripcionController::class, 'reportPreinscritosSinPagar'])->middleware(['role:super-admin|admin|comision']);
 
     //// Vouchers
     // Cargar Vouchers del BN para la Inscripcion
