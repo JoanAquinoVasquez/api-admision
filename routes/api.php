@@ -184,12 +184,12 @@ Route::middleware(['auth:api', 'active'])->group(function () {
      */
 
     // REPORTES EXTRAS FINALES
-    Route::get('/reporte-final-notas', [NotaController::class, 'reportFinalNotas'])->middleware(['role:super-admin|admin']);
-    Route::get('/reporte-inscripcion-final/excel', [InscripcionController::class, 'reportFinalExcel'])->middleware(['role:super-admin|admin']);
-    Route::get('/reporte-notas-final-excel', [InscripcionController::class, 'reportNotasFinalExcel'])->middleware(['role:super-admin|admin']);
-    Route::get('/reporte-inscripcion-final/pdf', [InscripcionController::class, 'reportFinalPdf'])->middleware(['role:super-admin|admin']);
-    Route::get('/reporte-inscripcion-final/aulas/pdf', [InscripcionController::class, 'reportFinalAulasPdf'])->middleware(['role:super-admin|admin']);
-    Route::get('/reporte-inscripcion-final/firmas/pdf', [InscripcionController::class, 'reportFinalFirmasPdf'])->middleware(['role:super-admin|admin']);
+    Route::get('/reporte-final-notas', [NotaController::class, 'reportFinalNotas'])->middleware(['role:super-admin|admin|comision']);
+    Route::get('/reporte-inscripcion-final/excel', [InscripcionController::class, 'reportFinalExcel'])->middleware(['role:super-admin|admin|comision']);
+    Route::get('/reporte-notas-final-excel', [InscripcionController::class, 'reportNotasFinalExcel'])->middleware(['role:super-admin|admin|comision']);
+    Route::get('/reporte-inscripcion-final/pdf', [InscripcionController::class, 'reportFinalPdf'])->middleware(['role:super-admin|admin|comision']);
+    Route::get('/reporte-inscripcion-final/aulas/pdf', [InscripcionController::class, 'reportFinalAulasPdf'])->middleware(['role:super-admin|admin|comision']);
+    Route::get('/reporte-inscripcion-final/firmas/pdf', [InscripcionController::class, 'reportFinalFirmasPdf'])->middleware(['role:super-admin|admin|comision']);
     Route::get('/reporte-ingresantes-programa', [ResultadosController::class, 'reportIngresantesPrograma'])->middleware(['role:super-admin|admin|comision']);
 
     // Resultados Ingresantes
