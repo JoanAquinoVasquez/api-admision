@@ -637,11 +637,12 @@ class ReportService
      */
     public function getResumenInscripcionGraficoData()
     {
-        return Inscripcion::with('programa.grado')
+        $inscripciones = Inscripcion::with('programa.grado')
             ->get()
             ->map(function ($inscripcion) {
                 return [
                     'created_at' => $inscripcion->created_at,
+                    'type' => 'inscripcion',
                     'programa' => [
                         'grado' => [
                             'nombre' => $inscripcion->programa->grado->nombre ?? 'N/A',
@@ -649,6 +650,16 @@ class ReportService
                     ],
                 ];
             });
+
+        $vouchers = Voucher::get()
+            ->map(function ($voucher) {
+                return [
+                    'created_at' => $voucher->created_at,
+                    'type' => 'pago',
+                ];
+            });
+
+        return $inscripciones->concat($vouchers);
     }
 
     public function generateIngresantesTopPDF()
