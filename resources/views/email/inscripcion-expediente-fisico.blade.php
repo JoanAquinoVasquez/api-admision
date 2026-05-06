@@ -250,9 +250,10 @@
                     <li class="checklist-item">
                         <strong>Entrevista Personal:</strong> Se llevará a cabo <strong>inmediatamente después</strong>
                         del Examen de Admisión.
-                        @if(isset($inscripcion->programa->grado_id) && ($inscripcion->programa->grado_id === 1 || $inscripcion->programa->grado_id === 2))
-                            Es indispensable tener listo tu
-                        perfil de proyecto tentativo de investigación. @endif
+                        @if(isset($grado_id) && ($grado_id == 1 || $grado_id == 2))
+                            <br>Es indispensable presentar su <strong>perfil de proyecto tentativo de tesis</strong>. Puedes descargar la <strong>Rúbrica de evaluación</strong> en el siguiente enlace:
+                            <a href="https://drive.google.com/file/d/18tZFUHQyehMIgxn-9o25h_JHG-jv-Il3/view?usp=sharing" style="color: #10b981; font-weight: 600;">Ver Rúbrica de evaluación</a>
+                        @endif
                     </li>
 
 
