@@ -61,7 +61,7 @@ La evaluación se basa en un sistema de 100 puntos:
     - Doctorados [35 Puntos]:
         - Enfoque: Basada estrictamente en el Perfil de Proyecto Tentativo de Tesis.
     - Maestrías [35 Puntos]:
-        - Enfoque: Perfil profesional y aptitud académica.
+        - Enfoque: Basada estrictamente en el Perfil de Proyecto Tentativo de Tesis.
     - Segundas Especialidades [35 Puntos]:
         - Enfoque: Evaluación de perfil y competencias específicas.
 7. Oferta Académica, Vacantes y Horarios
@@ -74,8 +74,7 @@ Para el día del examen de admisión Portar DNI o Carnet de Extranjería y carn�
 examen es a partir de las 7:00 a.m. e inicia a las 9:00 a.m. hasta las 10:00
 a.m. No olvide su lápiz 2B, tajador y borrador para marcar la tarjeta óptica.
 ENTREVISTA PERSONAL
-Inicia a las 10:00 am. El postulante debe portar su perfil de proyecto tentativo
-de tesis (solo para doctorados).
+Inicia a las 10:00 am. El postulante debe portar su perfil de proyecto tentativo de tesis (solo para maestrías y doctorados).
 Para más información de maestrías puede ir a (https://epgunprg.edu.pe/admision-epg/maestrias)
 Para más información de doctorados puede ir a (https://epgunprg.edu.pe/admision-epg/doctorados)
 Para más información de segundas especialidades puede ir a (https://epgunprg.edu.pe/admision-epg/segundas-especialidades)
