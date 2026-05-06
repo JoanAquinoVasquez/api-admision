@@ -43,7 +43,17 @@ class ChatbotController extends BaseController
                 'user_identifier' => $validated['user_number'] ?? null
             ]);
 
-            return $this->successResponse(['reply' => $response]);
+            $handover = false;
+            if ($response && str_contains($response, '[HANDOVER]')) {
+                $handover = true;
+                $response = str_replace('[HANDOVER]', '', $response);
+                $response = trim($response);
+            }
+
+            return $this->successResponse([
+                'reply' => $response,
+                'handover' => $handover
+            ]);
         }, 'Error al procesar el mensaje');
     }
 
