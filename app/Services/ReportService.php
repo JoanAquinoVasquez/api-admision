@@ -637,7 +637,7 @@ class ReportService
      */
     public function getResumenInscripcionGraficoData()
     {
-        $inscripciones = Inscripcion::with('programa.grado')
+        $inscripciones = Inscripcion::with(['programa.grado'])
             ->get()
             ->map(function ($inscripcion) {
                 return [
@@ -654,7 +654,8 @@ class ReportService
         $vouchers = Voucher::get()
             ->map(function ($voucher) {
                 return [
-                    'created_at' => $voucher->created_at,
+                    // Usar fecha_pago si existe, de lo contrario created_at como fallback
+                    'created_at' => $voucher->fecha_pago ?? $voucher->created_at,
                     'type' => 'pago',
                 ];
             });

@@ -18,7 +18,7 @@ class InscripcionDiarioExport implements FromCollection, WithHeadings, WithMappi
 
     public function __construct()
     {
-        // Obtener todas las fechas únicas de preinscripciones ordenadas
+        // Obtener todas las fechas únicas de inscripciones ordenadas
         $this->dates = Inscripcion::selectRaw('DATE(created_at) as date')
             ->distinct()
             ->orderBy('date', 'asc')
@@ -44,7 +44,7 @@ class InscripcionDiarioExport implements FromCollection, WithHeadings, WithMappi
                 ELSE 4
             END
         ")
-            ->select('programas.*') // Selecciona solo las columnas de "programas"
+            ->select('programas.*')
             ->get();
 
         // Obtener las inscripciones agrupadas por programa y fecha
