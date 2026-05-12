@@ -121,6 +121,31 @@ class VoucherController extends BaseController
         }, 'Error al validar el voucher');
     }
 
+    public function update(Request $request, $id)
+    {
+        return $this->handleRequest(function () use ($request, $id) {
+            $voucher = Voucher::findOrFail($id);
+
+            $validated = $request->validate([
+                'concepto_pago_id' => 'required|exists:concepto_pagos,id',
+                'numero' => 'required|string',
+                'num_iden' => 'required|string|size:8',
+                'nombre_completo' => 'required|string',
+                'monto' => 'required|numeric',
+                'fecha_pago' => 'required|date',
+                'hora_pago' => 'required',
+                'agencia' => 'required|string',
+                'cajero' => 'required|string',
+            ]);
+
+            $voucher->update($validated);
+
+            $this->logActivity('Voucher actualizado manualmente', $voucher);
+
+            return $this->successResponse($voucher, 'Voucher actualizado exitosamente');
+        }, 'Error al actualizar el voucher');
+    }
+
     /**
      * Resumen de vouchers
      */
