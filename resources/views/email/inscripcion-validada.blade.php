@@ -257,6 +257,13 @@
                     {{ $inscripcion->postulante->ap_materno }},</strong>
             </div>
 
+            <!-- Aviso Reprogramación -->
+            <div style="background-color: #fff7ed; border-left: 5px solid #f97316; padding: 1.5rem; border-radius: 6px; margin-bottom: 2rem;">
+                <div style="color: #9a3412; font-size: 1rem; font-weight: 600;">
+                    ⚠️ AVISO IMPORTANTE: El examen de admisión programado para este domingo 17 de mayo ha sido SUSPENDIDO y será reprogramado. No es necesario acudir a la universidad en dicha fecha. La nueva fecha oficial se comunicará próximamente.
+                </div>
+            </div>
+
             <div class="congrats-box">
                 <div class="congrats-text">
                     Tus documentos digitales han sido revisados y <strong>APROBADOS</strong> satisfactoriamente para el

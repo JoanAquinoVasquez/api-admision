@@ -39,8 +39,8 @@ return [
         'barra_colores' => 'https://drive.google.com/uc?export=view&id=1bXqmf32tJmjzpoG90fJJwkGN9N2_fKyQ',
     ],
     'cronograma' => [
-        'examen_admision' => 'domingo 17 de Mayo',
-        'inicio_conceptos' => '23 de mayo',
+        'examen_admision' => 'SUSPENDIDO (Fecha por definir)',
+        'inicio_conceptos' => 'Por definir',
         'periodo' => '2026-I',
         // Control de Etapas (Automatización)
         // Si 'etapa_manual' tiene valor, se usará ese. Si es null, se calculará por fechas.

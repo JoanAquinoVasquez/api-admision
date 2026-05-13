@@ -292,6 +292,13 @@
                 <strong>{{ $data['nombres'] }} {{ $data['ap_paterno'] }} {{ $data['ap_materno'] }}</strong>
             </div>
 
+            <!-- Aviso Reprogramación -->
+            <div style="background-color: #fff7ed; border-left: 5px solid #f97316; padding: 1.5rem; border-radius: 6px; margin-bottom: 2rem;">
+                <div style="color: #9a3412; font-size: 1rem; font-weight: 600;">
+                    ⚠️ AVISO IMPORTANTE: El examen de admisión programado para este domingo 17 de mayo ha sido SUSPENDIDO y será reprogramado. No es necesario acudir a la universidad en dicha fecha. La nueva fecha oficial se comunicará próximamente.
+                </div>
+            </div>
+
             <p style="color: #4b5563; margin-bottom: 1.5rem;">
                 Hemos recibido correctamente tu inscripción para el programa de <span
                     class="highlight-text">{{ $nombre_grado }}</span> en <span
