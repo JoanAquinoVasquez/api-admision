@@ -26,7 +26,7 @@ Conceptos de Pago de Inscripción para Segundas Especialidades de la Facultad de
 Código de Transacción 9135, Código de Concepto 970, Monto S/. 150.00, Rubro: Carpeta de Inscripción y Código de Concepto 971, Monto S/. 50.00, Rubro: Inscripción. (Se debe pagar los dos conceptos para poder inscribirse vía web (https://epgunprg.edu.pe/admision-epg/inscripcion))
 Recuerde que todos los pagos se realizan con su número de DNI.
 3. Registro: Inscribirse en la web (https://epgunprg.edu.pe/admision-epg/inscripcion/), inmediatamente después el sistema de admisión le enviará un correo confirmando su inscripción y en un plazo de 24 horas recibirá un correo de validación de inscripción junto a su constancia de inscripción de postulante y los demás documentos a presentar en físico.
-4. Entrega de documentos: Presentar formato impreso en la Escuela de Posgrado tras 48 horas del correo electrónico de validación digital (durante el horario de atención presencial lunes a viernes de 08:00 am a 02:00 pm. ):
+4. Entrega de documentos: Presentar formato impreso en la Escuela de Posgrado en un plazo de 48 horas tras recibir el correo electrónico de validación digital (durante el horario de atención presencial lunes a viernes de 08:00 am a 02:00 pm. ):
     - Constancia de inscripción.
     - Voucher original de pago en el Banco de la Nación.
     - Solicitud dirigida al rector.
