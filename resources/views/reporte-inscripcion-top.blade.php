@@ -14,10 +14,10 @@
     <table class="data-table">
         <thead>
             <tr>
-                <th style="width: 10%;">FACULTAD</th>
-                <th style="width: 15%;">GRADOS ACADÉMICOS</th>
+                <th style="width: 7%;">FACULTAD</th>
+                <th style="width: 20%;">GRADOS ACADÉMICOS</th>
                 <th style="width: 65%;">PROGRAMAS ACADÉMICOS</th>
-                <th style="width: 10%;">TOTAL</th>
+                <th style="width: 8%;">TOTAL</th>
             </tr>
         </thead>
         <tbody>
@@ -27,7 +27,7 @@
                     <td>{{ mb_strtoupper($programa->facultad) }}</td>
                     <td class="text-center">{{ mb_strtoupper($programa->grado) }}</td>
                     <td>{{ mb_strtoupper($programa->programa) }}</td>
-                    <td class="text-right fw-bold" style="font-size: 12px;">{{ $programa->total_inscritos }}</td>
+                    <td class="text-right fw-bold" style="font-size: 14px;">{{ $programa->total_inscritos }}</td>
                 </tr>
                 @php $totalGeneral += $programa->total_inscritos; @endphp
             @endforeach
