@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Language" content="es">
     <title>Reprogramación de Examen de Admisión - Escuela de Posgrado UNPRG</title>
     <!-- Import Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -14,8 +15,8 @@
             line-height: 1.6;
             margin: 0;
             padding: 0;
-            background-color: #f4f6f9;
-            color: #333333;
+            background-color: #f8fafc;
+            color: #334155;
         }
 
         /* Container */
@@ -23,21 +24,18 @@
             max-width: 650px;
             margin: 2rem auto;
             background-color: #ffffff;
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            border: 1px solid #eaeaea;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
         }
 
         /* Header */
         .email-header {
-            background-color: #fffbeb;
-            /* Light Amber */
+            background-color: #ffffff;
             padding: 2.5rem 2rem;
             text-align: center;
-            color: #92400e;
-            position: relative;
-            border-bottom: 4px solid #f59e0b;
+            border-bottom: 1px solid #f1f5f9;
         }
 
         .header-logos {
@@ -45,89 +43,155 @@
             margin-bottom: 1.5rem;
         }
 
-        .header-logos table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
         .logo-img {
-            height: 90px;
+            height: 70px;
             width: auto;
         }
 
         .header-title {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 800;
             margin: 0;
-            letter-spacing: -0.5px;
-            color: #b45309;
+            letter-spacing: -0.025em;
+            color: #1e293b;
+            text-transform: uppercase;
         }
 
         /* Body Content */
         .email-body {
-            padding: 2.5rem;
+            padding: 3rem 2.5rem;
         }
 
         .greeting {
-            font-size: 1.25rem;
-            color: #111827;
+            font-size: 1.125rem;
+            color: #1e293b;
             margin-bottom: 1.5rem;
+            font-weight: 600;
         }
 
         .alert-box {
-            background-color: #fff7ed;
-            border-left: 5px solid #f97316;
-            padding: 1.5rem;
-            border-radius: 6px;
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 1.25rem;
+            border-radius: 8px;
             margin-bottom: 2rem;
         }
 
         .alert-text {
-            color: #9a3412;
-            font-size: 1.1rem;
+            color: #166534;
+            font-size: 1.05rem;
             font-weight: 600;
+            display: flex;
+            align-items: center;
         }
 
-        .content-section {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
+        .content-text {
+            margin-bottom: 2rem;
+            color: #475569;
+            font-size: 1rem;
+        }
+
+        /* Schedule Grid */
+        .schedule-container {
+            background-color: #f1f5f9;
             border-radius: 12px;
-            padding: 2rem;
-            margin: 2rem 0;
-            color: #334155;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .schedule-title {
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+        }
+
+        .schedule-grid {
+            display: table;
+            width: 100%;
+        }
+
+        .schedule-row {
+            display: table-row;
+        }
+
+        .schedule-item {
+            display: table-cell;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .schedule-label {
+            font-weight: 600;
+            color: #64748b;
+            width: 40%;
+        }
+
+        .schedule-value {
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        .last-item .schedule-item {
+            border-bottom: none;
+        }
+
+        /* Button */
+        .btn-container {
+            text-align: center;
+            margin: 2.5rem 0;
+        }
+
+        .btn {
+            background-color: #2873B4;
+            color: #ffffff !important;
+            padding: 12px 32px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            display: inline-block;
+            transition: background-color 0.2s;
         }
 
         /* Footer */
         .email-footer {
-            background-color: #2873B4;
-            color: #ffffff;
-            padding: 0;
+            background-color: #1e293b;
+            color: #94a3b8;
+            padding: 2.5rem 2rem;
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.875rem;
         }
 
-        .footer-content {
-            padding: 2rem;
+        .contact-info {
+            margin-top: 1.5rem;
+            border-top: 1px solid #334155;
+            padding-top: 1.5rem;
         }
 
         .contact-list {
             list-style: none;
             padding: 0;
-            margin: 1rem 0;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
+            margin: 0;
+        }
+
+        .contact-list li {
+            display: inline-block;
+            margin: 0 10px;
         }
 
         @media only screen and (max-width: 600px) {
             .email-wrapper {
                 margin: 0;
                 border-radius: 0;
-                width: 100% !important;
             }
             .email-body {
-                padding: 1.5rem;
+                padding: 2rem 1.5rem;
+            }
+            .schedule-label {
+                width: 50%;
             }
         }
     </style>
@@ -138,60 +202,84 @@
         <!-- Header -->
         <div class="email-header">
             <div class="header-logos">
-                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                        <td width="50%" align="left" style="padding-right: 10px;">
+                        <td align="center">
                             <img src="https://drive.usercontent.google.com/download?id=1XdEM7PcBXuRfkkdsBp3MqlDRz4n-GsJf&export=view"
-                                alt="EPG Logo" class="logo-img" style="height: 90px; width: auto; display: block;">
-                        </td>
-                        <td width="50%" align="right" style="padding-left: 10px;">
+                                alt="EPG Logo" class="logo-img">
                             <img src="https://drive.usercontent.google.com/download?id=1ph6WsmccjVnNwkK70-ntCVKKdHGJucS5&export=view"
-                                alt="UNPRG Logo" class="logo-img" style="height: 90px; width: auto; display: block;">
+                                alt="UNPRG Logo" class="logo-img" style="margin-left: 20px;">
                         </td>
                     </tr>
                 </table>
             </div>
-            <h1 class="header-title">Aviso de Reprogramación</h1>
+            <h1 class="header-title">Reprogramación del Examen de Admisión Posgrado 2026-I</h1>
         </div>
 
         <!-- Body -->
         <div class="email-body">
             <div class="greeting">
-                Estimado(a) Postulante,
+                Hola, {{ $nombre }}
+            </div>
+
+            <div class="content-text">
+                Queremos informarte que la Comisión de Admisión ha establecido oficialmente la nueva fecha para el proceso de admisión 2026-I. Por favor, toma nota de los siguientes detalles actualizados:
             </div>
 
             <div class="alert-box">
                 <div class="alert-text">
-                    ⚠️ El examen de admisión programado para este domingo 17 de mayo queda SUSPENDIDO.
+                    📅 El examen se realizará el domingo 28 de Junio.
                 </div>
             </div>
 
-            <div class="content-section">
-                <p style="margin-top: 0;">
-                    Atendiendo las solicitudes y comentarios de muchos postulantes, especialmente de quienes viajarían desde distintas ciudades, se ha tomado la decisión de <strong>reprogramar el examen de admisión</strong>.
-                </p>
-                <p>
-                    Por ello, el examen programado para este 17 de mayo queda suspendido, por lo que <strong>no será necesario acudir a la universidad en dicha fecha</strong>.
-                </p>
-                <p style="margin-bottom: 0;">
-                    La nueva fecha oficial será comunicada durante el transcurso de la semana a través de nuestras redes sociales oficiales y canales institucionales.
-                </p>
+            <div class="schedule-container">
+                <span class="schedule-title">Detalles del Proceso</span>
+                <div class="schedule-grid">
+                    <div class="schedule-row">
+                        <div class="schedule-item schedule-label">Nueva Fecha</div>
+                        <div class="schedule-item schedule-value">28 de Junio, 2026</div>
+                    </div>
+                    <div class="schedule-row">
+                        <div class="schedule-item schedule-label">Ingreso a la Universidad</div>
+                        <div class="schedule-item schedule-value">07:00 AM - 09:00 AM</div>
+                    </div>
+                    <div class="schedule-row">
+                        <div class="schedule-item schedule-label">Inicio de Examen de Admisión</div>
+                        <div class="schedule-item schedule-value">09:00 AM</div>
+                    </div>
+                    <div class="schedule-row">
+                        <div class="schedule-item schedule-label">Inicio de Entrevista Personal</div>
+                        <div class="schedule-item schedule-value">10:00 AM</div>
+                    </div>
+                    <div class="schedule-row last-item">
+                        <div class="schedule-item schedule-label">Lugar</div>
+                        <div class="schedule-item schedule-value">Escuela de Posgrado - UNPRG</div>
+                    </div>
+                </div>
             </div>
 
-            <p style="color: #64748b; font-size: 0.95rem; text-align: center;">
-                Agradecemos su comprensión y les recomendamos estar atentos a nuestras comunicaciones.
+            <div class="content-text">
+                Hemos adjuntado el <strong>nuevo cronograma</strong> y el <strong>comunicado oficial</strong> para que los tengas a mano. Te recomendamos revisarlos detalladamente.
+            </div>
+
+            <div class="btn-container">
+                <a href="https://epgunprg.edu.pe/admision-epg/" class="btn">Ir al Portal de Admisión</a>
+            </div>
+
+            <p style="text-align: center; font-size: 0.9rem; color: #64748b;">
+                Atentamente,<br>
+                <strong>Comisión de Admisión 2026-I</strong>
             </p>
         </div>
 
         <!-- Footer -->
         <div class="email-footer">
-            <img src="https://drive.google.com/uc?export=view&id=1bXqmf32tJmjzpoG90fJJwkGN9N2_fKyQ" width="100%"
-                height="6px" alt="Barra Colores" style="display: block; width: 100%;">
-
-            <div class="footer-content">
-                <p style="margin: 0 0 1rem 0; font-weight: 600; color: #ffffff;">Comisión de Admisión - Escuela de Posgrado UNPRG</p>
+            <div class="footer-text">
+                Este es un correo institucional de la Escuela de Posgrado de la Universidad Nacional Pedro Ruiz Gallo.
+            </div>
+            <div class="contact-info">
                 <ul class="contact-list">
-                    <li>📍 Av. Huamachuco Nro. 1130, Lambayeque</li>
+                    <li>📍 Lambayeque, Perú</li>
                     <li>📩 admision_epg@unprg.edu.pe</li>
                     <li>📱 995901454</li>
                 </ul>

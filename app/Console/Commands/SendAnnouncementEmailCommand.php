@@ -20,7 +20,7 @@ class SendAnnouncementEmailCommand extends Command
         $sentCount = 0;
         Postulante::whereNotNull('email')->chunk(100, function ($postulantes) use (&$sentCount) {
             foreach ($postulantes as $postulante) {
-                Mail::to($postulante->email)->queue(new ReprogramacionExamenEmail());
+                Mail::to($postulante->email)->queue(new ReprogramacionExamenEmail($postulante));
                 $sentCount++;
             }
         });
