@@ -39,8 +39,7 @@ return [
         'barra_colores' => 'https://drive.google.com/uc?export=view&id=1bXqmf32tJmjzpoG90fJJwkGN9N2_fKyQ',
     ],
     'cronograma' => [
-        'examen_admision' => 'SUSPENDIDO (Fecha por definir)',
-        'inicio_conceptos' => 'Por definir',
+        'examen_admision' => 'domingo 28 de Junio',
         'periodo' => '2026-I',
         // Control de Etapas (Automatización)
         // Si 'etapa_manual' tiene valor, se usará ese. Si es null, se calculará por fechas.
@@ -53,14 +52,14 @@ return [
 
             // Inscripción
             'inicio_inscripcion' => '2026-02-02',
-            'fin_inscripcion' => '2026-05-13',
+            'fin_inscripcion' => '2026-06-24',
 
             // Evaluación (Examen y Entrevista)
-            'inicio_evaluacion' => '2026-05-14',
-            'fin_evaluacion' => '2026-05-16',
+            'inicio_evaluacion' => '2026-06-24',
+            'fin_evaluacion' => '2026-06-28',
 
             // Resultados
-            'resultados_publicacion' => '2026-05-20',
+            'resultados_publicacion' => '2026-06-30',
         ],
     ],
 ];
