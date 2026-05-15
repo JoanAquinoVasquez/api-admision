@@ -11,7 +11,7 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Queue\SerializesModels;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-class AdmisionAccessEmail extends Mailable
+class AdmisionAccessEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 

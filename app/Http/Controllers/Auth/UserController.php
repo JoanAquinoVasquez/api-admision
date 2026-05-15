@@ -83,7 +83,7 @@ class UserController extends Controller
 
             // Enviar correo de bienvenida al nuevo usuario
             try {
-                Mail::to($user->email)->send(new AdmisionAccessEmail($user));
+                Mail::to($user->email)->queue(new AdmisionAccessEmail($user));
             } catch (\Exception $mailException) {
                 Log::error('Error al enviar correo al usuario: ' . $mailException->getMessage());
             }
