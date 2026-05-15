@@ -6,6 +6,9 @@ use App\Models\Programa;
 use App\Services\DocenteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\DocenteAccessEmail;
 
 class DocenteController extends BaseController
 {
@@ -64,7 +67,13 @@ class DocenteController extends BaseController
                 'email' => $docente->email,
             ]);
 
-            return $this->successResponse($docente, 'Docente creado exitosamente', 201);
+            try {
+                Mail::to($docente->email)->queue(new DocenteAccessEmail($docente, $request->password));
+            } catch (\Exception $mailException) {
+                Log::error('Error al enviar correo al docente: ' . $mailException->getMessage());
+            }
+
+            return $this->successResponse($docente, 'Docente creado exitosamente. Se envió el acceso y manual a su correo.', 201);
         }, 'Error al crear el Docente');
     }
 
