@@ -35,7 +35,7 @@ class StoreInscripcionRequest extends FormRequest
             'direccion' => 'required|string',
             'sexo' => 'required|string|in:M,F',
             'cod_voucher' => 'required|string|digits_between:6,7',
-            'rutaVoucher' => 'file|mimes:pdf|max:5120',
+            'rutaVoucher' => 'file|mimes:pdf|max:10240',
             'rutaDocIden' => 'file|mimes:pdf|max:10240',
             'rutaFoto' => 'file|mimes:jpg,jpeg,png|max:10240',
             'rutaCV' => 'file|mimes:pdf|max:10240',
@@ -61,7 +61,7 @@ class StoreInscripcionRequest extends FormRequest
             'rutaVoucher.mimes' => 'El archivo del voucher debe ser un PDF.',
             'rutaFoto.mimes' => 'La foto debe ser JPG, JPEG o PNG.',
             'rutaDocIden.mimes' => 'El documento de identificación debe ser un PDF.',
-            'rutaVoucher.max' => 'El archivo del voucher no debe exceder los 5 MB.',
+            'rutaVoucher.max' => 'El archivo del voucher no debe exceder los 10 MB.',
             'rutaFoto.max' => 'La foto no debe exceder los 10 MB.',
             'rutaDocIden.max' => 'El documento de identificación no debe exceder los 10 MB.',
         ];
