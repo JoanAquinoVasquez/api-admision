@@ -115,6 +115,15 @@ return Application::configure(basePath: dirname(__DIR__))
             ], 404);
         });
 
+        // 422 - Error de Validación
+        $exceptions->render(function (\Illuminate\Validation\ValidationException $e, Request $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $e->errors(),
+            ], 422);
+        });
+
         // 429 - Too Many Requests (Rate Limit)
         $exceptions->render(function (\Illuminate\Http\Exceptions\ThrottleRequestsException $e, Request $request) {
             return response()->json([

@@ -32,3 +32,6 @@ cypress/downloads/
 cypress/fixtures/
 PREINSCRIPCIONES.xlsx
 *.sql
+# phpunit.xml and tests should be tracked
+# /tests
+# phpunit.xml
