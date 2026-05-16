@@ -36,8 +36,8 @@ class InscripcionValidationTest extends TestCase
     /** @test */
     public function it_fails_if_voucher_is_too_large()
     {
-        // Simulamos un archivo PDF de 6MB (que debe fallar porque el limite es 5MB)
-        $file = \Illuminate\Http\Testing\File::create('voucher.pdf', 6144); // 6MB
+        // Simulamos un archivo PDF de 11MB (que debe fallar porque el limite es 10MB)
+        $file = \Illuminate\Http\Testing\File::create('voucher.pdf', 11264); // 11MB
 
         $response = $this->postJson('/inscripcion', [
             'programa_id' => 1,
