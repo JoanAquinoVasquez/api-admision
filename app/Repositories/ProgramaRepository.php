@@ -186,6 +186,7 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
     public function getAllWithRelations(): Collection
     {
         return $this->model->with(['facultad', 'grado', 'conceptoPago'])
+            ->withCount('inscripciones')
             ->orderBy('nombre', 'asc')
             ->get();
     }
