@@ -28,7 +28,7 @@ class CitacionEvaluadoresCVEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Convocatoria a Reunión de Coordinación - Evaluación de Expedientes | Admisión Posgrado UNPRG 2026-I',
+            subject: '[REPROGRAMADO] Convocatoria a Reunión de Coordinación - Evaluación de Expedientes | Admisión Posgrado UNPRG 2026-I',
         );
     }
 

@@ -170,14 +170,14 @@
         </div>
 
         <!-- Banner -->
-        <div class="status-banner">
+        <div class="status-banner" style="background-color: #fef3c7; border-bottom: 2px solid #fde68a;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto; border-collapse: collapse;">
                 <tr>
                     <td style="padding-right: 10px; vertical-align: middle; line-height: 1; font-size: 20px;">
-                        📅
+                        ⚠️
                     </td>
-                    <td style="vertical-align: middle; font-weight: 700; color: #1e40af; font-size: 15px; font-family: 'Inter', sans-serif; text-align: left;">
-                        Reunión de Coordinación - Docentes Evaluadores
+                    <td style="vertical-align: middle; font-weight: 700; color: #92400e; font-size: 15px; font-family: 'Inter', sans-serif; text-align: left;">
+                        REPROGRAMACIÓN: Reunión de Coordinación - Docentes Evaluadores
                     </td>
                 </tr>
             </table>
@@ -190,15 +190,19 @@
             </div>
 
             <p style="color: #4b5563; margin-bottom: 1.5rem;">
-                Por medio de la presente, la Comisión de Admisión de la Escuela de Posgrado de la Universidad Nacional Pedro Ruiz Gallo se dirige a usted para saludarle cordialmente y convocarle a una reunión de coordinación sobre el trabajo de <strong>evaluación de expedientes </strong> a realizarse en el marco del Proceso de Admisión Posgrado 2026-I.
+                Por medio de la presente, la Comisión de Admisión de la Escuela de Posgrado de la Universidad Nacional Pedro Ruiz Gallo le hace de su conocimiento que la reunión de coordinación para la <strong>evaluación de expedientes</strong> (programada inicialmente para el lunes 08 de junio) <strong>ha sido reprogramada</strong>.
+            </p>
+
+            <p style="color: #4b5563; margin-bottom: 1.5rem;">
+                La cita <strong>ya no se llevará a cabo el lunes 08 de junio</strong>, sino el día <strong>martes 09 de junio de 2026</strong> en el mismo horario y lugar establecidos. Agradecemos su comprensión y le solicitamos tomar nota de la nueva programación:
             </p>
 
             <div class="info-card">
                 <p style="margin: 0 0 1rem 0; color: #1e293b; font-weight: 700; border-bottom: 1px solid #cbd5e1; padding-bottom: 0.5rem; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">
-                    Detalles de la Cita:
+                    Nueva Programación de la Cita:
                 </p>
                 <div class="detail-item">
-                    <strong>Fecha:</strong> Lunes, 08 de Junio de 2026
+                    <strong>Fecha:</strong> Martes, 09 de Junio de 2026 <span style="color: #b91c1c; font-weight: bold; font-size: 0.85rem; margin-left: 5px;">(Nueva Fecha)</span>
                 </div>
                 <div class="detail-item">
                     <strong>Hora:</strong> 09:00 a.m.
