@@ -280,6 +280,7 @@ Route::apiResource('/programas', ProgramaController::class);
 
 // Chatbot con Gemini
 Route::get('/chatbot-context', [ChatbotController::class, 'getContext']);
+Route::get('/chatbot/reporte-programas-top', [ChatbotController::class, 'reportProgramasTop']);
 
 // Ruta de fallback para rutas no encontradas
 Route::fallback(function () {

@@ -72,8 +72,17 @@ class ChatbotController extends BaseController
             // Vamos a verificar si buildContext es accesible o si necesitamos un wrapper.
             // El usuario ya modificó ChatbotService, veamos si puedo añadir un método público ahí.
             $context = $this->chatbotService->getContextForBot();
-
             return $this->successResponse(['context' => $context]);
         }, 'Error al obtener el contexto');
+    }
+
+    public function reportProgramasTop(Request $request, \App\Services\ReportService $reportService)
+    {
+        $token = $request->header('X-Chatbot-Token');
+        if ($token !== env('CHATBOT_TOKEN')) {
+            return response()->json(['success' => false, 'message' => 'No autorizado'], 401);
+        }
+
+        return $reportService->generateProgramasTopPDF();
     }
 }
