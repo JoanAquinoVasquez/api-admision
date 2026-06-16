@@ -213,7 +213,7 @@ class AuthDocenteController extends BaseController
 
                 return response()->json(['authenticated' => true, 'docente' => $docente]);
             } catch (TokenExpiredException) {
-                return response()->json(['authenticated' => false, 'error' => 'El token ha expirado']);
+                return response()->json(['authenticated' => false, 'error' => 'El token ha expirado'], 401);
             } catch (Exception) {
                 return response()->json(['authenticated' => false]);
             }
