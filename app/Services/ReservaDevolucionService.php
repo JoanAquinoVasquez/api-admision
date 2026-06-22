@@ -13,6 +13,8 @@ use Google\Service\Drive\DriveFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ProgramaInhabilitadoEmail;
 
 class ReservaDevolucionService
 {
@@ -45,6 +47,16 @@ class ReservaDevolucionService
                 $inscripcion->estado = 0;
                 $inscripcion->save();
                 $inscripcionesInhabilitadas->push($inscripcion);
+
+                // Enviar correo electrónico en segundo plano a los postulantes inscritos
+                try {
+                    $inscripcion->loadMissing(['postulante', 'programa.grado']);
+                    if ($inscripcion->postulante && $inscripcion->postulante->email) {
+                        Mail::to($inscripcion->postulante->email)->queue(new ProgramaInhabilitadoEmail($inscripcion));
+                    }
+                } catch (\Exception $e) {
+                    Log::error("Error al encolar correo para inscripción ID {$inscripcion->id}: " . $e->getMessage());
+                }
             }
         }
 
