@@ -349,7 +349,6 @@ class VoucherService
         if ($conceptoPago) {
             $programas = Programa::with(['grado', 'facultad'])
                 ->where('concepto_pago_id', $conceptoPago->id)
-                ->where('estado', true)
                 ->get();
         }
         // Transformar para incluir grado_nombre y asegurar estructura
