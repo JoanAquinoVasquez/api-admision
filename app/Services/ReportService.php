@@ -295,26 +295,16 @@ class ReportService
     public function generateFinalAulasPdf()
     {
         $aulasAsignadas = [
-            28 => 'AULA 01',
-            9  => 'AULA 01',
-            37 => 'AULA 02',
-            12 => 'AULA 03',
-            33 => 'AULA 05',
-            22 => 'AULA 08',
-            3  => 'AULA 08',
-            38 => 'AULA 09',
-            35 => 'AULA 09',
-            41 => 'AULA 10',
-            4  => 'AULA 11',
-            7  => 'AULA 11',
-            13 => 'AULA 12',
-            6  => 'AULA 12',
-            29 => 'AULA 13',
-            34 => 'AULA 13',
-            43 => 'AULA 14',
-            11 => 'AULA 15',
-            31 => 'AULA 16',
-            24 => 'AULA 18',
+            10 => 'AULA 01',
+            24 => 'AULA 02',
+            31 => 'AULA 03',
+            21 => 'AULA 05',
+            29 => 'AULA 08',
+            25 => 'AULA 09',
+            27 => 'AULA 10',
+            8  => 'AULA 11',
+            7  => 'AULA 12',
+            22 => 'AULA 13',
         ];
 
         $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
@@ -341,7 +331,7 @@ class ReportService
                 $gradoNombre = $inscripciones->first()->programa->grado->nombre ?? 'Desconocido';
                 $docente = $inscripciones->first()->programa->docente;
 
-                if ($idPrograma === 8) {
+                if ($idPrograma === 9) {
                     $inscripcionesGrupo1 = $inscripciones->take(30);
                     $inscripcionesGrupo2 = $inscripciones->slice(30)->values();
 
@@ -390,26 +380,16 @@ class ReportService
     public function generateFinalFirmasPdf()
     {
         $aulasAsignadas = [
-            28 => 'AULA 01',
-            9  => 'AULA 01',
-            37 => 'AULA 02',
-            12 => 'AULA 03',
-            33 => 'AULA 05',
-            22 => 'AULA 08',
-            3  => 'AULA 08',
-            38 => 'AULA 09',
-            35 => 'AULA 09',
-            41 => 'AULA 10',
-            4  => 'AULA 11',
-            7  => 'AULA 11',
-            13 => 'AULA 12',
-            6  => 'AULA 12',
-            29 => 'AULA 13',
-            34 => 'AULA 13',
-            43 => 'AULA 14',
-            11 => 'AULA 15',
-            31 => 'AULA 16',
-            24 => 'AULA 18',
+            10 => 'AULA 01',
+            24 => 'AULA 02',
+            31 => 'AULA 03',
+            21 => 'AULA 05',
+            29 => 'AULA 08',
+            25 => 'AULA 09',
+            27 => 'AULA 10',
+            8  => 'AULA 11',
+            7  => 'AULA 12',
+            22 => 'AULA 13',
         ];
 
         $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
@@ -436,7 +416,7 @@ class ReportService
                 $gradoNombre = $inscripciones->first()->programa->grado->nombre ?? 'Desconocido';
                 $docente = $inscripciones->first()->programa->docente;
 
-                if ($idPrograma === 8) {
+                if ($idPrograma === 9) {
                     $inscripcionesGrupo1 = $inscripciones->take(30);
                     $inscripcionesGrupo2 = $inscripciones->slice(30)->values();
 
