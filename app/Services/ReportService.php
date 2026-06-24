@@ -296,20 +296,24 @@ class ReportService
     {
         $aulasAsignadas = [
             28 => 'AULA 01',
-            38 => 'AULA 02',
-            8 => 'AULA 17',
-            37 => 'AULA 03',
+            9  => 'AULA 01',
+            37 => 'AULA 02',
+            12 => 'AULA 03',
             33 => 'AULA 05',
             22 => 'AULA 08',
+            3  => 'AULA 08',
+            38 => 'AULA 09',
             35 => 'AULA 09',
             41 => 'AULA 10',
-            4 => 'AULA 11',
+            4  => 'AULA 11',
+            7  => 'AULA 11',
             13 => 'AULA 12',
+            6  => 'AULA 12',
             29 => 'AULA 13',
+            34 => 'AULA 13',
             43 => 'AULA 14',
             11 => 'AULA 15',
             31 => 'AULA 16',
-            34 => 'AULA 17',
             24 => 'AULA 18',
         ];
 
@@ -336,15 +340,40 @@ class ReportService
                 $programaNombre = $inscripciones->first()->programa->nombre ?? 'Desconocido';
                 $gradoNombre = $inscripciones->first()->programa->grado->nombre ?? 'Desconocido';
                 $docente = $inscripciones->first()->programa->docente;
-                $aula = $aulasAsignadas[$idPrograma] ?? 'Sin aula asignada';
 
-                $programasData[] = [
-                    'programa' => $programaNombre,
-                    'grado' => $gradoNombre,
-                    'inscripciones' => $inscripciones,
-                    'docente' => $docente,
-                    'aula' => $aula,
-                ];
+                if ($idPrograma === 8) {
+                    $inscripcionesGrupo1 = $inscripciones->take(30);
+                    $inscripcionesGrupo2 = $inscripciones->slice(30)->values();
+
+                    if ($inscripcionesGrupo1->isNotEmpty()) {
+                        $programasData[] = [
+                            'programa' => $programaNombre,
+                            'grado' => $gradoNombre,
+                            'inscripciones' => $inscripcionesGrupo1,
+                            'docente' => $docente,
+                            'aula' => 'AULA 06',
+                        ];
+                    }
+
+                    if ($inscripcionesGrupo2->isNotEmpty()) {
+                        $programasData[] = [
+                            'programa' => $programaNombre,
+                            'grado' => $gradoNombre,
+                            'inscripciones' => $inscripcionesGrupo2,
+                            'docente' => $docente,
+                            'aula' => 'AULA 07',
+                        ];
+                    }
+                } else {
+                    $aula = $aulasAsignadas[$idPrograma] ?? 'Sin aula asignada';
+                    $programasData[] = [
+                        'programa' => $programaNombre,
+                        'grado' => $gradoNombre,
+                        'inscripciones' => $inscripciones,
+                        'docente' => $docente,
+                        'aula' => $aula,
+                    ];
+                }
             }
         }
 
@@ -362,20 +391,24 @@ class ReportService
     {
         $aulasAsignadas = [
             28 => 'AULA 01',
-            38 => 'AULA 02',
-            8 => 'AULA 17',
-            37 => 'AULA 03',
+            9  => 'AULA 01',
+            37 => 'AULA 02',
+            12 => 'AULA 03',
             33 => 'AULA 05',
             22 => 'AULA 08',
+            3  => 'AULA 08',
+            38 => 'AULA 09',
             35 => 'AULA 09',
             41 => 'AULA 10',
-            4 => 'AULA 11',
+            4  => 'AULA 11',
+            7  => 'AULA 11',
             13 => 'AULA 12',
+            6  => 'AULA 12',
             29 => 'AULA 13',
+            34 => 'AULA 13',
             43 => 'AULA 14',
             11 => 'AULA 15',
             31 => 'AULA 16',
-            34 => 'AULA 17',
             24 => 'AULA 18',
         ];
 
@@ -402,15 +435,40 @@ class ReportService
                 $programaNombre = $inscripciones->first()->programa->nombre ?? 'Desconocido';
                 $gradoNombre = $inscripciones->first()->programa->grado->nombre ?? 'Desconocido';
                 $docente = $inscripciones->first()->programa->docente;
-                $aula = $aulasAsignadas[$idPrograma] ?? 'Sin aula asignada';
 
-                $programasData[] = [
-                    'programa' => $programaNombre,
-                    'grado' => $gradoNombre,
-                    'inscripciones' => $inscripciones,
-                    'docente' => $docente,
-                    'aula' => $aula,
-                ];
+                if ($idPrograma === 8) {
+                    $inscripcionesGrupo1 = $inscripciones->take(30);
+                    $inscripcionesGrupo2 = $inscripciones->slice(30)->values();
+
+                    if ($inscripcionesGrupo1->isNotEmpty()) {
+                        $programasData[] = [
+                            'programa' => $programaNombre,
+                            'grado' => $gradoNombre,
+                            'inscripciones' => $inscripcionesGrupo1,
+                            'docente' => $docente,
+                            'aula' => 'AULA 06',
+                        ];
+                    }
+
+                    if ($inscripcionesGrupo2->isNotEmpty()) {
+                        $programasData[] = [
+                            'programa' => $programaNombre,
+                            'grado' => $gradoNombre,
+                            'inscripciones' => $inscripcionesGrupo2,
+                            'docente' => $docente,
+                            'aula' => 'AULA 07',
+                        ];
+                    }
+                } else {
+                    $aula = $aulasAsignadas[$idPrograma] ?? 'Sin aula asignada';
+                    $programasData[] = [
+                        'programa' => $programaNombre,
+                        'grado' => $gradoNombre,
+                        'inscripciones' => $inscripciones,
+                        'docente' => $docente,
+                        'aula' => $aula,
+                    ];
+                }
             }
         }
 
