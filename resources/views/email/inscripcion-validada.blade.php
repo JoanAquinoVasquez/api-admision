@@ -305,8 +305,7 @@
                 <span style="font-size: 1.5rem;">⏰</span>
                 <div>
                     <strong>Plazo Máximo:</strong>
-                    <p style="margin: 0;">Tienes <strong>48 horas hábiles</strong> a partir de la recepción de este
-                        correo para presentar tu expediente físico.</p>
+                    <p style="margin: 0;">Tienes plazo para presentar tu expediente físico hasta este <strong>viernes 26 de junio de 2026</strong> (Horario de atención: Lunes a Viernes de 08:00 a.m. a 02:00 p.m.).</p>
                 </div>
             </div>
 

@@ -38,6 +38,18 @@ Route::get('/preview-manual', function () {
     return $pdf->stream('Previsualizacion_Manual_Sistema.pdf');
 });
 
+Route::get('/preview-reminder', function () {
+    return view('email.recordatorio-expediente', [
+        'sexo' => 'M',
+        'nombres' => 'Juan Alberto',
+        'ap_paterno' => 'Pérez',
+        'ap_materno' => 'García',
+        'nombre_grado' => 'Maestría',
+        'nombre_programa' => 'Gerencia de Obras y Construcción'
+    ]);
+});
+
+
 Route::middleware(['auth:api', 'active'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->middleware(['role:super-admin']);
     Route::get('users/{id}', [UserController::class, 'show'])->middleware(['role:super-admin']);

@@ -301,10 +301,7 @@
             </p>
 
             <p style="color: #4b5563; margin-bottom: 1.5rem;">
-                La información subida está siendo revisado por nuestro equipo. Recibirás una notificación de validación
-                en aproximadamente <strong>24 horas</strong>. Una vez validado, te enviaremos tu constancia de
-                inscripción y los demás documentos que debes presentar presencialmente en la oficina de Admisión de
-                Posgrado de la UNPRG.
+                La información subida está siendo revisada por nuestro equipo. En unas horas se le enviarán los documentos correspondientes de confirmación. Una vez validada su inscripción digital, le enviaremos su constancia de inscripción y los demás formatos que debe presentar presencialmente en la oficina de Admisión de Posgrado de la UNPRG.
             </p>
 
             <div class="info-card">

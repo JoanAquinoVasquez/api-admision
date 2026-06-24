@@ -66,8 +66,9 @@ class AulaReportTest extends TestCase
         $existingCount = Inscripcion::where('programa_id', 9)->count();
 
         // Crearemos 35 postulantes para el programa 9
+        $baseNumIden = rand(40000000, 80000000);
         for ($i = 1; $i <= 35; $i++) {
-            $numIden = strval(20000000 + $i);
+            $numIden = strval($baseNumIden + $i);
             $postulante = Postulante::create([
                 'distrito_id' => $distritoId,
                 'nombres' => 'Postulante ' . $i,
@@ -107,6 +108,7 @@ class AulaReportTest extends TestCase
         }
 
         // Crear una inscripción para el programa 24
+        $randId24 = strval(rand(80000000, 90000000));
         $postulante24 = Postulante::create([
             'distrito_id' => $distritoId,
             'nombres' => 'Docencia',
@@ -114,7 +116,7 @@ class AulaReportTest extends TestCase
             'ap_materno' => 'Gestor',
             'email' => "docente@example.com",
             'tipo_doc' => 'DNI',
-            'num_iden' => '30000024',
+            'num_iden' => $randId24,
             'fecha_nacimiento' => '1990-05-15',
             'sexo' => 'F',
             'celular' => '987654321',
@@ -125,7 +127,7 @@ class AulaReportTest extends TestCase
         $voucher24 = Voucher::create([
             'concepto_pago_id' => $conceptoPago->id,
             'numero' => '400024',
-            'num_iden' => '30000024',
+            'num_iden' => $randId24,
             'monto' => 200,
             'fecha_pago' => '2026-06-22',
             'hora_pago' => '09:00:00',
