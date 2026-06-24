@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buenas Noticias sobre su Programa | ESCUELA DE POSGRADO UNPRG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset & Base Styles */
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            color: #333333;
+        }
+
+        /* Container */
+        .email-wrapper {
+            max-width: 650px;
+            margin: 2rem auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid #eaeaea;
+        }
+
+        /* Header */
+        .email-header {
+            background-color: #eff6ff;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: #1e3a8a;
+            position: relative;
+            border-bottom: 4px solid #3b82f6;
+        }
+
+        .header-logos {
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .header-logos table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .logo-img {
+            height: 90px;
+            width: auto;
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+            color: #1e40af;
+        }
+
+        /* Status Banner */
+        .status-banner {
+            background-color: #fef3c7;
+            color: #92400e;
+            padding: 1rem 2rem;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 2px solid #fde68a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .status-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Body Content */
+        .email-body {
+            padding: 2.5rem;
+        }
+
+        .greeting {
+            font-size: 1.25rem;
+            color: #111827;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight-text {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .highlight-positive {
+            color: #059669;
+            font-weight: 700;
+        }
+
+        .info-card {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #10b981;
+        }
+
+        .info-card-amber {
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .info-card h3 {
+            margin-top: 0;
+            color: #065f46;
+            font-size: 1.05rem;
+        }
+
+        .info-card-amber h3 {
+            margin-top: 0;
+            color: #92400e;
+            font-size: 1.05rem;
+        }
+
+        .date-highlight {
+            display: inline-block;
+            background-color: #dbeafe;
+            color: #1e40af;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        .email-footer {
+            background-color: #2873B4;
+            color: #ffffff;
+            padding: 0;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .footer-content {
+            padding: 2rem;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .email-wrapper {
+                margin: 0;
+                border-radius: 0;
+                width: 100% !important;
+            }
+
+            .email-body {
+                padding: 1.5rem;
+            }
+
+            .contact-list {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-wrapper">
+        <!-- Header -->
+        <div class="email-header">
+            <div class="header-logos">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td width="50%" align="left" style="padding-right: 10px;">
+                            <img src="https://drive.usercontent.google.com/download?id=1XdEM7PcBXuRfkkdsBp3MqlDRz4n-GsJf&export=view"
+                                alt="EPG Logo" class="logo-img" style="height: 90px; width: auto; display: block;">
+                        </td>
+                        <td width="50%" align="right" style="padding-left: 10px;">
+                            <img src="https://drive.usercontent.google.com/download?id=1ph6WsmccjVnNwkK70-ntCVKKdHGJucS5&export=view"
+                                alt="UNPRG Logo" class="logo-img" style="height: 90px; width: auto; display: block;">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <h1 class="header-title">Comunicado Informativo</h1>
+        </div>
+
+        <!-- Status Banner -->
+        <div class="status-banner">
+            <span class="status-icon">📢</span>
+            <span>Actualización sobre su programa académico</span>
+        </div>
+
+        <!-- Body -->
+        <div class="email-body">
+            <div class="greeting">
+                {{ $sexo == 'M' ? 'Estimado' : 'Estimada' }},
+                <strong>{{ $nombres }} {{ $ap_paterno }} {{ $ap_materno }}</strong>
+            </div>
+
+            <p style="color: #4b5563; margin-bottom: 1.5rem;">
+                Nos comunicamos con usted de la <strong>Dirección de la Escuela de Posgrado de la UNPRG</strong> para informarle sobre el estado de su programa de interés.
+            </p>
+
+            <!-- Buena noticia -->
+            <div class="info-card">
+                <h3>📈 ¡Más postulantes se están sumando!</h3>
+                <p style="color: #374151; margin: 0;">
+                    Nos es grato comunicarle que el programa de
+                    <span class="highlight-text">{{ $nombre_grado }} en {{ $nombre_programa }}</span>
+                    está recibiendo <span class="highlight-positive">nuevas inscripciones</span>.
+                    Más postulantes se están sumando a su programa, lo que incrementa la posibilidad de que se aperture en este proceso de admisión.
+                </p>
+            </div>
+
+            <!-- Próximos pasos -->
+            <div class="info-card-amber">
+                <h3>📅 Información el viernes</h3>
+                <p style="color: #374151; margin: 0 0 1rem 0;">
+                    Le informamos que el día <span class="date-highlight">viernes 26 de junio</span> se le comunicará información sobre el <strong>examen de admisión</strong>.
+                </p>
+                <p style="color: #374151; margin: 0;">
+                    Le pedimos estar atento(a) a su correo electrónico y a nuestros canales oficiales de comunicación.
+                </p>
+            </div>
+
+            <p style="color: #4b5563; margin-top: 1.5rem;">
+                Agradecemos su paciencia y confianza en nuestra institución. Estamos trabajando para brindarle la mejor experiencia en su proceso de admisión.
+            </p>
+
+            <p style="color: #4b5563; margin-top: 1rem; margin-bottom: 0;">
+                Si tiene alguna consulta adicional, puede responder directamente a este correo o escribirnos a través de los canales de atención oficiales detallados abajo.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <img src="https://drive.google.com/uc?export=view&id=1bXqmf32tJmjzpoG90fJJwkGN9N2_fKyQ" width="100%"
+                height="6px" alt="Barra Colores" style="display: block; width: 100%;">
+
+            <div class="footer-content">
+                <p style="margin: 0 0 1rem 0; font-weight: 600; color: #ffffff;">Comisión de Admisión - Escuela de Posgrado UNPRG</p>
+
+                <ul class="contact-list">
+                    <li class="contact-item">
+                        <span>📍 Av. Huamachuco Nro. 1130, Lambayeque</span>
+                    </li>
+                    <li class="contact-item">
+                        <span>📩 <a href="mailto:admision_epg@unprg.edu.pe"
+                                style="color: #ffffff; text-decoration: none;">admision_epg@unprg.edu.pe</a></span>
+                    </li>
+                    <li class="contact-item">
+                        <span>📱 995901454 / 924 545 013</span>
+                    </li>
+                </ul>
+
+                <p style="margin-top: 1.5rem; opacity: 0.8; font-size: 0.75rem;">
+                    © 2026 Escuela de Posgrado de la Universidad Nacional Pedro Ruiz Gallo. Todos los derechos reservados.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
