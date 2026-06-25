@@ -88,9 +88,11 @@ class ReportService
     public function generateProgramasTopPDF()
     {
         $programas = $this->programaRepository->getTopProgramas();
+        $totalGeneral = Inscripcion::count();
 
         $pdf = Pdf::loadView('reporte-inscripcion-top', [
             'programas' => $programas,
+            'totalGeneral' => $totalGeneral,
             'fechaHora' => now(),
         ]);
 

@@ -21,7 +21,7 @@
             </tr>
         </thead>
         <tbody>
-            @php $totalGeneral = 0; @endphp
+            @php $totalAbiertos = 0; @endphp
             @foreach ($programas as $programa)
                 <tr>
                     <td>{{ mb_strtoupper($programa->facultad) }}</td>
@@ -29,10 +29,14 @@
                     <td>{{ mb_strtoupper($programa->programa) }}</td>
                     <td class="text-right fw-bold" style="font-size: 14px;">{{ $programa->total_inscritos }}</td>
                 </tr>
-                @php $totalGeneral += $programa->total_inscritos; @endphp
+                @php $totalAbiertos += $programa->total_inscritos; @endphp
             @endforeach
-            <tr style="background-color: #e8ecf1;">
-                <td colspan="3" class="text-right fw-bold" style="color: #003366;">TOTAL GENERAL DE INSCRITOS</td>
+            <tr style="background-color: #f8fafc;">
+                <td colspan="3" class="text-right fw-bold" style="color: #334155; text-transform: uppercase;">TOTAL</td>
+                <td class="text-right fw-bold" style="color: #334155; font-size: 13px;">{{ $totalAbiertos }}</td>
+            </tr>
+            <tr style="background-color: #e2e8f0;">
+                <td colspan="3" class="text-right fw-bold" style="color: #003366; text-transform: uppercase;">TOTAL GENERAL</td>
                 <td class="text-right fw-bold" style="color: #003366; font-size: 13px;">{{ $totalGeneral }}</td>
             </tr>
         </tbody>
