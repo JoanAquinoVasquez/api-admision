@@ -109,7 +109,12 @@ class ReportService
         $inscripciones = \App\Models\Inscripcion::with(['postulante', 'programa.grado'])
             ->where('programa_id', $idPrograma)
             ->where('val_digital', 1)
-            ->get();
+            ->get()
+            ->sortBy(function ($inscripcion) {
+                return strtolower($inscripcion->postulante->ap_paterno ?? '') . ' ' .
+                    strtolower($inscripcion->postulante->ap_materno ?? '') . ' ' .
+                    strtolower($inscripcion->postulante->nombres ?? '');
+            })->values();
 
         $pdf = Pdf::loadView('notas.postulantes-aptos', [
             'inscripciones' => $inscripciones,
@@ -136,6 +141,14 @@ class ReportService
                 $q->where('val_digital', 1);
             })
             ->get();
+
+        $programas->each(function ($programa) {
+            $programa->setRelation('inscripciones', $programa->inscripciones->sortBy(function ($inscripcion) {
+                return strtolower($inscripcion->postulante->ap_paterno ?? '') . ' ' .
+                    strtolower($inscripcion->postulante->ap_materno ?? '') . ' ' .
+                    strtolower($inscripcion->postulante->nombres ?? '');
+            })->values());
+        });
 
         $pdf = Pdf::loadView('notas.postulantes-aptos-multiple', [
             'programas' => $programas,
