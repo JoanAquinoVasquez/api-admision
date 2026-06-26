@@ -210,7 +210,7 @@
             </p>
 
             <p style="color: #1f2937; font-weight: 600; margin-bottom: 1rem;">
-                Frente a esta situación, usted cuenta con las siguientes tres (3) opciones:
+                Frente a esta situación, usted cuenta con las siguientes dos (2) opciones:
             </p>
 
             <!-- Option 1 -->
@@ -229,13 +229,6 @@
                 </p>
             </div>
 
-            <!-- Option 3 -->
-            <div class="option-card" style="border-left-color: #f59e0b;">
-                <h3 class="option-title">Opción 3: Devolución de pago</h3>
-                <p class="option-desc">
-                    Solicitar la devolución total del pago realizado (iniciando el trámite respectivo una vez finalizado el presente proceso de admisión).
-                </p>
-            </div>
 
             <p style="color: #4b5563; margin-top: 1.5rem;">
                 Nuestro equipo de admisión se comunicará con usted telefónicamente en las próximas horas para confirmar su decisión, así como para indicarle qué programas afines sí se aperturarán en caso de que opte por el cambio de programa.
