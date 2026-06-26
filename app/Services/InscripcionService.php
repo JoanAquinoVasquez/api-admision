@@ -68,7 +68,7 @@ class InscripcionService
                 'codigo' => $data->codVoucher,
                 'val_digital' => 0,
                 'val_fisico' => false,
-                'estado' => 1,
+                'estado' => $programa->estado == 0 ? 0 : 1,
             ]);
 
             // 5. Manejar Archivos Temporales (para Job de Drive)
