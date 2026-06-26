@@ -6,9 +6,11 @@
             <div class="page-break"></div>
         @endif
 
-        <div class="report-title">
-            <h3 style="font-size: 20px; font-weight: 900; color: #003366;">AULA: {{ mb_strtoupper($programaData['aula']) }}</h3>
-            <h4 class="mt-1 fw-bold">{{ mb_strtoupper($programaData['grado'], 'UTF-8') }} EN {{ mb_strtoupper($programaData['programa'], 'UTF-8') }}</h4>
+        <div class="report-title" style="text-align: center; margin-bottom: 20px;">
+            <h2 style="font-size: 32px; font-weight: bold; color: #003366; margin: 0 0 10px 0; letter-spacing: 0.5px;">{{ mb_strtoupper($programaData['aula']) }}</h2>
+            <h4 style="font-size: 13px; font-weight: bold; color: #475569; margin: 0; text-transform: uppercase;">
+                {{ mb_strtoupper($programaData['grado'], 'UTF-8') }} EN {{ mb_strtoupper($programaData['programa'], 'UTF-8') }}
+            </h4>
         </div>
 
         <table class="data-table">
