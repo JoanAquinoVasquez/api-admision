@@ -14,19 +14,15 @@ $kernel->bootstrap();
 $testEmail = 'jaquinov@unprg.edu.pe';
 
 // Límite de inscritos para considerar que un programa activo rinde examen (por defecto >= 18)
-$minInscritos = 18;
+$minInscritos = 17;
 // ---------------------
 
-// 1. Obtener programas aperturados (estado = 1) con el mínimo de inscritos (excluyendo la facultad FAG, excepto los programas 33 y 34)
+// 1. Obtener programas aperturados (estado = 1) con el mínimo de inscritos
 $programasAfectados = App\Models\Programa::where('estado', 1)
-    ->where(function($query) {
-        $query->where('facultad_id', '!=', 11)
-              ->orWhereIn('id', [33, 34]);
-    })
     ->withCount('inscripciones')
     ->get()
     ->filter(function($p) use ($minInscritos) {
-        return $p->inscripciones_count >= $minInscritos || in_array($p->id, [33, 34]);
+        return $p->inscripciones_count >= $minInscritos;
     });
 
 if ($programasAfectados->isEmpty()) {
