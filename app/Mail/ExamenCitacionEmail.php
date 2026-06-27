@@ -61,6 +61,7 @@ class ExamenCitacionEmail extends Mailable implements ShouldQueue
                 'nombre_grado' => $grado ? $grado->nombre : 'Posgrado',
                 'nombre_programa' => $programa ? $programa->nombre : '',
                 'aula' => $this->aula,
+                'programa_id' => $programa ? $programa->id : null,
             ],
         );
     }

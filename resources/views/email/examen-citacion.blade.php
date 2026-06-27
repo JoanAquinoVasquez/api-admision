@@ -287,6 +287,9 @@
                     <li>Llevar su <strong>Carnet de postulante</strong>.</li>
                     <li>Llevar su <strong>Perfil de proyecto tentativo de tesis</strong> (en folder manila).</li>
                     <li>Llevar únicamente útiles de escritorio: <strong>lápiz, lapicero, borrador y tajador</strong>.</li>
+                    @if(isset($programa_id) && in_array($programa_id, [33, 34]))
+                        <li>Llevar su <strong>expediente junto a su currículum vitae documentado y foliado</strong>.</li>
+                    @endif
                 </ul>
             </div>
 

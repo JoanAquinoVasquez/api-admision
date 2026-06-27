@@ -17,13 +17,16 @@ $testEmail = 'jaquinov@unprg.edu.pe';
 $minInscritos = 18;
 // ---------------------
 
-// 1. Obtener programas aperturados (estado = 1) con el mínimo de inscritos (excluyendo la facultad FAG - facultad_id != 11)
+// 1. Obtener programas aperturados (estado = 1) con el mínimo de inscritos (excluyendo la facultad FAG, excepto los programas 33 y 34)
 $programasAfectados = App\Models\Programa::where('estado', 1)
-    ->where('facultad_id', '!=', 11)
+    ->where(function($query) {
+        $query->where('facultad_id', '!=', 11)
+              ->orWhereIn('id', [33, 34]);
+    })
     ->withCount('inscripciones')
     ->get()
     ->filter(function($p) use ($minInscritos) {
-        return $p->inscripciones_count >= $minInscritos;
+        return $p->inscripciones_count >= $minInscritos || in_array($p->id, [33, 34]);
     });
 
 if ($programasAfectados->isEmpty()) {
