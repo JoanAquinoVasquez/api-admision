@@ -4,9 +4,11 @@
     <style>
         table.data-table {
             font-size: 15px !important;
+            font-weight: bold !important;
         }
         table.data-table th, table.data-table td {
             padding: 8px 10px !important;
+            font-weight: bold !important;
         }
     </style>
 @endsection
