@@ -270,6 +270,10 @@
                         <td class="info-value">Iniciará inmediatamente después de finalizar el examen de admisión.</td>
                     </tr>
                     <tr>
+                        <td class="info-label">Aula Asignada:</td>
+                        <td class="info-value" style="font-size: 1.15rem; color: #003366;"><strong>{{ $aula }}</strong></td>
+                    </tr>
+                    <tr>
                         <td class="info-label">Puerta de Ingreso:</td>
                         <td class="info-value">Puerta principal de la <strong>Escuela de Posgrado de la UNPRG</strong> (Av. Huamachuco Nro. 1130).</td>
                     </tr>

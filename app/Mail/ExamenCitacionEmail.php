@@ -15,15 +15,18 @@ class ExamenCitacionEmail extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public $inscripcion;
+    public $aula;
 
     /**
      * Create a new message instance.
      *
      * @param Inscripcion $inscripcion
+     * @param string $aula
      */
-    public function __construct(Inscripcion $inscripcion)
+    public function __construct(Inscripcion $inscripcion, string $aula)
     {
         $this->inscripcion = $inscripcion;
+        $this->aula = $aula;
     }
 
     /**
@@ -57,6 +60,7 @@ class ExamenCitacionEmail extends Mailable implements ShouldQueue
                 'ap_materno' => $postulante->ap_materno ?? '',
                 'nombre_grado' => $grado ? $grado->nombre : 'Posgrado',
                 'nombre_programa' => $programa ? $programa->nombre : '',
+                'aula' => $this->aula,
             ],
         );
     }

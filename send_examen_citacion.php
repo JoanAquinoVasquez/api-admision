@@ -55,6 +55,7 @@ function determinarAulaParaInscripcion($inscripcion) {
     $aulasAsignadas = [
         21 => 'AULA 02',
         10 => 'AULA 03',
+        34 => 'AULA 04',
         33 => 'AULA 05',
         8  => 'AULA 08',
         7  => 'AULA 09',
@@ -102,8 +103,8 @@ if (!empty($testEmail)) {
     $insPrueba = $inscripciones->first();
     $aulaPrueba = determinarAulaParaInscripcion($insPrueba);
     try {
-        Mail::to($testEmail)->send(new ExamenCitacionEmail($insPrueba));
-        echo "[ÉXITO] Correo de prueba enviado a {$testEmail}. Aula de prueba calculada: {$aulaPrueba} para el programa: {$insPrueba->programa->nombre}\n";
+        Mail::to($testEmail)->send(new ExamenCitacionEmail($insPrueba, $aulaPrueba));
+        echo "[ÉXITO] Correo de prueba enviado a {$testEmail}. Aula de prueba asignada: {$aulaPrueba} para el programa: {$insPrueba->programa->nombre}\n";
     } catch (\Exception $e) {
         echo "[ERROR] Falló el envío de prueba: " . $e->getMessage() . "\n";
     }
@@ -124,8 +125,8 @@ if (!empty($testEmail)) {
         $emailDestino = $postulante->email;
 
         try {
-            Mail::to($emailDestino)->send(new ExamenCitacionEmail($inscripcion));
-            echo "[ÉXITO] Correo enviado a: {$nombreCompleto} ({$emailDestino}) | Aula calculada: {$aula}\n";
+            Mail::to($emailDestino)->send(new ExamenCitacionEmail($inscripcion, $aula));
+            echo "[ÉXITO] Correo enviado a: {$nombreCompleto} ({$emailDestino}) | Aula: {$aula}\n";
             $successCount++;
         } catch (\Exception $e) {
             echo "[ERROR] No se pudo enviar a: {$nombreCompleto} ({$emailDestino}). Error: " . $e->getMessage() . "\n";

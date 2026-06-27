@@ -312,6 +312,7 @@ class ReportService
         $aulasAsignadas = [
             21 => 'AULA 02',
             10 => 'AULA 03',
+            34 => 'AULA 04',
             33 => 'AULA 05',
             8  => 'AULA 08',
             7  => 'AULA 09',
@@ -399,6 +400,7 @@ class ReportService
         $aulasAsignadas = [
             21 => 'AULA 02',
             10 => 'AULA 03',
+            34 => 'AULA 04',
             33 => 'AULA 05',
             8  => 'AULA 08',
             7  => 'AULA 09',
@@ -770,6 +772,7 @@ class ReportService
             $aulasAsignadas = [
                 21 => 'AULA 02',
                 10 => 'AULA 03',
+                34 => 'AULA 04',
                 33 => 'AULA 05',
                 8  => 'AULA 08',
                 7  => 'AULA 09',

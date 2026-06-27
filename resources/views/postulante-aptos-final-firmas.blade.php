@@ -1,5 +1,16 @@
 @extends('pdf.layout')
 
+@section('custom_css')
+    <style>
+        table.data-table {
+            font-size: 15px !important;
+        }
+        table.data-table th, table.data-table td {
+            padding: 8px 10px !important;
+        }
+    </style>
+@endsection
+
 @section('content')
     @foreach ($programasData as $index => $programaData)
         @if ($index > 0)
