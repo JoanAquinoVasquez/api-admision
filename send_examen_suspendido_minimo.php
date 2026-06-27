@@ -14,20 +14,21 @@ $kernel->bootstrap();
 $testEmail = 'jaquinov@unprg.edu.pe'; 
 // ---------------------
 
-// 1. Obtener programas aperturados (estado = 1) con menos de 14 inscritos
+// 1. Obtener programas aperturados (estado = 1) con menos de 18 inscritos (excluyendo la facultad FAG - facultad_id != 11)
 $programasAfectados = App\Models\Programa::where('estado', 1)
+    ->where('facultad_id', '!=', 11)
     ->withCount('inscripciones')
     ->get()
     ->filter(function($p) {
-        return $p->inscripciones_count < 14;
+        return $p->inscripciones_count < 18;
     });
 
 if ($programasAfectados->isEmpty()) {
-    echo "No se encontraron programas aperturados con menos de 14 inscritos.\n";
+    echo "No se encontraron programas aperturados con menos de 18 inscritos.\n";
     exit(0);
 }
 
-echo "Programas afectados (< 14 inscritos):\n";
+echo "Programas afectados (< 18 inscritos):\n";
 foreach ($programasAfectados as $p) {
     echo " - ID: {$p->id} | {$p->nombre} ({$p->inscripciones_count} inscritos)\n";
 }
