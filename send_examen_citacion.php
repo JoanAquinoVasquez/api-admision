@@ -55,6 +55,7 @@ function determinarAulaParaInscripcion($inscripcion) {
     $aulasAsignadas = [
         21 => 'AULA 02',
         10 => 'AULA 03',
+        33 => 'AULA 05',
         8  => 'AULA 08',
         7  => 'AULA 09',
         22 => 'AULA 10',

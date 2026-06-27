@@ -312,6 +312,7 @@ class ReportService
         $aulasAsignadas = [
             21 => 'AULA 02',
             10 => 'AULA 03',
+            33 => 'AULA 05',
             8  => 'AULA 08',
             7  => 'AULA 09',
             22 => 'AULA 10',
@@ -398,6 +399,7 @@ class ReportService
         $aulasAsignadas = [
             21 => 'AULA 02',
             10 => 'AULA 03',
+            33 => 'AULA 05',
             8  => 'AULA 08',
             7  => 'AULA 09',
             22 => 'AULA 10',
@@ -757,6 +759,77 @@ class ReportService
             return response()->json([
                 'success' => false,
                 'message' => 'Error al generar el PDF.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function generateAulasResumenPdf()
+    {
+        try {
+            $aulasAsignadas = [
+                21 => 'AULA 02',
+                10 => 'AULA 03',
+                33 => 'AULA 05',
+                8  => 'AULA 08',
+                7  => 'AULA 09',
+                22 => 'AULA 10',
+                29 => 'AULA 11',
+                31 => 'AULA 12',
+                25 => 'AULA 14',
+                28 => 'AULA 15',
+                27 => 'AULA 16',
+                24 => 'AULA 17',
+            ];
+
+            // Obtener programas con estado 1 (aperturados)
+            $programas = \App\Models\Programa::where('estado', 1)
+                ->with(['grado'])
+                ->get();
+
+            $datosReporte = [];
+
+            foreach ($programas as $p) {
+                $idPrograma = $p->id;
+
+                // Determinar aulas asignadas
+                $aulas = [];
+                if ($idPrograma === 9) {
+                    $aulas = ['AULA 06', 'AULA 07'];
+                } elseif (isset($aulasAsignadas[$idPrograma])) {
+                    $aulas = [$aulasAsignadas[$idPrograma]];
+                }
+
+                // Si no tiene aula asignada, no se considera en el reporte
+                if (empty($aulas)) {
+                    continue;
+                }
+
+                // Contar el número de inscritos (estado = 1)
+                $inscritosCount = $p->inscripciones()->where('estado', 1)->count();
+
+                $datosReporte[] = [
+                    'grado' => $p->grado->nombre ?? 'Desconocido',
+                    'programa' => $p->nombre,
+                    'inscritos' => $inscritosCount,
+                    'aulas' => implode(', ', $aulas),
+                ];
+            }
+
+            // Ordenar en orden del número de inscritos (descendente)
+            usort($datosReporte, function ($a, $b) {
+                return $b['inscritos'] <=> $a['inscritos'];
+            });
+
+            // Cargar la vista y generar el PDF
+            $pdf = Pdf::loadView('pdf.resumen-aulas', ['datos' => $datosReporte]);
+            $pdf->setPaper('A4', 'portrait');
+
+            return $pdf->stream("resumen_inscritos_aulas_" . now()->format('d-m-Y_His') . ".pdf");
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar el PDF de resumen de aulas.',
                 'error' => $e->getMessage(),
             ], 500);
         }
