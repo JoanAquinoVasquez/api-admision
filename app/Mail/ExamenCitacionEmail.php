@@ -62,6 +62,7 @@ class ExamenCitacionEmail extends Mailable implements ShouldQueue
                 'nombre_programa' => $programa ? $programa->nombre : '',
                 'aula' => $this->aula,
                 'programa_id' => $programa ? $programa->id : null,
+                'val_fisica' => $this->inscripcion->val_fisica,
             ],
         );
     }

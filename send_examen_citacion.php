@@ -65,6 +65,7 @@ function determinarAulaParaInscripcion($inscripcion) {
         22 => 'AULA 10',
         29 => 'AULA 11',
         31 => 'AULA 12',
+        32 => 'AULA 13',
         25 => 'AULA 14',
         28 => 'AULA 15',
         27 => 'AULA 16',

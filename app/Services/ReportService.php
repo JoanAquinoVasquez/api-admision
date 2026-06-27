@@ -319,6 +319,7 @@ class ReportService
             22 => 'AULA 10',
             29 => 'AULA 11',
             31 => 'AULA 12',
+            32 => 'AULA 13',
             25 => 'AULA 14',
             28 => 'AULA 15',
             27 => 'AULA 16',
@@ -407,6 +408,7 @@ class ReportService
             22 => 'AULA 10',
             29 => 'AULA 11',
             31 => 'AULA 12',
+            32 => 'AULA 13',
             25 => 'AULA 14',
             28 => 'AULA 15',
             27 => 'AULA 16',
@@ -779,6 +781,7 @@ class ReportService
                 22 => 'AULA 10',
                 29 => 'AULA 11',
                 31 => 'AULA 12',
+                32 => 'AULA 13',
                 25 => 'AULA 14',
                 28 => 'AULA 15',
                 27 => 'AULA 16',
@@ -849,6 +852,130 @@ class ReportService
             return response()->json([
                 'success' => false,
                 'message' => 'Error al generar el PDF de resumen de aulas.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function generateEvaluadoresPdf()
+    {
+        try {
+            $aulasAsignadas = [
+                21 => 'AULA 02',
+                10 => 'AULA 03',
+                34 => 'AULA 04',
+                33 => 'AULA 05',
+                8  => 'AULA 08',
+                7  => 'AULA 09',
+                22 => 'AULA 10',
+                29 => 'AULA 11',
+                31 => 'AULA 12',
+                32 => 'AULA 13',
+                25 => 'AULA 14',
+                28 => 'AULA 15',
+                27 => 'AULA 16',
+                24 => 'AULA 17',
+            ];
+
+            // Listado de evaluadores de entrevista según el aula (del listado proporcionado por el usuario)
+            $evaluadoresEspeciales = [
+                21 => 'DRA. JESUS ALICIA FERNANDEZ PALOMINO / DR. FREDDY HERNANDEZ RENGIFO', // Aula 2
+                10 => 'DR. LUIS ALBERTO OTAKE OYAMA', // Aula 3
+                34 => 'DRA. MARIA JULIA JARAMILLO CARRION', // Aula 4
+                33 => 'DR. MARIANO AGUSTIN RAMOS GARCIA / DR. ELEAZAR RUFASTO CAMPOS', // Aula 5
+                8  => 'DRA. MARIANELLA LAURA GARCIA AURICH', // Aula 8
+                7  => 'DR. HAMILTON CUEVA CAMPOS', // Aula 9
+                22 => 'DR. LEOPOLDO YZQUIERDO HERNANDEZ', // Aula 10
+                29 => 'DR. JOSE REUPO PERICHE', // Aula 11
+                31 => 'M.SC. JOSE CARLOS LEIVA PIEDRA', // Aula 12
+                32 => 'DR. VICTOR GUSTAVO HERNANDEZ JIMENEZ', // Aula 13
+                25 => 'DRA. MILAGROS DEL PILAR CABEZAS MARTINEZ', // Aula 14
+                28 => 'DR. PERCY MORANTE GAMARRA', // Aula 15
+                27 => 'DR. JUAN CARLOS GRANADOS BARRETO', // Aula 16
+                24 => 'DRA. GLORIA PUICON CRUZALEGUI', // Aula 17
+            ];
+
+            // Obtener programas con estado 1 (aperturados)
+            $programas = \App\Models\Programa::where('estado', 1)
+                ->with(['grado', 'docenteEntrevista'])
+                ->get();
+
+            $datosReporte = [];
+
+            foreach ($programas as $p) {
+                $idPrograma = $p->id;
+
+                // Determinar aulas y evaluadores asignados
+                $aulasData = [];
+                if ($idPrograma === 9) {
+                    $aulasData[] = [
+                        'aula' => 'AULA 07',
+                        'evaluador' => 'DR. CARLOS ADOLFO LOAYZA RIVAS'
+                    ];
+                    $aulasData[] = [
+                        'aula' => 'AULA 06',
+                        'evaluador' => 'DR. JUAN FARIAS FEIJOO'
+                    ];
+                } else {
+                    $aula = $aulasAsignadas[$idPrograma] ?? null;
+                    if ($aula) {
+                        // Usar relación docenteEntrevista en base de datos si está poblado
+                        $evaluador = 'POR ASIGNAR';
+                        if ($p->docenteEntrevista) {
+                            $evaluador = trim("{$p->docenteEntrevista->nombres} {$p->docenteEntrevista->ap_paterno} {$p->docenteEntrevista->ap_materno}");
+                        } elseif (isset($evaluadoresEspeciales[$idPrograma])) {
+                            $evaluador = $evaluadoresEspeciales[$idPrograma];
+                        }
+                        
+                        $aulasData[] = [
+                            'aula' => $aula,
+                            'evaluador' => mb_strtoupper($evaluador, 'UTF-8')
+                        ];
+                    }
+                }
+
+                // Si no tiene aula asignada, no se considera en el reporte
+                if (empty($aulasData)) {
+                    continue;
+                }
+
+                // Contar el número de inscritos (estado = 1)
+                $inscritosCount = $p->inscripciones()->where('estado', 1)->count();
+
+                foreach ($aulasData as $ad) {
+                    $inscritosAula = $inscritosCount;
+                    if ($idPrograma === 9) {
+                        if ($ad['aula'] === 'AULA 07') {
+                            $inscritosAula = 30;
+                        } else {
+                            $inscritosAula = 25;
+                        }
+                    }
+
+                    $datosReporte[] = [
+                        'grado' => $p->grado->nombre ?? 'Desconocido',
+                        'programa' => $p->nombre,
+                        'inscritos' => $inscritosAula,
+                        'aulas' => $ad['aula'],
+                        'evaluador' => $ad['evaluador'],
+                    ];
+                }
+            }
+
+            // Ordenar por aula
+            usort($datosReporte, function ($a, $b) {
+                return strnatcmp($a['aulas'], $b['aulas']);
+            });
+
+            // Cargar la vista y generar el PDF
+            $pdf = Pdf::loadView('pdf.resumen-evaluadores', ['datos' => $datosReporte]);
+            $pdf->setPaper('A4', 'portrait');
+
+            return $pdf->stream("resumen_evaluadores_aulas_" . now()->format('d-m-Y_His') . ".pdf");
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar el PDF de resumen de evaluadores.',
                 'error' => $e->getMessage(),
             ], 500);
         }

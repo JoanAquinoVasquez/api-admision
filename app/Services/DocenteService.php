@@ -265,6 +265,44 @@ class DocenteService
         return $pdf;
     }
 
+    private function getDocenteEntrevistaForReport(int $programaId, $docenteEntrevista)
+    {
+        $docenteObj = new \stdClass();
+        $docenteObj->nombres = 'POR ASIGNAR';
+        $docenteObj->ap_paterno = '';
+        $docenteObj->ap_materno = '';
+        $docenteObj->dni = '';
+
+        if ($docenteEntrevista) {
+            $docenteObj->nombres = trim("{$docenteEntrevista->nombres} {$docenteEntrevista->ap_paterno} {$docenteEntrevista->ap_materno}");
+            $docenteObj->dni = $docenteEntrevista->dni ?? '';
+        } else {
+            $evaluadoresEspeciales = [
+                9  => 'DR. CARLOS ADOLFO LOAYZA RIVAS / DR. JUAN FARIAS FEIJOO',
+                21 => 'DRA. JESUS ALICIA FERNANDEZ PALOMINO / DR. FREDDY HERNANDEZ RENGIFO',
+                10 => 'DR. LUIS ALBERTO OTAKE OYAMA',
+                32 => 'DR. VICTOR GUSTAVO HERNANDEZ JIMENEZ', // Aula 13
+                34 => 'DRA. MARIA JULIA JARAMILLO CARRION',
+                33 => 'DR. MARIANO AGUSTIN RAMOS GARCIA / DR. ELEAZAR RUFASTO CAMPOS',
+                8  => 'DRA. MARIANELLA LAURA GARCIA AURICH',
+                7  => 'DR. HAMILTON CUEVA CAMPOS',
+                22 => 'DR. LEOPOLDO YZQUIERDO HERNANDEZ',
+                29 => 'DR. JOSE REUPO PERICHE',
+                31 => 'M.SC. JOSE CARLOS LEIVA PIEDRA',
+                25 => 'DRA. MILAGROS DEL PILAR CABEZAS MARTINEZ',
+                28 => 'DR. PERCY MORANTE GAMARRA',
+                27 => 'DR. JUAN CARLOS GRANADOS BARRETO',
+                24 => 'DRA. GLORIA PUICON CRUZALEGUI',
+            ];
+
+            if (isset($evaluadoresEspeciales[$programaId])) {
+                $docenteObj->nombres = $evaluadoresEspeciales[$programaId];
+            }
+        }
+
+        return $docenteObj;
+    }
+
     /**
      * Generate Entrevista grades report PDF
      */
@@ -290,11 +328,13 @@ class DocenteService
                 strtolower($inscripcion->postulante->nombres);
         })->values();
 
+        $docenteObj = $this->getDocenteEntrevistaForReport($programaId, $inscripciones->first()->programa->docenteEntrevista);
+
         $programaData = [
             'programa' => $inscripciones->first()->programa->nombre ?? 'Desconocido',
             'grado' => $inscripciones->first()->programa->grado->nombre ?? 'Desconocido',
             'inscripciones' => $inscripciones,
-            'docente' => $inscripciones->first()->programa->docenteEntrevista,
+            'docente' => $docenteObj,
         ];
 
         $pdf = Pdf::loadView('notas.postulantes-entrevista', ['programaData' => $programaData]);
@@ -328,11 +368,13 @@ class DocenteService
             })->values();
 
             if ($inscripciones->isNotEmpty()) {
+                $docenteObj = $this->getDocenteEntrevistaForReport($idPrograma, $inscripciones->first()->programa->docenteEntrevista);
+
                 $programasData[] = [
                     'programa' => $inscripciones->first()->programa->nombre ?? 'Desconocido',
                     'grado' => $inscripciones->first()->programa->grado->nombre ?? 'Desconocido',
                     'inscripciones' => $inscripciones,
-                    'docente' => $inscripciones->first()->programa->docenteEntrevista,
+                    'docente' => $docenteObj,
                 ];
             }
         }
