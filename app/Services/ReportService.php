@@ -788,21 +788,24 @@ class ReportService
                 ->get();
 
             $datosReporte = [];
+            $subtotalInscritos = 0;
+            $totalGeneralInscritos = 0;
+            $cantidadProgramasConAula = 0;
 
             foreach ($programas as $p) {
                 $idPrograma = $p->id;
 
                 // Determinar aulas asignadas
                 $aulas = [];
+                $tieneAula = false;
                 if ($idPrograma === 9) {
                     $aulas = ['AULA 06', 'AULA 07'];
+                    $tieneAula = true;
                 } elseif (isset($aulasAsignadas[$idPrograma])) {
                     $aulas = [$aulasAsignadas[$idPrograma]];
-                }
-
-                // Si no tiene aula asignada, no se considera en el reporte
-                if (empty($aulas)) {
-                    continue;
+                    $tieneAula = true;
+                } else {
+                    $aulas = ['POR ASIGNAR'];
                 }
 
                 // Contar el número de inscritos (estado = 1)
@@ -813,7 +816,14 @@ class ReportService
                     'programa' => $p->nombre,
                     'inscritos' => $inscritosCount,
                     'aulas' => implode(', ', $aulas),
+                    'tiene_aula' => $tieneAula,
                 ];
+
+                if ($tieneAula) {
+                    $subtotalInscritos += $inscritosCount;
+                    $cantidadProgramasConAula++;
+                }
+                $totalGeneralInscritos += $inscritosCount;
             }
 
             // Ordenar en orden del número de inscritos (descendente)
@@ -822,7 +832,13 @@ class ReportService
             });
 
             // Cargar la vista y generar el PDF
-            $pdf = Pdf::loadView('pdf.resumen-aulas', ['datos' => $datosReporte]);
+            $pdf = Pdf::loadView('pdf.resumen-aulas', [
+                'datos' => $datosReporte,
+                'subtotalInscritos' => $subtotalInscritos,
+                'totalGeneralInscritos' => $totalGeneralInscritos,
+                'cantidadProgramasConAula' => $cantidadProgramasConAula,
+                'totalProgramas' => count($programas),
+            ]);
             $pdf->setPaper('A4', 'portrait');
 
             return $pdf->stream("resumen_inscritos_aulas_" . now()->format('d-m-Y_His') . ".pdf");
