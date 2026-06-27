@@ -48,6 +48,7 @@ class ReservaDevolucionService
                 $inscripcion->save();
                 $inscripcionesInhabilitadas->push($inscripcion);
 
+                /*
                 // Enviar correo electrónico en segundo plano a los postulantes inscritos
                 try {
                     $inscripcion->loadMissing(['postulante', 'programa.grado']);
@@ -57,6 +58,7 @@ class ReservaDevolucionService
                 } catch (\Exception $e) {
                     Log::error("Error al encolar correo para inscripción ID {$inscripcion->id}: " . $e->getMessage());
                 }
+                */
             }
         }
 
