@@ -265,7 +265,7 @@ class DocenteService
         return $pdf;
     }
 
-    private function getDocenteEntrevistaForReport(int $programaId, $docenteEntrevista)
+    public function getDocenteEntrevistaForReport(int $programaId, $docenteEntrevista)
     {
         $docenteObj = new \stdClass();
         $docenteObj->nombres = 'POR ASIGNAR';
@@ -282,15 +282,15 @@ class DocenteService
                 21 => 'DRA. JESUS ALICIA FERNANDEZ PALOMINO / DR. FREDDY HERNANDEZ RENGIFO',
                 10 => 'DR. LUIS ALBERTO OTAKE OYAMA',
                 32 => 'DR. VICTOR GUSTAVO HERNANDEZ JIMENEZ', // Aula 13
-                34 => 'DRA. MARIA JULIA JARAMILLO CARRION',
-                33 => 'DR. MARIANO AGUSTIN RAMOS GARCIA / DR. ELEAZAR RUFASTO CAMPOS',
+                34 => 'DRA. MARIA JULIA JARAMILLO CARRION / DR. ELEAZAR RUFASTO CAMPOS',
+                33 => 'DR. MARIANO AGUSTIN RAMOS GARCIA / DR. ADOLFO PADILLA PEREZ',
                 8  => 'DRA. MARIANELLA LAURA GARCIA AURICH',
                 7  => 'DR. HAMILTON CUEVA CAMPOS',
-                22 => 'DR. LEOPOLDO YZQUIERDO HERNANDEZ',
-                29 => 'DR. JOSE REUPO PERICHE',
-                31 => 'M.SC. JOSE CARLOS LEIVA PIEDRA',
-                25 => 'DRA. MILAGROS DEL PILAR CABEZAS MARTINEZ',
-                28 => 'DR. PERCY MORANTE GAMARRA',
+                22 => 'DR. EXEQUIEL BAUDELIO CHAVARRY CORREA / DR. LEOPOLDO YZQUIERDO HERNANDEZ',
+                29 => 'DR. CESAR ALFREDO VARGAS ROSADO / DR. JOSE REUPO PERICHE',
+                31 => 'DRA. RUTH MIRIAM ALVA FERNÁNDEZ / M.SC. JOSE CARLOS LEIVA PIEDRA',
+                25 => 'DR. MILAGROS DEL PILAR CABEZAS MARTINEZ',
+                28 => 'DR. PERCY MORANTE GAMARA',
                 27 => 'DR. JUAN CARLOS GRANADOS BARRETO',
                 24 => 'DRA. GLORIA PUICON CRUZALEGUI',
             ];
@@ -331,6 +331,7 @@ class DocenteService
         $docenteObj = $this->getDocenteEntrevistaForReport($programaId, $inscripciones->first()->programa->docenteEntrevista);
 
         $programaData = [
+            'id' => $programaId,
             'programa' => $inscripciones->first()->programa->nombre ?? 'Desconocido',
             'grado' => $inscripciones->first()->programa->grado->nombre ?? 'Desconocido',
             'inscripciones' => $inscripciones,
@@ -370,12 +371,49 @@ class DocenteService
             if ($inscripciones->isNotEmpty()) {
                 $docenteObj = $this->getDocenteEntrevistaForReport($idPrograma, $inscripciones->first()->programa->docenteEntrevista);
 
-                $programasData[] = [
-                    'programa' => $inscripciones->first()->programa->nombre ?? 'Desconocido',
-                    'grado' => $inscripciones->first()->programa->grado->nombre ?? 'Desconocido',
-                    'inscripciones' => $inscripciones,
-                    'docente' => $docenteObj,
-                ];
+                if ($idPrograma === 9) {
+                    $grupo1 = $inscripciones->take(30);
+                    $grupo2 = $inscripciones->slice(30)->take(25)->values();
+
+                    if ($grupo1->isNotEmpty()) {
+                        $docenteG1 = new \stdClass();
+                        $docenteG1->nombres = 'DR. CARLOS ADOLFO LOAYZA RIVAS';
+                        $docenteG1->ap_paterno = '';
+                        $docenteG1->ap_materno = '';
+                        $docenteG1->dni = '';
+
+                        $programasData[] = [
+                            'id' => $idPrograma,
+                            'programa' => $inscripciones->first()->programa->nombre ?? 'Desconocido',
+                            'grado' => $inscripciones->first()->programa->grado->nombre ?? 'Desconocido',
+                            'inscripciones' => $grupo1,
+                            'docente' => $docenteG1,
+                        ];
+                    }
+                    if ($grupo2->isNotEmpty()) {
+                        $docenteG2 = new \stdClass();
+                        $docenteG2->nombres = 'DR. JUAN FARIAS FEIJOO';
+                        $docenteG2->ap_paterno = '';
+                        $docenteG2->ap_materno = '';
+                        $docenteG2->dni = '';
+
+                        $programasData[] = [
+                            'id' => $idPrograma,
+                            'programa' => $inscripciones->first()->programa->nombre ?? 'Desconocido',
+                            'grado' => $inscripciones->first()->programa->grado->nombre ?? 'Desconocido',
+                            'inscripciones' => $grupo2,
+                            'docente' => $docenteG2,
+                        ];
+                    }
+                } else {
+                    $programasData[] = [
+                        'id' => $idPrograma,
+                        'programa' => $inscripciones->first()->programa->nombre ?? 'Desconocido',
+                        'grado' => $inscripciones->first()->programa->grado->nombre ?? 'Desconocido',
+                        'inscripciones' => $inscripciones,
+                        'docente' => $docenteObj,
+                    ];
+                }
             }
         }
 

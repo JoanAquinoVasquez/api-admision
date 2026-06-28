@@ -33,7 +33,9 @@ class NotaController extends BaseController
     public function postulantesAptosMultiple()
     {
         return $this->handleRequest(function () {
-            $pdf = $this->reportService->generatePostulantesAptosMultiplePDF();
+            $gradoId = request()->query('grado');
+            $programaIds = request()->query('programa');
+            $pdf = $this->reportService->generatePostulantesAptosMultiplePDF($gradoId, $programaIds);
             return $pdf;
         }, 'Error al generar el PDF de postulantes aptos');
     }

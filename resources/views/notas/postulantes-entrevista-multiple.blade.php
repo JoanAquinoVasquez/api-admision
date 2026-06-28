@@ -21,47 +21,19 @@
                 </tr>
             </thead>
             <tbody>
-@php
-    $inscripciones = collect($programaData['inscripciones']);
-    $isObras = ($programaData['id'] ?? null) == 9;
-    if ($isObras) {
-        $firstGroup = $inscripciones->take(30);
-        $secondGroup = $inscripciones->take(25);
-    } else {
-        $firstGroup = $inscripciones;
-        $secondGroup = collect();
-    }
-@endphp
-
-@foreach ($firstGroup as $inscripcion)
-    <tr>
-        <td class="text-center">{{ $loop->iteration }}</td>
-        <td class="text-center">{{ $inscripcion->postulante->num_iden }}</td>
-        <td>{{ mb_strtoupper(
-            $inscripcion->postulante->ap_paterno . ' ' .
-            $inscripcion->postulante->ap_materno . ', ' .
-            $inscripcion->postulante->nombres,
-            'UTF-8'
-        ) }}</td>
-        <td class="text-center">{{ $inscripcion->nota->entrevista ?? 'Pendiente' }}</td>
-    </tr>
-@endforeach
-
-@if($isObras && $secondGroup->isNotEmpty())
-    @foreach ($secondGroup as $inscripcion)
-        <tr>
-            <td class="text-center">{{ $loop->iteration + 30 }}</td>
-            <td class="text-center">{{ $inscripcion->postulante->num_iden }}</td>
-            <td>{{ mb_strtoupper(
-                $inscripcion->postulante->ap_paterno . ' ' .
-                $inscripcion->postulante->ap_materno . ', ' .
-                $inscripcion->postulante->nombres,
-                'UTF-8'
-            ) }}</td>
-            <td class="text-center">{{ $inscripcion->nota->entrevista ?? 'Pendiente' }}</td>
-        </tr>
-    @endforeach
-@endif
+                @foreach ($programaData['inscripciones'] as $inscripcion)
+                    <tr>
+                        <td class="text-center">{{ $loop->iteration }}</td>
+                        <td class="text-center">{{ $inscripcion->postulante->num_iden }}</td>
+                        <td>{{ mb_strtoupper(
+                            $inscripcion->postulante->ap_paterno . ' ' .
+                            $inscripcion->postulante->ap_materno . ', ' .
+                            $inscripcion->postulante->nombres,
+                            'UTF-8'
+                        ) }}</td>
+                        <td class="text-center">{{ $inscripcion->nota->entrevista ?? 'Pendiente' }}</td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
 

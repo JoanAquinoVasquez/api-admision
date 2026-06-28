@@ -1,6 +1,23 @@
 @extends('pdf.layout')
 
 @section('content')
+@php
+    $inscripciones = collect($programaData['inscripciones']);
+    $isObras = ($programaData['id'] ?? null) == 9;
+    if ($isObras) {
+        $groups = [
+            $inscripciones->take(30),
+            $inscripciones->slice(30)->take(25)->values()
+        ];
+    } else {
+        $groups = [$inscripciones];
+    }
+@endphp
+
+@foreach($groups as $groupIndex => $group)
+    @if($groupIndex > 0)
+        <div class="page-break"></div>
+    @endif
     <div class="report-title">
         <h3>NOTAS DE ENTREVISTA PERSONAL</h3>
         <h4 class="mt-1 fw-bold">{{ mb_strtoupper($programaData['grado'], 'UTF-8') }} EN {{ mb_strtoupper($programaData['programa'], 'UTF-8') }}</h4>
@@ -16,67 +33,60 @@
             </tr>
         </thead>
         <tbody>
-@php
-    $inscripciones = collect($programaData['inscripciones']);
-    $isObras = ($programaData['id'] ?? null) == 9;
-    if ($isObras) {
-        $firstGroup = $inscripciones->take(30);
-        $secondGroup = $inscripciones->slice(30);
-    } else {
-        $firstGroup = $inscripciones;
-        $secondGroup = collect();
-    }
-@endphp
-
-@foreach ($firstGroup as $inscripcion)
-    <tr>
-        <td class="text-center">{{ $loop->iteration }}</td>
-        <td class="text-center">{{ $inscripcion->postulante->num_iden }}</td>
-        <td>{{ mb_strtoupper(
-            $inscripcion->postulante->ap_paterno . ' ' .
-            $inscripcion->postulante->ap_materno . ', ' .
-            $inscripcion->postulante->nombres,
-            'UTF-8'
-        ) }}</td>
-        <td class="text-center">{{ $inscripcion->nota->entrevista ?? 'Pendiente' }}</td>
-    </tr>
-@endforeach
-
-@if($isObras && $secondGroup->isNotEmpty())
-    @foreach ($secondGroup as $inscripcion)
-        <tr>
-            <td class="text-center">{{ $loop->iteration + 30 }}</td>
-            <td class="text-center">{{ $inscripcion->postulante->num_iden }}</td>
-            <td>{{ mb_strtoupper(
-                $inscripcion->postulante->ap_paterno . ' ' .
-                $inscripcion->postulante->ap_materno . ', ' .
-                $inscripcion->postulante->nombres,
-                'UTF-8'
-            ) }}</td>
-            <td class="text-center">{{ $inscripcion->nota->entrevista ?? 'Pendiente' }}</td>
-        </tr>
-    @endforeach
-@endif
+            @foreach ($group as $inscripcion)
+                <tr>
+                    <td class="text-center">{{ $loop->iteration }}</td>
+                    <td class="text-center">{{ $inscripcion->postulante->num_iden }}</td>
+                    <td>{{ mb_strtoupper(
+                        $inscripcion->postulante->ap_paterno . ' ' .
+                        $inscripcion->postulante->ap_materno . ', ' .
+                        $inscripcion->postulante->nombres,
+                        'UTF-8'
+                    ) }}</td>
+                    <td class="text-center">{{ $inscripcion->nota->entrevista ?? 'Pendiente' }}</td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
 
     <div class="firma-container">
         <div class="firma-linea"></div>
-        <p class="firma-text fw-bold">
-            {{ mb_strtoupper(
-                ($programaData['docente']->nombres ?? '') .
-                    ' ' .
-                    ($programaData['docente']->ap_paterno ?? '') .
-                    ' ' .
-                    ($programaData['docente']->ap_materno ?? ''),
-                'UTF-8',
-            ) }}
-        </p>
-        <p class="firma-text">DOCENTE EVALUADOR DE ENTREVISTA</p>
-        <p class="firma-text"><strong>DNI:</strong> {{ $programaData['docente']->dni ?? '' }}</p>
+        @php
+            $docenteActual = $programaData['docente'];
+            if ($isObras) {
+                $docenteActual = $groupIndex == 0 
+                    ? (object)['nombres' => 'DR. CARLOS ADOLFO LOAYZA RIVAS', 'ap_paterno' => '', 'ap_materno' => '', 'dni' => '']
+                    : (object)['nombres' => 'DR. JUAN FARIAS FEIJOO', 'ap_paterno' => '', 'ap_materno' => '', 'dni' => ''];
+            }
+        @endphp
+        @if(!empty($docenteActual->nombres) && $docenteActual->nombres !== 'POR ASIGNAR')
+            <p class="firma-text fw-bold">
+                {{ mb_strtoupper($docenteActual->nombres, 'UTF-8') }}
+            </p>
+            <p class="firma-text">DOCENTE EVALUADOR DE ENTREVISTA</p>
+            @if(!empty($docenteActual->dni))
+                <p class="firma-text"><strong>DNI:</strong> {{ $docenteActual->dni }}</p>
+            @else
+                <p class="firma-text"><strong>DNI:</strong> ________________________________</p>
+            @endif
+        @else
+            <p class="firma-text fw-bold">
+                {{ mb_strtoupper(
+                    ($programaData['docente']->nombres ?? '') .
+                        ' ' .
+                        ($programaData['docente']->ap_paterno ?? '') .
+                        ' ' .
+                        ($programaData['docente']->ap_materno ?? ''),
+                    'UTF-8',
+                ) }}
+            </p>
+            <p class="firma-text">DOCENTE EVALUADOR DE ENTREVISTA</p>
+            <p class="firma-text"><strong>DNI:</strong> {{ $programaData['docente']->dni ?? '' }}</p>
+        @endif
     </div>
 
     <div class="text-right mt-2" style="font-size: 10px; font-style: italic;">
         <p>Lambayeque, {{ \Carbon\Carbon::now()->locale('es')->translatedFormat('d \d\e F \d\e Y, H:i') }}</p>
     </div>
+@endforeach
 @endsection

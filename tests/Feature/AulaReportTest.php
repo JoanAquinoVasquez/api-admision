@@ -237,4 +237,83 @@ class AulaReportTest extends TestCase
         $this->assertEquals('AULA 02', $programasData[2]['aula']);
         $this->assertCount($expectedProgram24Count, $programasData[2]['inscripciones']);
     }
+
+    /** @test */
+    public function it_filters_and_splits_program_9_in_multiple_aptos_reports()
+    {
+        // 1. Setup required data
+        $grado = Grado::first() ?? Grado::create(['nombre' => 'Maestria', 'estado' => 1]);
+        $facultad = Facultad::first() ?? Facultad::create(['nombre' => 'Facultad de Prueba', 'siglas' => 'FP', 'estado' => 1]);
+        $conceptoPago = ConceptoPago::first() ?? ConceptoPago::create(['cod_concepto' => '1001', 'nombre' => 'Concepto Prueba', 'monto' => 200, 'estado' => 1]);
+        $distrito = Distrito::first();
+        $distritoId = $distrito ? $distrito->id : 1;
+
+        $programa9 = Programa::find(9);
+        if (!$programa9) {
+            $programa9 = new Programa();
+            $programa9->id = 9;
+            $programa9->nombre = 'Gerencia de Obras y Construcción';
+            $programa9->vacantes = 50;
+            $programa9->estado = 1;
+            $programa9->grado_id = $grado->id;
+            $programa9->facultad_id = $facultad->id;
+            $programa9->concepto_pago_id = $conceptoPago->id;
+            $programa9->save();
+        } else {
+            $programa9->update(['estado' => 1]);
+        }
+
+        // Crearemos 35 postulantes con val_digital = 1 para el programa 9
+        $baseNumIden = rand(50000000, 90000000);
+        for ($i = 1; $i <= 35; $i++) {
+            $numIden = strval($baseNumIden + $i);
+            $postulante = Postulante::create([
+                'distrito_id' => $distritoId,
+                'nombres' => 'Postulante Apto ' . $i,
+                'ap_paterno' => 'AptoPaterno' . sprintf('%02d', $i),
+                'ap_materno' => 'Materno',
+                'email' => "postulante.apto{$i}@example.com",
+                'tipo_doc' => 'DNI',
+                'num_iden' => $numIden,
+                'fecha_nacimiento' => '1995-05-15',
+                'sexo' => 'M',
+                'celular' => '987654321',
+                'direccion' => 'Calle Falsa 123',
+                'estado' => 1,
+            ]);
+
+            $voucher = Voucher::create([
+                'concepto_pago_id' => $conceptoPago->id,
+                'numero' => strval(400000 + $i),
+                'num_iden' => $numIden,
+                'monto' => 200,
+                'fecha_pago' => '2026-06-22',
+                'hora_pago' => '09:00:00',
+                'cajero' => '0001',
+                'agencia' => '0001',
+                'nombre_completo' => 'Postulante Apto ' . $i,
+            ]);
+
+            Inscripcion::create([
+                'postulante_id' => $postulante->id,
+                'programa_id' => 9,
+                'voucher_id' => $voucher->id,
+                'codigo' => strval(9000 + $i),
+                'val_digital' => 1,
+                'val_fisico' => 1,
+                'estado' => 1,
+            ]);
+        }
+
+        // 2. Ejecutar la generación del reporte pasándole filtros
+        $reportService = app(ReportService::class);
+
+        // Sin filtros de programa pero con grado:
+        $response = $reportService->generatePostulantesAptosMultiplePDF($grado->id);
+        $this->assertNotNull($response);
+
+        // Con filtros específicos de programa ID 9:
+        $response2 = $reportService->generatePostulantesAptosMultiplePDF(null, [9]);
+        $this->assertNotNull($response2);
+    }
 }

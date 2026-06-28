@@ -106,7 +106,7 @@ class ReportService
      */
     public function generatePostulantesAptosPDF($idPrograma)
     {
-        $inscripciones = \App\Models\Inscripcion::with(['postulante', 'programa.grado'])
+        $inscripciones = \App\Models\Inscripcion::with(['postulante', 'programa.grado', 'programa.docenteEntrevista'])
             ->where('programa_id', $idPrograma)
             ->where('val_digital', 1)
             ->get()
@@ -129,29 +129,86 @@ class ReportService
     /**
      * Generar PDF de postulantes aptos (entrevista) por múltiples programas
      */
-    public function generatePostulantesAptosMultiplePDF()
+    public function generatePostulantesAptosMultiplePDF($gradoId = null, $programaIds = null)
     {
-        $programas = \App\Models\Programa::with([
+        $query = \App\Models\Programa::with([
             'grado',
+            'docenteEntrevista',
             'inscripciones' => function ($q) {
                 $q->where('val_digital', 1)->with('postulante');
             }
         ])->where('estado', true)
             ->whereHas('inscripciones', function ($q) {
                 $q->where('val_digital', 1);
-            })
-            ->get();
+            });
 
-        $programas->each(function ($programa) {
-            $programa->setRelation('inscripciones', $programa->inscripciones->sortBy(function ($inscripcion) {
+        if ($gradoId && $gradoId !== 'all') {
+            $query->where('grado_id', $gradoId);
+        }
+
+        if (!empty($programaIds)) {
+            $query->whereIn('id', (array) $programaIds);
+        }
+
+        $programas = $query->get();
+
+        $programasData = [];
+        foreach ($programas as $programa) {
+            $inscripciones = $programa->inscripciones->sortBy(function ($inscripcion) {
                 return strtolower($inscripcion->postulante->ap_paterno ?? '') . ' ' .
                     strtolower($inscripcion->postulante->ap_materno ?? '') . ' ' .
                     strtolower($inscripcion->postulante->nombres ?? '');
-            })->values());
-        });
+            })->values();
+
+            $docenteObj = app(\App\Services\DocenteService::class)->getDocenteEntrevistaForReport($programa->id, $programa->docenteEntrevista);
+
+            if ($programa->id === 9) {
+                $grupo1 = $inscripciones->take(30);
+                $grupo2 = $inscripciones->slice(30)->take(25)->values();
+
+                if ($grupo1->isNotEmpty()) {
+                    $docenteG1 = new \stdClass();
+                    $docenteG1->nombres = 'DR. CARLOS ADOLFO LOAYZA RIVAS';
+                    $docenteG1->ap_paterno = '';
+                    $docenteG1->ap_materno = '';
+                    $docenteG1->dni = '';
+
+                    $programasData[] = (object)[
+                        'id' => $programa->id,
+                        'nombre' => $programa->nombre,
+                        'grado' => $programa->grado,
+                        'inscripciones' => $grupo1,
+                        'docente' => $docenteG1
+                    ];
+                }
+                if ($grupo2->isNotEmpty()) {
+                    $docenteG2 = new \stdClass();
+                    $docenteG2->nombres = 'DR. JUAN FARIAS FEIJOO';
+                    $docenteG2->ap_paterno = '';
+                    $docenteG2->ap_materno = '';
+                    $docenteG2->dni = '';
+
+                    $programasData[] = (object)[
+                        'id' => $programa->id,
+                        'nombre' => $programa->nombre,
+                        'grado' => $programa->grado,
+                        'inscripciones' => $grupo2,
+                        'docente' => $docenteG2
+                    ];
+                }
+            } else {
+                $programasData[] = (object)[
+                    'id' => $programa->id,
+                    'nombre' => $programa->nombre,
+                    'grado' => $programa->grado,
+                    'inscripciones' => $inscripciones,
+                    'docente' => $docenteObj
+                ];
+            }
+        }
 
         $pdf = Pdf::loadView('notas.postulantes-aptos-multiple', [
-            'programas' => $programas,
+            'programas' => $programasData,
             'fechaHora' => now(),
         ]);
 
