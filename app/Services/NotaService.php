@@ -151,7 +151,7 @@ class NotaService
             })->count();
 
             $cobertura_cv = $aptos > 0 ? round(($evaluados_cv / $aptos) * 100, 2) : 0;
-            $cobertura_entrevista = $aptos > 0 ? round(($evaluados_entrevista / $aptos) * 100, 2) : 0;
+            $cobertura_entrevista = $total_inscritos > 0 ? round(($evaluados_entrevista / $total_inscritos) * 100, 2) : 0;
 
             $abreviatura_grado = match ($programa->grado->id) {
                 1 => 'Doctorado',
