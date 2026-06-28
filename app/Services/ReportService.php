@@ -289,6 +289,7 @@ class ReportService
 
             if ($inscripciones->isNotEmpty()) {
                 $programasData[] = [
+                    'id' => $idPrograma,
                     'programa' => $inscripciones->first()->programa->nombre ?? 'Desconocido',
                     'grado' => $inscripciones->first()->programa->grado->nombre ?? 'Desconocido',
                     'inscripciones' => $inscripciones,

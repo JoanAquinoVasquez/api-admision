@@ -11,7 +11,7 @@ $kernel->bootstrap();
 // --- CONFIGURACIÓN ---
 // Si se define un correo aquí, se enviará una sola prueba a este correo.
 // Si se deja vacío (null o ''), se enviará a TODOS los postulantes reales de los programas afectados.
-$testEmail = 'jaquinov@unprg.edu.pe';
+$testEmail = '';
 
 // Límite de inscritos para considerar que un programa activo rinde examen (por defecto >= 18)
 $minInscritos = 17;
