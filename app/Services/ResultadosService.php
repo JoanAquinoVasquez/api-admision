@@ -163,7 +163,7 @@ class ResultadosService
             $promedioNota = round($notas->avg(), 2);
 
             return [
-                'grado_programa' => match ($programa->grado_id) {
+                'grado_programa' => match ((int)$programa->grado_id) {
                     1 => 'Doctorado en ' . $programa->nombre,
                     2 => 'Maestria en ' . $programa->nombre,
                     3 => 'Segunda Especialidad Profesional en ' . $programa->nombre,
