@@ -144,23 +144,25 @@ class ResultadosService
             return $p->inscripcion->programa->id;
         });
 
-        return $ingresantesPorPrograma->map(function ($ingresantes, $programaId) use ($inscritosPorPrograma) {
-            $programa = $ingresantes->first()->inscripcion->programa;
+        $programas = Programa::where('estado', 1)->with('grado')->get();
+
+        return $programas->map(function ($programa) use ($ingresantesPorPrograma, $inscritosPorPrograma) {
+            $ingresantes = $ingresantesPorPrograma->get($programa->id, collect());
+            $inscritos = $inscritosPorPrograma->get($programa->id, collect());
 
             $hombresIngresantes = $ingresantes->where('sexo', 'M')->count();
             $mujeresIngresantes = $ingresantes->where('sexo', 'F')->count();
 
-            $inscritos = $inscritosPorPrograma[$programaId] ?? collect();
             $totalInscritos = $inscritos->count();
             $hombresInscritos = $inscritos->where('sexo', 'M')->count();
             $mujeresInscritos = $inscritos->where('sexo', 'F')->count();
 
             $notas = $ingresantes->map(function ($p) {
                 $nota = $p->inscripcion->nota;
-                return $nota->cv + $nota->entrevista + $nota->examen;
+                return floatval($nota->cv) + floatval($nota->entrevista) + floatval($nota->examen);
             });
 
-            $promedioNota = round($notas->avg(), 2);
+            $promedioNota = $notas->isEmpty() ? 0 : round($notas->avg(), 2);
 
             return [
                 'grado_programa' => match ((int)$programa->grado_id) {
