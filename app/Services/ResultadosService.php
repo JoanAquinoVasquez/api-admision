@@ -224,30 +224,25 @@ class ResultadosService
                     $resumen[$rango]['pendientes']++;
                     break;
                 case 2:
-                    $resumen[$rango]['devolucion']++;
-                    break;
-                case 3:
                     $resumen[$rango]['reserva']++;
                     break;
-            }
+                case 3:
+                    $resumen[$rango]['devolucion']++;
+                    break;
+                case 1:
+                    $nota = $ins->nota;
+                    $valFisico = (int)($ins->val_fisico ?? 0);
+                    $examenNulo = !$nota || is_null($nota->examen);
+                    $entrevistaNula = !$nota || is_null($nota->entrevista);
 
-            $nota = $ins->nota;
-            if ($nota) {
-                $tieneCV = !is_null($nota->cv);
-                $tieneEntrevista = !is_null($nota->entrevista);
-                $tieneExamen = !is_null($nota->examen);
-                $notaExamenCero = floatval($nota->examen) === 0.0;
-
-                $ingresante = $tieneCV && $tieneEntrevista && $tieneExamen;
-                $ausente = $ins->estado === 1 && $tieneCV && !$tieneEntrevista && (!$tieneExamen || $notaExamenCero);
-                $desiste = $ins->estado === 1 && !$tieneCV && !$tieneEntrevista && (!$tieneExamen || $notaExamenCero);
-
-                if ($ingresante)
-                    $resumen[$rango]['ingresantes']++;
-                if ($ausente)
-                    $resumen[$rango]['ausentes']++;
-                if ($desiste)
-                    $resumen[$rango]['desiste']++;
+                    if ($valFisico === 0 && $examenNulo && $entrevistaNula) {
+                        $resumen[$rango]['desiste']++;
+                    } elseif ($examenNulo) {
+                        $resumen[$rango]['ausentes']++;
+                    } elseif ($nota && !is_null($nota->cv) && !is_null($nota->entrevista) && !is_null($nota->examen)) {
+                        $resumen[$rango]['ingresantes']++;
+                    }
+                    break;
             }
         }
 
@@ -300,20 +295,16 @@ class ResultadosService
                     $resumenPorGrado[$gradoNombre]['devolucion']++;
                     break;
                 case 1:
-                    if ($nota) {
-                        $cv = $nota->cv;
-                        $entrevista = $nota->entrevista;
-                        $examen = $nota->examen;
+                    $valFisico = (int)($inscripcion->val_fisico ?? 0);
+                    $examenNulo = !$nota || is_null($nota->examen);
+                    $entrevistaNula = !$nota || is_null($nota->entrevista);
 
-                        if (is_null($cv) || $cv == 0) {
-                            $resumenPorGrado[$gradoNombre]['desiste']++;
-                        } elseif (!is_null($cv) && (!isset($entrevista) || !isset($examen) || $examen == 0)) {
-                            $resumenPorGrado[$gradoNombre]['ausentes']++;
-                        } elseif (!is_null($cv) && !is_null($entrevista) && !is_null($examen)) {
-                            $resumenPorGrado[$gradoNombre]['ingresantes']++;
-                        }
-                    } else {
+                    if ($valFisico === 0 && $examenNulo && $entrevistaNula) {
                         $resumenPorGrado[$gradoNombre]['desiste']++;
+                    } elseif ($examenNulo) {
+                        $resumenPorGrado[$gradoNombre]['ausentes']++;
+                    } elseif ($nota && !is_null($nota->cv) && !is_null($nota->entrevista) && !is_null($nota->examen)) {
+                        $resumenPorGrado[$gradoNombre]['ingresantes']++;
                     }
                     break;
             }
