@@ -210,6 +210,7 @@ class ResultadosService
                     'reserva' => 0,
                     'ausentes' => 0,
                     'desiste' => 0,
+                    'no_evaluado' => 0,
                 ];
             }
 
@@ -241,6 +242,8 @@ class ResultadosService
                         $resumen[$rango]['ausentes']++;
                     } elseif ($nota && !is_null($nota->cv) && !is_null($nota->entrevista) && !is_null($nota->examen)) {
                         $resumen[$rango]['ingresantes']++;
+                    } elseif ($nota && is_null($nota->cv)) {
+                        $resumen[$rango]['no_evaluado']++;
                     }
                     break;
             }
@@ -276,6 +279,7 @@ class ResultadosService
                     'desiste' => 0,
                     'ausentes' => 0,
                     'ingresantes' => 0,
+                    'no_evaluado' => 0,
                 ];
             }
 
@@ -305,6 +309,8 @@ class ResultadosService
                         $resumenPorGrado[$gradoNombre]['ausentes']++;
                     } elseif ($nota && !is_null($nota->cv) && !is_null($nota->entrevista) && !is_null($nota->examen)) {
                         $resumenPorGrado[$gradoNombre]['ingresantes']++;
+                    } elseif ($nota && is_null($nota->cv)) {
+                        $resumenPorGrado[$gradoNombre]['no_evaluado']++;
                     }
                     break;
             }

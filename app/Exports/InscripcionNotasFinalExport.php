@@ -128,7 +128,7 @@ class InscripcionNotasFinalExport implements FromCollection, WithHeadings, WithS
                     'GRADO' => $inscripcion->programa->grado->nombre ?? 'N/A',
                     'ID PROGRAMA' => $inscripcion->programa->id ?? 'N/A',
                     'PROGRAMA' => $inscripcion->programa->nombre ?? 'N/A',
-                    'PUNTAJE CV' => is_numeric($cv) ? $cv : 'NSP',
+                    'PUNTAJE CV' => is_numeric($cv) ? $cv : (($inscripcion->val_fisico == 0) ? 'NSP' : 'FALTA EVALUAR'),
                     'PUNTAJE ENTREVISTA' => is_numeric($entrevista) ? $entrevista : 'NSP',
                     'PUNTAJE EXAMEN' => is_numeric($examen) ? $examen : 'NSP',
                     'NOTA FINAL' => number_format($inscripcion->nota_final, 2),

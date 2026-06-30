@@ -51,7 +51,7 @@ class InscripcionesFinalesExport implements FromCollection, WithHeadings, WithSt
                 'GRADO' => $inscripcion->programa->grado->nombre ?? 'N/A',
                 'ID PROGRAMA' => $inscripcion->programa->id ?? 'N/A',
                 'PROGRAMA' => $inscripcion->programa->nombre ?? 'N/A',
-                'PUNTAJE CV' => $inscripcion->nota->cv ?? 'NSP',
+                'PUNTAJE CV' => is_numeric($inscripcion->nota->cv ?? null) ? $inscripcion->nota->cv : (($inscripcion->val_fisico == 0) ? 'NSP' : 'FALTA EVALUAR'),
                 'PUNTAJE ENTREVISTA' => $inscripcion->nota->entrevista ?? 'NSP',
                 'PUNTAJE EXAMEN' => $inscripcion->nota->examen ?? 'NSP',
             ];
