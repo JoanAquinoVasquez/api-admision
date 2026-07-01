@@ -322,6 +322,13 @@ class InscripcionController extends BaseController
         $aperturado = $request->input('aperturado');
         $notasFilter = $request->input('notas');
         $search = $request->input('search');
+        \Illuminate\Support\Facades\Log::info('reportPersonalizadoExcel received:', [
+            'grado' => $gradoId,
+            'programa' => $programaId,
+            'aperturado' => $aperturado,
+            'notas' => $notasFilter,
+            'search' => $search
+        ]);
         return $this->reportService->generatePersonalizadoReportExcel($gradoId, $programaId, $aperturado, $notasFilter, $search);
     }
 
