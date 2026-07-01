@@ -321,7 +321,8 @@ class InscripcionController extends BaseController
         $programaId = $request->input('programa');
         $aperturado = $request->input('aperturado');
         $notasFilter = $request->input('notas');
-        return $this->reportService->generatePersonalizadoReportExcel($gradoId, $programaId, $aperturado, $notasFilter);
+        $search = $request->input('search');
+        return $this->reportService->generatePersonalizadoReportExcel($gradoId, $programaId, $aperturado, $notasFilter, $search);
     }
 
     public function reportNotasFinalExcel()

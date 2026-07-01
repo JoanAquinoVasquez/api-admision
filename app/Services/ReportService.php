@@ -86,10 +86,10 @@ class ReportService
     /**
      * Generar reporte personalizado en Excel
      */
-    public function generatePersonalizadoReportExcel($gradoId = null, $programaId = null, $aperturado = null, $notasFilter = null)
+    public function generatePersonalizadoReportExcel($gradoId = null, $programaId = null, $aperturado = null, $notasFilter = null, $search = null)
     {
         $nombreArchivo = 'reporte_personalizado_' . now()->format('d-m-Y_His') . '.xlsx';
-        return Excel::download(new InscripcionesPersonalizadoExport($gradoId, $programaId, $aperturado, $notasFilter), $nombreArchivo);
+        return Excel::download(new InscripcionesPersonalizadoExport($gradoId, $programaId, $aperturado, $notasFilter, $search), $nombreArchivo);
     }
 
     /**

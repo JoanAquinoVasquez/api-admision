@@ -17,13 +17,15 @@ class InscripcionesPersonalizadoExport implements FromCollection, WithHeadings, 
     protected $programaId;
     protected $aperturado;
     protected $notasFilter;
+    protected $searchTerm;
 
-    public function __construct($gradoId = null, $programaId = null, $aperturado = null, $notasFilter = null)
+    public function __construct($gradoId = null, $programaId = null, $aperturado = null, $notasFilter = null, $searchTerm = null)
     {
         $this->gradoId = $gradoId;
         $this->programaId = $programaId;
         $this->aperturado = $aperturado;
         $this->notasFilter = $notasFilter;
+        $this->searchTerm = $searchTerm;
     }
 
     public function collection()
@@ -61,11 +63,20 @@ class InscripcionesPersonalizadoExport implements FromCollection, WithHeadings, 
         // 3. Filtro de Apertura
         if ($this->aperturado !== null && $this->aperturado !== '') {
             $query->where('programas.estado', $this->aperturado);
-            if ($this->aperturado == 1) {
-                $query->where('inscripcions.estado', 1);
-            } else {
-                $query->whereIn('inscripcions.estado', [0, 2, 3]);
-            }
+        }
+
+        // 5. Filtro de Búsqueda
+        if ($this->searchTerm) {
+            $term = '%' . $this->searchTerm . '%';
+            $query->where(function($q) use ($term) {
+                $q->where('postulantes.num_iden', 'like', $term)
+                  ->orWhere('postulantes.ap_paterno', 'like', $term)
+                  ->orWhere('postulantes.ap_materno', 'like', $term)
+                  ->orWhere('postulantes.nombres', 'like', $term)
+                  ->orWhere('postulantes.email', 'like', $term)
+                  ->orWhere('postulantes.celular', 'like', $term)
+                  ->orWhere('programas.nombre', 'like', $term);
+            });
         }
 
         // 4. Filtro de Notas
