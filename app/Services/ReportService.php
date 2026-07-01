@@ -7,6 +7,7 @@ use App\Exports\InscripcionDiarioFacultadExport;
 use App\Exports\InscripcionesFinalesExport;
 use App\Exports\InscripcionExport;
 use App\Exports\InscripcionNotasFinalExport;
+use App\Exports\InscripcionesPersonalizadoExport;
 use App\Exports\PreinscripcionSinPagarExport;
 use App\Models\ComisionAdmision;
 use App\Models\Facultad;
@@ -80,6 +81,15 @@ class ReportService
     {
         $nombreArchivo = 'reporte_resultados_' . now()->format('d-m-Y_His') . '.xlsx';
         return Excel::download(new InscripcionNotasFinalExport, $nombreArchivo);
+    }
+
+    /**
+     * Generar reporte personalizado en Excel
+     */
+    public function generatePersonalizadoReportExcel($gradoId = null, $programaId = null, $aperturado = null, $notasFilter = null)
+    {
+        $nombreArchivo = 'reporte_personalizado_' . now()->format('d-m-Y_His') . '.xlsx';
+        return Excel::download(new InscripcionesPersonalizadoExport($gradoId, $programaId, $aperturado, $notasFilter), $nombreArchivo);
     }
 
     /**
