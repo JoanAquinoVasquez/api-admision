@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Urgente: Entrega de Expediente Físico | ESCUELA DE POSGRADO UNPRG</title>
+    <title>Citación Obligatoria: Culminación de Trámite Documentario | ESCUELA DE POSGRADO UNPRG</title>
     <!-- Import Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -31,12 +31,12 @@
 
         /* Header */
         .email-header {
-            background-color: #fffbeb;
+            background-color: #f0f7ff;
             padding: 2.5rem 2rem;
             text-align: center;
-            color: #b45309;
+            color: #1e3a8a;
             position: relative;
-            border-bottom: 4px solid #d97706;
+            border-bottom: 4px solid #2873B4;
         }
 
         .header-logos {
@@ -59,17 +59,17 @@
             font-weight: 800;
             margin: 0;
             letter-spacing: -0.5px;
-            color: #92400e;
+            color: #1e3a8a;
         }
 
         /* Status Banner */
         .status-banner {
-            background-color: #fee2e2;
-            color: #991b1b;
+            background-color: #eff6ff;
+            color: #1d4ed8;
             padding: 1rem 2rem;
             text-align: center;
             font-weight: 600;
-            border-bottom: 2px solid #fca5a5;
+            border-bottom: 2px solid #bfdbfe;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -91,30 +91,25 @@
             margin-bottom: 1.5rem;
         }
 
-        .highlight-text {
-            color: #b91c1c;
-            font-weight: 700;
-        }
-
         .alert-card {
-            background-color: #fef2f2;
-            border: 1px solid #fee2e2;
+            background-color: #fffbeb;
+            border: 1px solid #fef3c7;
             border-radius: 10px;
             padding: 1.5rem;
             margin: 1.5rem 0;
-            border-left: 4px solid #ef4444;
+            border-left: 4px solid #d97706;
         }
 
         .alert-title {
             font-weight: 700;
-            color: #991b1b;
+            color: #92400e;
             margin: 0 0 0.5rem 0;
             font-size: 1.1rem;
         }
 
         .alert-desc {
             margin: 0;
-            color: #7f1d1d;
+            color: #78350f;
             font-size: 0.98rem;
         }
 
@@ -215,13 +210,13 @@
                     </tr>
                 </table>
             </div>
-            <h1 class="header-title">Recordatorio Urgente</h1>
+            <h1 class="header-title">Citación Oficial</h1>
         </div>
 
         <!-- Status Banner -->
         <div class="status-banner">
-            <span class="status-icon">⚠️</span>
-            <span>Acción Requerida: Entrega de Expediente Físico Pendiente</span>
+            <span class="status-icon">📅</span>
+            <span>Convocatoria Presencial Obligatoria</span>
         </div>
 
         <!-- Body -->
@@ -236,7 +231,7 @@
             </p>
 
             <p style="color: #4b5563; margin-bottom: 1.5rem;">
-                Le comunicamos que su programa académico <strong>sí se aperturará en este proceso</strong>; sin embargo, usted <strong>aún tiene pendiente la entrega física de su currículum vitae y expediente documentario</strong>:
+                Le informamos que, para proceder con la culminación satisfactoria de su postulación e incorporación en el presente proceso de selección, usted debe presentarse a la citación obligatoria presencial para el siguiente programa académico:
             </p>
 
             <!-- Details Box -->
@@ -246,57 +241,55 @@
                     <td class="value"><strong>{{ $nombre_grado }} en {{ $nombre_programa }}</strong></td>
                 </tr>
                 <tr>
-                    <td class="label">Estado del Trámite</td>
+                    <td class="label">Estado de Evaluación</td>
                     <td class="value">
-                        <span style="background-color: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">
-                            PENDIENTE DE EXPEDIENTE FÍSICO
+                        <span style="background-color: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">
+                            PENDIENTE DE EVALUACIÓN
                         </span>
                     </td>
                 </tr>
             </table>
 
-            <!-- Warning Card -->
+            <!-- Warning Card (Citación) -->
             <div class="alert-card">
-                <h3 class="alert-title">🚨 PLAZO LÍMITE IMPRORROGABLE</h3>
+                <h3 class="alert-title">📢 DETALLES DE LA CONVOCATORIA PRESENCIAL</h3>
                 <div class="alert-desc">
-                    Tiene plazo máximo e improrrogable para entregar su currículum vitae documentado y expediente físico hasta este día <strong>Jueves</strong> en la oficina de admisión de la Escuela de Posgrado.
+                    <p style="margin: 0 0 0.8rem 0; font-size: 1.05rem;">
+                        Se le comunica que debe acercarse de manera <strong>obligatoria</strong> el:
+                    </p>
+                    <p style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #92400e; text-align: center;">
+                        📅 SÁBADO 04 DE JULIO A LAS 08:30 AM
+                    </p>
+                    <p style="margin: 0.8rem 0 0 0; text-align: center;">
+                        📍 En las instalaciones de la <strong>Escuela de Posgrado</strong>
+                    </p>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem; text-align: center; font-style: italic;">
+                        Para la culminación del trámite documentario de Admisión 2026-I.
+                    </p>
                 </div>
             </div>
 
-            <!-- Document Checklist -->
-            <div class="steps-container" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0;">
-                <h3 class="steps-title" style="margin-top: 0; color: #1e3a8a; font-size: 1.1rem; font-weight: 700;">📋 Expediente Físico a Presentar:</h3>
-                <ul class="checklist" style="padding-left: 1.25rem; color: #4b5563; margin-bottom: 0; font-size: 0.95rem;">
-                    <li style="margin-bottom: 0.5rem;"><strong>Constancia de Inscripción</strong> (descargada del portal de admisión).</li>
-                    <li style="margin-bottom: 0.5rem;"><strong>Comprobante de Pago Original</strong> (Voucher del Banco de la Nación).</li>
-                    <li style="margin-bottom: 0.5rem;"><strong>Solicitud de Inscripción dirigida al {{ $autoridad ?? 'Director' }}</strong>.</li>
-                    <li style="margin-bottom: 0.5rem;">Copia simple de su documento de identidad (DNI o Carnet de Extranjería).</li>
-                    <li style="margin-bottom: 0.5rem;">Una (1) fotografía a color tamaño carné reciente.</li>
-                    <li style="margin-bottom: 0.5rem;">Copia simple del <strong>{{ $gradoRequerido }}</strong> correspondiente.</li>
-                    <li style="margin-bottom: 0.5rem;">Impresión del reporte de registro de grado en SUNEDU.</li>
-                    <li style="margin-bottom: 0;">
-                        <strong>Currículum Vitae Documentado</strong>
-                        <br>
-                        <span style="font-size: 0.9rem; color: #64748b;">
-                            (Anillado debidamente foliado en la esquina superior derecha).
-                        </span>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Download Formats CTA -->
-            @if($urlDocumentos)
-            <div class="cta-section" style="background-color: #2873B4; border-radius: 10px; padding: 1.5rem; text-align: center; color: #ffffff; margin: 1.5rem 0;">
-                <h3 style="margin-top: 0; color: #fbbf24; font-size: 1.2rem; font-weight: 700;">📂 Descarga los Formatos Requeridos</h3>
-                <p style="opacity: 0.9; margin-bottom: 1.2rem; font-size: 0.95rem;">Accede a los formatos de solicitud y declaraciones juradas aquí:</p>
-                <a href="{{ $urlDocumentos }}" target="_blank" class="download-btn" style="background-color: #fbbf24; color: #1e3a8a; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 700; display: inline-block;">
-                    DESCARGAR FORMATOS
-                </a>
+            @if(isset($val_fisico) && $val_fisico == 0)
+            <!-- Warning Card (CV Pendiente) -->
+            <div style="background-color: #fffbeb; border: 1px solid #fca5a5; border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #ef4444;">
+                <h4 style="margin: 0 0 0.5rem 0; color: #b91c1c; font-weight: 700; font-size: 1.05rem;">⚠️ RECORDATORIO IMPORTANTE: Expediente Pendiente</h4>
+                <p style="margin: 0; color: #7f1d1d; font-size: 0.95rem;">
+                    Detectamos que usted aún tiene pendiente la entrega física de su currículum vitae documentado y expediente. Le recordamos que tiene plazo máximo e improrrogable para entregarlo en la oficina de admisión a más tardar este <strong>Jueves</strong>.
+                </p>
             </div>
             @endif
 
+            <!-- Requirements Box -->
+            <div class="steps-container" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0;">
+                <h3 class="steps-title" style="margin-top: 0; color: #1e3a8a; font-size: 1.1rem; font-weight: 700;">📋 Elementos Obligatorios a Llevar:</h3>
+                <ul class="checklist" style="padding-left: 1.25rem; color: #4b5563; margin-bottom: 0; font-size: 0.95rem;">
+                    <li style="margin-bottom: 0.5rem;">Documento Nacional de Identidad (DNI) original y vigente.</li>
+                    <li style="margin-bottom: 0;">Carnet de Postulante.</li>
+                </ul>
+            </div>
+
             <p style="color: #4b5563; margin-top: 1.5rem;">
-                Le exhortamos a regularizar su expediente a la brevedad dentro del plazo indicado para evitar inconvenientes en su postulación.
+                Agradecemos su puntual asistencia y compromiso para dar término al proceso regular de su postulación.
             </p>
         </div>
 

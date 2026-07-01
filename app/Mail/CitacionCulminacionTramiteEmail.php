@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class RecordatorioEntregaCVEmail extends Mailable implements ShouldQueue
+class CitacionCulminacionTramiteEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -30,7 +30,7 @@ class RecordatorioEntregaCVEmail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'URGENTE: Entrega de Expediente Físico y Currículum Vitae - EPG UNPRG',
+            subject: 'CITACIÓN OBLIGATORIA: Culminación de Trámite Documentario - Admisión EPG UNPRG',
         );
     }
 
@@ -60,7 +60,7 @@ class RecordatorioEntregaCVEmail extends Mailable implements ShouldQueue
         }
 
         return new Content(
-            view: 'email.recordatorio-entrega-cv',
+            view: 'email.citacion-culminacion-tramite',
             with: [
                 'sexo' => $postulante->sexo ?? 'M',
                 'nombres' => $postulante->nombres ?? '',
@@ -71,6 +71,7 @@ class RecordatorioEntregaCVEmail extends Mailable implements ShouldQueue
                 'autoridad' => $autoridad,
                 'gradoRequerido' => $gradoRequerido,
                 'urlDocumentos' => $urlDocumentos,
+                'val_fisico' => $this->inscripcion->val_fisico,
             ],
         );
     }
