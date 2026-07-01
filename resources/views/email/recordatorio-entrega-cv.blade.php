@@ -236,7 +236,7 @@
             </p>
 
             <p style="color: #4b5563; margin-bottom: 1.5rem;">
-                Le comunicamos que su programa académico <strong>sí se aperturará en este proceso</strong>; sin embargo, usted <strong>aún tiene pendiente la entrega física de su currículum vitae y expediente documentario</strong>:
+                Le recordamos que usted <strong>aún tiene pendiente la entrega física de su currículum vitae y expediente documentario</strong> para culminar su postulación en el presente proceso de admisión:
             </p>
 
             <!-- Details Box -->
