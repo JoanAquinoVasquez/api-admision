@@ -51,20 +51,20 @@ class SendIndividualEmail extends Command
         }
 
         // Check general active status
-        if ($inscripcion->estado !== 1) {
+        if (intval($inscripcion->estado) !== 1) {
             $this->error("The inscription is not active (current status: {$inscripcion->estado}).");
             return 1;
         }
 
         $programa = $inscripcion->programa;
-        if (!$programa || $programa->estado !== 1) {
+        if (!$programa || intval($programa->estado) !== 1) {
             $this->error("The program is not active/opened.");
             return 1;
         }
 
         if ($type === 'cv') {
             // Check CV conditions: val_fisico = 0
-            if ($inscripcion->val_fisico !== 0) {
+            if (intval($inscripcion->val_fisico) !== 0) {
                 $this->error("The inscription already has physical dossier validated (val_fisico: {$inscripcion->val_fisico}).");
                 return 1;
             }
