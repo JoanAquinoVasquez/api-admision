@@ -14,7 +14,7 @@ class SendCitacionCulminacionTramiteEmails extends Command
      *
      * @var string
      */
-    protected $signature = 'mail:send-citacion-culminacion-tramite';
+    protected $signature = 'mail:send-citacion-culminacion-tramite {--exclude= : Comma-separated list of Inscription IDs to exclude}';
 
     /**
      * The console command description.
@@ -28,6 +28,11 @@ class SendCitacionCulminacionTramiteEmails extends Command
      */
     public function handle()
     {
+        $excludeIds = [];
+        if ($this->option('exclude')) {
+            $excludeIds = array_map('intval', explode(',', $this->option('exclude')));
+        }
+
         $query = Inscripcion::with(['postulante', 'programa.grado'])
             ->where('estado', 1)
             ->whereHas('programa', function ($q) {
@@ -39,6 +44,10 @@ class SendCitacionCulminacionTramiteEmails extends Command
             ->whereHas('postulante', function ($q) {
                 $q->whereNotNull('email')->where('email', '!=', '');
             });
+
+        if (!empty($excludeIds)) {
+            $query->whereNotIn('id', $excludeIds);
+        }
 
         $totalCount = $query->count();
 

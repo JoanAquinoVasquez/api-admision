@@ -14,7 +14,7 @@ class SendRecordatorioEntregaCVEmails extends Command
      *
      * @var string
      */
-    protected $signature = 'mail:send-recordatorio-entrega-cv';
+    protected $signature = 'mail:send-recordatorio-entrega-cv {--exclude= : Comma-separated list of Inscription IDs to exclude}';
 
     /**
      * The console command description.
@@ -28,6 +28,11 @@ class SendRecordatorioEntregaCVEmails extends Command
      */
     public function handle()
     {
+        $excludeIds = [];
+        if ($this->option('exclude')) {
+            $excludeIds = array_map('intval', explode(',', $this->option('exclude')));
+        }
+
         $query = Inscripcion::with(['postulante', 'programa.grado'])
             ->where('estado', 1)
             ->where('val_fisico', 0)
@@ -37,6 +42,10 @@ class SendRecordatorioEntregaCVEmails extends Command
             ->whereHas('postulante', function ($q) {
                 $q->whereNotNull('email')->where('email', '!=', '');
             });
+
+        if (!empty($excludeIds)) {
+            $query->whereNotIn('id', $excludeIds);
+        }
 
         $totalCount = $query->count();
 
