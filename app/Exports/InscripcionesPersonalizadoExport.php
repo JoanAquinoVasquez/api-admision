@@ -85,31 +85,19 @@ class InscripcionesPersonalizadoExport implements FromCollection, WithHeadings, 
                 if ($filter === 'con_cv') {
                     $query->whereHas('nota', fn($q) => $q->whereNotNull('cv'));
                 } elseif ($filter === 'no_trajo_cv') {
-                    $query->where(function($q) {
-                        $q->whereDoesntHave('nota')
-                          ->orWhereHas('nota', fn($sq) => $sq->whereNull('cv'));
-                    })
-                    ->where('inscripcions.val_fisico', 0);
+                    $query->whereDoesntHave('nota', fn($sq) => $sq->whereNotNull('cv'))
+                          ->where('inscripcions.val_fisico', 0);
                 } elseif ($filter === 'falta_evaluar') {
-                    $query->where(function($q) {
-                        $q->whereDoesntHave('nota')
-                          ->orWhereHas('nota', fn($sq) => $sq->whereNull('cv'));
-                    })
-                    ->where('inscripcions.val_fisico', 1);
+                    $query->whereDoesntHave('nota', fn($sq) => $sq->whereNotNull('cv'))
+                          ->where('inscripcions.val_fisico', 1);
                 } elseif ($filter === 'con_entrevista') {
                     $query->whereHas('nota', fn($q) => $q->whereNotNull('entrevista'));
                 } elseif ($filter === 'sin_entrevista') {
-                    $query->where(function($q) {
-                        $q->whereDoesntHave('nota')
-                          ->orWhereHas('nota', fn($sq) => $sq->whereNull('entrevista'));
-                    });
+                    $query->whereDoesntHave('nota', fn($sq) => $sq->whereNotNull('entrevista'));
                 } elseif ($filter === 'con_examen') {
                     $query->whereHas('nota', fn($q) => $q->whereNotNull('examen'));
                 } elseif ($filter === 'sin_examen') {
-                    $query->where(function($q) {
-                        $q->whereDoesntHave('nota')
-                          ->orWhereHas('nota', fn($sq) => $sq->whereNull('examen'));
-                    });
+                    $query->whereDoesntHave('nota', fn($sq) => $sq->whereNotNull('examen'));
                 }
             }
         }

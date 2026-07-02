@@ -53,16 +53,10 @@ class NotaService
             ];
         }
 
-        $nota = Nota::where('inscripcion_id', $inscripcionId)->first();
-
-        if (!$nota) {
-            Nota::create([
-                'inscripcion_id' => $inscripcionId,
-                'entrevista' => $notaEntrevista,
-            ]);
-        } else {
-            $nota->update(['entrevista' => $notaEntrevista]);
-        }
+        Nota::updateOrCreate(
+            ['inscripcion_id' => $inscripcionId],
+            ['entrevista' => $notaEntrevista]
+        );
 
         return [
             'success' => true,

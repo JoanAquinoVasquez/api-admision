@@ -33,9 +33,8 @@ class SendCitacionCulminacionTramiteEmails extends Command
             ->whereHas('programa', function ($q) {
                 $q->where('estado', 1);
             })
-            ->where(function ($q) {
-                $q->whereDoesntHave('nota')
-                  ->orWhereHas('nota', fn($sq) => $sq->whereNull('examen'));
+            ->whereDoesntHave('nota', function ($sq) {
+                $sq->whereNotNull('examen');
             })
             ->whereHas('postulante', function ($q) {
                 $q->whereNotNull('email')->where('email', '!=', '');
