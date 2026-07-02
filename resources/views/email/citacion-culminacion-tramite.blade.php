@@ -273,8 +273,11 @@
             <!-- Warning Card (CV Pendiente) -->
             <div style="background-color: #fffbeb; border: 1px solid #fca5a5; border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #ef4444;">
                 <h4 style="margin: 0 0 0.5rem 0; color: #b91c1c; font-weight: 700; font-size: 1.05rem;">⚠️ RECORDATORIO IMPORTANTE: Expediente Pendiente</h4>
-                <p style="margin: 0; color: #7f1d1d; font-size: 0.95rem;">
-                    Detectamos que usted aún tiene pendiente la entrega física de su currículum vitae documentado y expediente. Le recordamos que tiene plazo máximo e improrrogable para entregarlo en la oficina de admisión a más tardar este <strong>Jueves</strong>.
+                <p style="margin: 0 0 0.6rem 0; color: #7f1d1d; font-size: 0.95rem;">
+                    Detectamos que usted aún tiene pendiente la entrega física de su currículum vitae documentado y expediente. Le recordamos que tiene plazo máximo e improrrogable para entregarlo en la oficina de admisión a más tardar este <strong>Jueves 02 de Julio</strong>.
+                </p>
+                <p style="margin: 0; color: #991b1b; font-size: 0.88rem; font-style: italic;">
+                    *Nota: Si no le es posible acercarse de manera presencial a dejar su expediente, este puede ser entregado por un familiar o tercero autorizado, siempre y cuando la documentación se encuentre debidamente firmada.
                 </p>
             </div>
             @endif

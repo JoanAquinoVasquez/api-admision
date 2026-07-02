@@ -259,7 +259,12 @@
             <div class="alert-card">
                 <h3 class="alert-title">🚨 PLAZO LÍMITE IMPRORROGABLE</h3>
                 <div class="alert-desc">
-                    Tiene plazo máximo e improrrogable para entregar su currículum vitae documentado y expediente físico hasta este día <strong>Jueves</strong> en la oficina de admisión de la Escuela de Posgrado.
+                    <p style="margin: 0 0 0.5rem 0;">
+                        Tiene plazo máximo e improrrogable para entregar su currículum vitae documentado y expediente físico hasta el día <strong>Jueves 02 de Julio</strong> en la oficina de admisión de la Escuela de Posgrado.
+                    </p>
+                    <p style="margin: 0; font-size: 0.9rem; font-style: italic;">
+                        *Nota: Si no le es posible acercarse de manera presencial a dejar su expediente, este puede ser entregado por un familiar o tercero autorizado, siempre y cuando la documentación se encuentre debidamente firmada.
+                    </p>
                 </div>
             </div>
 
