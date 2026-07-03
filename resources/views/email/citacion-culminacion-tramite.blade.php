@@ -261,7 +261,7 @@
                         📅 SÁBADO 04 DE JULIO A LAS 08:30 AM
                     </p>
                     <p style="margin: 0.8rem 0 0 0; text-align: center;">
-                        📍 En las instalaciones de la <strong>Escuela de Posgrado</strong>
+                        📍 En las instalaciones de la <strong>Escuela de Posgrado (Aula 02)</strong>
                     </p>
                     <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem; text-align: center; font-style: italic;">
                         Para la culminación del trámite documentario de Admisión 2026-I.

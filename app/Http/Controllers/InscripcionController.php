@@ -352,6 +352,11 @@ class InscripcionController extends BaseController
         return $this->reportService->generateFinalFirmasPdf();
     }
 
+    public function reportComplementarioPdf()
+    {
+        return $this->reportService->generateComplementarioAsistenciaPdf();
+    }
+
     public function reportResumenAulasPdf()
     {
         return $this->reportService->generateAulasResumenPdf();
