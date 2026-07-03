@@ -36,6 +36,32 @@ class PDFService
 
                 if (file_exists($fotoPath)) {
                     $imageContent = file_get_contents($fotoPath);
+                    
+                    // Auto-orient based on EXIF metadata (cellphone camera orientation)
+                    $image = @imagecreatefromstring($imageContent);
+                    if ($image !== false) {
+                        $exif = @exif_read_data($fotoPath);
+                        if (!empty($exif['Orientation'])) {
+                            switch ($exif['Orientation']) {
+                                case 3:
+                                    $image = imagerotate($image, 180, 0);
+                                    break;
+                                case 6:
+                                    $image = imagerotate($image, -90, 0);
+                                    break;
+                                case 8:
+                                    $image = imagerotate($image, 90, 0);
+                                    break;
+                            }
+                            
+                            // Output image to buffer and replace imageContent
+                            ob_start();
+                            imagejpeg($image, null, 90);
+                            $imageContent = ob_get_clean();
+                        }
+                        imagedestroy($image);
+                    }
+
                     $fotoBase64 = 'data:image/jpeg;base64,' . base64_encode($imageContent);
                     unset($imageContent); // Liberar memoria
                 } else {
