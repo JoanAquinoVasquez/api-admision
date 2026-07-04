@@ -45,21 +45,9 @@
 
         <div class="firma-container">
             <div class="firma-linea"></div>
-            @if(!empty($programa->docente->nombres) && $programa->docente->nombres !== 'POR ASIGNAR')
-                <p class="firma-text fw-bold">
-                    {{ mb_strtoupper($programa->docente->nombres, 'UTF-8') }}
-                </p>
-                <p class="firma-text">DOCENTE EVALUADOR DE ENTREVISTA</p>
-                @if(!empty($programa->docente->dni))
-                    <p class="firma-text"><strong>DNI:</strong> {{ $programa->docente->dni }}</p>
-                @else
-                    <p class="firma-text"><strong>DNI:</strong> ________________________________</p>
-                @endif
-            @else
-                <p class="firma-text fw-bold">Docente Evaluador</p>
-                <p class="firma-text" style="margin-top: 10px;"><strong>NOMBRES:</strong> __________________________________________________</p>
-                <p class="firma-text" style="margin-top: 10px;"><strong>DNI:</strong> ________________________________</p>
-            @endif
+            <p class="firma-text fw-bold">Docente Evaluador</p>
+            <p class="firma-text" style="margin-top: 10px;"><strong>NOMBRES:</strong> __________________________________________________</p>
+            <p class="firma-text" style="margin-top: 10px;"><strong>DNI:</strong> ________________________________</p>
         </div>
 
         <div class="text-right mt-2" style="font-size: 10px; font-style: italic;">

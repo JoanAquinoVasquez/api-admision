@@ -604,7 +604,7 @@ class ReportService
             'inscripciones' => function ($q) {
                 $q->where('estado', 1)
                     ->whereDoesntHave('nota', function ($sq) {
-                        $sq->whereNotNull('examen');
+                        $sq->whereNotNull('entrevista');
                     })
                     ->with('postulante');
             }
@@ -614,7 +614,7 @@ class ReportService
             ->whereHas('inscripciones', function ($q) {
                 $q->where('estado', 1)
                     ->whereDoesntHave('nota', function ($sq) {
-                        $sq->whereNotNull('examen');
+                        $sq->whereNotNull('entrevista');
                     });
             })
             ->get();
