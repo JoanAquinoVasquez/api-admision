@@ -316,4 +316,71 @@ class AulaReportTest extends TestCase
         $response2 = $reportService->generatePostulantesAptosMultiplePDF(null, [9]);
         $this->assertNotNull($response2);
     }
+
+    /** @test */
+    public function it_generates_complementario_reports_successfully()
+    {
+        $grado = Grado::first() ?? Grado::create(['nombre' => 'Maestria', 'estado' => 1]);
+        $facultad = Facultad::first() ?? Facultad::create(['nombre' => 'Facultad de Prueba', 'siglas' => 'FP', 'estado' => 1]);
+        $conceptoPago = ConceptoPago::first() ?? ConceptoPago::create(['cod_concepto' => '1001', 'nombre' => 'Concepto Prueba', 'monto' => 200, 'estado' => 1]);
+        $distrito = Distrito::first();
+        $distritoId = $distrito ? $distrito->id : 1;
+
+        $programa = Programa::first() ?? Programa::create([
+            'nombre' => 'Programa de Prueba',
+            'vacantes' => 30,
+            'estado' => 1,
+            'grado_id' => $grado->id,
+            'facultad_id' => $facultad->id,
+            'concepto_pago_id' => $conceptoPago->id,
+        ]);
+        
+        $programa->update(['estado' => 1]);
+
+        $numIden = strval(rand(10000000, 99999999));
+        $postulante = Postulante::create([
+            'distrito_id' => $distritoId,
+            'nombres' => 'Postulante Comp',
+            'ap_paterno' => 'PaternoComp',
+            'ap_materno' => 'MaternoComp',
+            'email' => 'comp@example.com',
+            'tipo_doc' => 'DNI',
+            'num_iden' => $numIden,
+            'fecha_nacimiento' => '1995-05-15',
+            'sexo' => 'M',
+            'celular' => '987654321',
+            'direccion' => 'Calle Falsa 123',
+            'estado' => 1,
+        ]);
+
+        $voucher = Voucher::create([
+            'concepto_pago_id' => $conceptoPago->id,
+            'numero' => '999999',
+            'num_iden' => $numIden,
+            'monto' => 200,
+            'fecha_pago' => '2026-06-22',
+            'hora_pago' => '09:00:00',
+            'cajero' => '0001',
+            'agencia' => '0001',
+            'nombre_completo' => 'Postulante Comp',
+        ]);
+
+        Inscripcion::create([
+            'postulante_id' => $postulante->id,
+            'programa_id' => $programa->id,
+            'voucher_id' => $voucher->id,
+            'codigo' => '9999',
+            'val_digital' => 1,
+            'val_fisico' => 1,
+            'estado' => 1,
+        ]);
+
+        $reportService = app(ReportService::class);
+
+        $responseAsistencia = $reportService->generateComplementarioAsistenciaPdf();
+        $this->assertNotNull($responseAsistencia);
+
+        $responseEntrevista = $reportService->generateComplementarioEntrevistaPdf();
+        $this->assertNotNull($responseEntrevista);
+    }
 }

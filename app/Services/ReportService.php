@@ -564,51 +564,92 @@ class ReportService
     public function generateComplementarioAsistenciaPdf()
     {
         $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
-        $programasData = [];
 
-        foreach ($idProgramas as $idPrograma) {
-            $inscripciones = Inscripcion::with([
-                'postulante',
-                'programa.grado',
-                'programa.docente',
-                'nota'
-            ])
-                ->where('programa_id', $idPrograma)
-                ->where('estado', 1)
-                ->whereDoesntHave('nota', function ($sq) {
-                    $sq->whereNotNull('examen');
-                })
-                ->get();
+        $inscripciones = Inscripcion::with([
+            'postulante',
+            'programa.grado',
+            'programa.docente',
+            'nota'
+        ])
+            ->whereIn('programa_id', $idProgramas)
+            ->where('estado', 1)
+            ->whereDoesntHave('nota', function ($sq) {
+                $sq->whereNotNull('examen');
+            })
+            ->get();
 
-            $inscripciones = $inscripciones->sortBy(function ($inscripcion) {
-                return strtolower($inscripcion->postulante->ap_paterno) . ' ' .
-                    strtolower($inscripcion->postulante->ap_materno) . ' ' .
-                    strtolower($inscripcion->postulante->nombres);
-            })->values();
-
-            if ($inscripciones->isNotEmpty()) {
-                $programaNombre = $inscripciones->first()->programa->nombre ?? 'Desconocido';
-                $gradoNombre = $inscripciones->first()->programa->grado->nombre ?? 'Desconocido';
-                $docente = $inscripciones->first()->programa->docente;
-
-                $programasData[] = [
-                    'programa' => $programaNombre,
-                    'grado' => $gradoNombre,
-                    'inscripciones' => $inscripciones,
-                    'docente' => $docente,
-                    'aula' => 'AULA 02 - EXAMEN COMPLEMENTARIO',
-                ];
-            }
-        }
-
-        if (empty($programasData)) {
+        if ($inscripciones->isEmpty()) {
             return response()->json(['error' => 'No hay postulantes registrados para el examen complementario'], 200);
         }
 
-        $pdf = Pdf::loadView('postulante-aptos-final-firmas', ['programasData' => $programasData]);
+        $inscripciones = $inscripciones->sortBy(function ($inscripcion) {
+            return strtolower($inscripcion->postulante->ap_paterno ?? '') . ' ' .
+                strtolower($inscripcion->postulante->ap_materno ?? '') . ' ' .
+                strtolower($inscripcion->postulante->nombres ?? '');
+        })->values();
+
+        $pdf = Pdf::loadView('pdf.asistencia-complementario', ['inscripciones' => $inscripciones]);
         $pdf->setPaper('A4', 'portrait');
 
         return $pdf->stream("reporte_asistencia_complementario_" . now()->format('d-m-Y_His') . ".pdf");
+    }
+
+    public function generateComplementarioEntrevistaPdf()
+    {
+        $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
+
+        $programas = Programa::with([
+            'grado',
+            'docenteEntrevista',
+            'inscripciones' => function ($q) {
+                $q->where('estado', 1)
+                    ->whereDoesntHave('nota', function ($sq) {
+                        $sq->whereNotNull('examen');
+                    })
+                    ->with('postulante');
+            }
+        ])
+            ->whereIn('id', $idProgramas)
+            ->where('estado', 1)
+            ->whereHas('inscripciones', function ($q) {
+                $q->where('estado', 1)
+                    ->whereDoesntHave('nota', function ($sq) {
+                        $sq->whereNotNull('examen');
+                    });
+            })
+            ->get();
+
+        $programasData = [];
+        foreach ($programas as $programa) {
+            $inscripciones = $programa->inscripciones->sortBy(function ($inscripcion) {
+                return strtolower($inscripcion->postulante->ap_paterno ?? '') . ' ' .
+                    strtolower($inscripcion->postulante->ap_materno ?? '') . ' ' .
+                    strtolower($inscripcion->postulante->nombres ?? '');
+            })->values();
+
+            $docenteObj = app(\App\Services\DocenteService::class)->getDocenteEntrevistaForReport($programa->id, $programa->docenteEntrevista);
+
+            $programasData[] = (object)[
+                'id' => $programa->id,
+                'nombre' => $programa->nombre,
+                'grado' => $programa->grado,
+                'inscripciones' => $inscripciones,
+                'docente' => $docenteObj
+            ];
+        }
+
+        if (empty($programasData)) {
+            return response()->json(['error' => 'No hay postulantes registrados para la entrevista complementaria'], 200);
+        }
+
+        $pdf = Pdf::loadView('notas.postulantes-aptos-multiple-complementario', [
+            'programas' => $programasData,
+            'fechaHora' => now(),
+        ]);
+
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream("plantilla_entrevista_complementaria_" . now()->format('d-m-Y_His') . ".pdf");
     }
 
     public function getResumenGeneralInscripcion()
