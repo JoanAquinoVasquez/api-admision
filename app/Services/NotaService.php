@@ -80,10 +80,7 @@ class NotaService
                     ->whereHas('nota', function ($notaQuery) {
                         $notaQuery->whereNotNull('cv')
                             ->whereNotNull('entrevista')
-                            ->whereNotNull('examen')
-                            ->whereRaw('cv REGEXP "^[0-9]+(\.[0-9]+)?$"')
-                            ->whereRaw('entrevista REGEXP "^[0-9]+(\.[0-9]+)?$"')
-                            ->whereRaw('examen REGEXP "^[0-9]+(\.[0-9]+)?$"');
+                            ->whereNotNull('examen');
                     })
                     ->with(['postulante', 'nota']);
             },
