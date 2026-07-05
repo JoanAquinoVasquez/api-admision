@@ -74,7 +74,6 @@ class NotaService
             'inscripciones' => function ($query) {
                 $query->where([
                     'val_digital' => 1,
-                    'val_fisico' => true,
                     'estado' => true,
                 ])
                     ->whereHas('nota', function ($notaQuery) {
