@@ -129,6 +129,20 @@ class NotaController extends BaseController
     }
 
     /**
+     * Generar reporte final de ingresantes y méritos (sin las 3 notas individuales)
+     */
+    public function reportFinalMeritos()
+    {
+        $programas = $this->notaService->calculateFinalGrades();
+
+        $pdf = Pdf::loadView('notas.ingresantes-meritos', ['programas' => $programas]);
+
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream("Ingresantes_Meritos_" . now()->format('d-m-Y_His') . ".pdf");
+    }
+
+    /**
      * Resumen de evaluación por programa
      */
     public function resumenEvaluacion()

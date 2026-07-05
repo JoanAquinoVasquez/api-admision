@@ -197,6 +197,7 @@ Route::middleware(['auth:api', 'active'])->group(function () {
 
     // REPORTES EXTRAS FINALES
     Route::get('/reporte-final-notas', [NotaController::class, 'reportFinalNotas'])->middleware(['role:super-admin|admin|comision']);
+    Route::get('/reporte-final-meritos', [NotaController::class, 'reportFinalMeritos'])->middleware(['role:super-admin|admin|comision']);
     Route::get('/reporte-inscripcion-final/excel', [InscripcionController::class, 'reportFinalExcel'])->middleware(['role:super-admin|admin|comision']);
     Route::get('/reporte-inscripcion-personalizado/excel', [InscripcionController::class, 'reportPersonalizadoExcel'])->middleware(['role:super-admin|admin|comision']);
     Route::get('/reporte-notas-final-excel', [InscripcionController::class, 'reportNotasFinalExcel'])->middleware(['role:super-admin|admin|comision']);
