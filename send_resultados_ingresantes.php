@@ -19,11 +19,11 @@ $pdfLink = 'https://drive.google.com/file/d/1ySw6QMIMXLtlhxJmPia7trm3hXsPuw2e/vi
 // ---------------------
 
 // Obtener todas las inscripciones activas de programas activos que tienen las 3 notas registradas (admitidos/ingresantes)
-// Filtrado únicamente para Doctorado (grado_id = 1) y Maestría (grado_id = 2)
+// Filtrado únicamente para Segunda Especialidad (grado_id = 3)
 $query = Inscripcion::where('inscripcions.estado', 1)
     ->join('programas', 'inscripcions.programa_id', '=', 'programas.id')
     ->where('programas.estado', 1)
-    ->whereIn('programas.grado_id', [1, 2])
+    ->whereIn('programas.grado_id', [3])
     ->whereHas('nota', function ($q) {
         $q->whereNotNull('cv')
           ->whereNotNull('entrevista')
@@ -37,11 +37,11 @@ $totalIngresantes = $inscripciones->count();
 
 echo "---------------------------------------------------------\n";
 echo "Campaña de envío de Resultados de Admisión EPG 2026-I\n";
-echo "Total de ingresantes (Maestría y Doctorado) identificados: {$totalIngresantes} (Deben ser 363)\n";
+echo "Total de ingresantes (Segunda Especialidad) identificados: {$totalIngresantes} (Deben ser 19)\n";
 echo "---------------------------------------------------------\n";
 
-if ($totalIngresantes !== 363) {
-    echo "[WARNING] La cantidad de ingresantes en la base de datos es {$totalIngresantes}, pero se esperaban 363. Verifique la base de datos.\n";
+if ($totalIngresantes !== 19) {
+    echo "[WARNING] La cantidad de ingresantes en la base de datos es {$totalIngresantes}, pero se esperaban 19. Verifique la base de datos.\n";
 }
 
 if (!empty($testEmail)) {

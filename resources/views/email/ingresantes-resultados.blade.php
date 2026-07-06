@@ -376,9 +376,34 @@
                         </tbody>
                     </table>
                 @elseif($es_segunda_especialidad)
-                    <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; padding: 1rem; border-radius: 8px; font-weight: 600;">
-                        📍 Para los ingresantes de SEGUNDA ESPECIALIDAD, deben acercarse a su respectiva FACULTAD para la realización del pago de su matrícula y pensión.
-                    </div>
+                    <table class="payment-table">
+                        <thead>
+                            <tr>
+                                <th>Concepto</th>
+                                <th>Transacción</th>
+                                <th>Código</th>
+                                <th style="text-align: right;">Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Derecho de Matrícula</td>
+                                <td>9135</td>
+                                <td>594</td>
+                                <td class="monto">S/ 200.00</td>
+                            </tr>
+                            <tr>
+                                <td>Pensión de Estudios (Mensualidad)</td>
+                                <td>9135</td>
+                                <td>595</td>
+                                <td class="monto">S/ 350.00</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td colspan="3">Total a Pagar</td>
+                                <td class="monto">S/ 550.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 @else
                     <!-- Fallback: Muestra ambas tablas o información general -->
                     <h4 style="margin-bottom: 0.5rem; color: #334155;">Maestrías:</h4>
@@ -450,6 +475,7 @@
                 </div>
             </div>
 
+            @if(!$es_segunda_especialidad)
             <!-- Inlined Image from User -->
             <div style="text-align: center; margin: 2rem 0;">
                 <p style="font-weight: 600; color: #4b5563; margin-bottom: 0.5rem; font-size: 0.9rem;">
@@ -459,6 +485,7 @@
                      alt="Guía de Matrícula" 
                      style="width: 100%; max-width: 550px; height: auto; border-radius: 8px; border: 1px solid #e2e8f0; display: block; margin: 0 auto;">
             </div>
+            @endif
 
             <div class="remember-box">
                 <strong>📌 RECUERDA:</strong> Es obligatorio realizar el pago tanto de la matrícula como de la primera pensión para poder formalizar su ingreso al sistema de la Escuela de Posgrado.
