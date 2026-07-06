@@ -1,15 +1,15 @@
 @extends('pdf.layout')
 
 @section('custom_css')
-<style>
-    body {
-        background-image: url('{{ public_path('img/logo_negro_epg.png') }}');
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 30%;
-        background-opacity: 0.1;
-    }
-</style>
+    <style>
+        body {
+            background-image: url('{{ public_path('img/logo_negro_epg.png') }}');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 30%;
+            background-opacity: 0.1;
+        }
+    </style>
 @endsection
 
 @section('content')
