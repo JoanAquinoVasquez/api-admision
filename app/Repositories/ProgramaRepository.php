@@ -201,7 +201,6 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
         return $this->model
             ->select(['id', 'grado_id', 'facultad_id', 'nombre', 'plan_estudio', 'brochure', 'duracion_meses', 'modalidad', 'estado'])
             ->with(['facultad:id,siglas'])
-            ->where('estado', true)
             ->orderBy('nombre', 'asc')
             ->get()
             ->map(function ($programa) {
@@ -213,6 +212,7 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
                     'brochure' => $programa->brochure,
                     'duracion_meses' => $programa->duracion_meses,
                     'modalidad' => $programa->modalidad,
+                    'estado' => (bool)$programa->estado,
                     'facultad' => [
                         'siglas' => $programa->facultad?->siglas ?? 'N/A'
                     ]
