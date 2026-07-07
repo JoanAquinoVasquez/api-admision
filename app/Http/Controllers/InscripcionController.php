@@ -332,9 +332,12 @@ class InscripcionController extends BaseController
         return $this->reportService->generatePersonalizadoReportExcel($gradoId, $programaId, $aperturado, $notasFilter, $search);
     }
 
-    public function reportNotasFinalExcel()
+    public function reportNotasFinalExcel(Request $request)
     {
-        return $this->reportService->generateNotasFinalReportExcel();
+        $gradoId = $request->input('grado') ? intval($request->input('grado')) : null;
+        $programaId = $request->input('programa') ? intval($request->input('programa')) : null;
+
+        return $this->reportService->generateNotasFinalReportExcel($gradoId, $programaId);
     }
 
     public function reportFinalPdf()

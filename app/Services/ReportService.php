@@ -77,10 +77,10 @@ class ReportService
     /**
      * Generar reporte de notas finales en Excel
      */
-    public function generateNotasFinalReportExcel()
+    public function generateNotasFinalReportExcel($gradoId = null, $programaId = null)
     {
         $nombreArchivo = 'reporte_resultados_' . now()->format('d-m-Y_His') . '.xlsx';
-        return Excel::download(new InscripcionNotasFinalExport, $nombreArchivo);
+        return Excel::download(new InscripcionNotasFinalExport($gradoId, $programaId), $nombreArchivo);
     }
 
     /**

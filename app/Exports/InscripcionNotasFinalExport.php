@@ -14,9 +14,18 @@ use Illuminate\Support\Collection;
 
 class InscripcionNotasFinalExport implements FromCollection, WithHeadings, WithStyles
 {
+    protected $gradoId;
+    protected $programaId;
+
+    public function __construct($gradoId = null, $programaId = null)
+    {
+        $this->gradoId = $gradoId;
+        $this->programaId = $programaId;
+    }
+
     public function collection()
     {
-        $inscripciones = Inscripcion::with([
+        $query = Inscripcion::with([
             'programa.grado',
             'programa.facultad',
             'nota',
@@ -29,8 +38,17 @@ class InscripcionNotasFinalExport implements FromCollection, WithHeadings, WithS
             ->join('postulantes', 'inscripcions.postulante_id', '=', 'postulantes.id')
             ->orderByRaw("FIELD(grados.nombre, 'DOCTORADO', 'MAESTRÍA', 'SEGUNDA ESPECIALIDAD PROFESIONAL')")
             ->orderBy('programas.nombre')
-            ->select('inscripcions.*')
-            ->get();
+            ->select('inscripcions.*');
+
+        if ($this->gradoId) {
+            $query->where('programas.grado_id', $this->gradoId);
+        }
+
+        if ($this->programaId) {
+            $query->where('inscripcions.programa_id', $this->programaId);
+        }
+
+        $inscripciones = $query->get();
 
         // Agrupar inscripciones por programa
         $grouped = $inscripciones->groupBy('programa_id');
