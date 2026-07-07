@@ -56,41 +56,56 @@ class InscripcionNotasFinalExport implements FromCollection, WithHeadings, WithS
         $finalData = new Collection();
 
         foreach ($grouped as $programaId => $inscripcionesPrograma) {
-            // Calcular Nota Final
+            // Calcular Nota Final y estado de vacante
             $inscripcionesPrograma = $inscripcionesPrograma->map(function ($inscripcion) {
                 $cv = is_numeric($inscripcion->nota->cv ?? null) ? $inscripcion->nota->cv : 0;
                 $entrevista = is_numeric($inscripcion->nota->entrevista ?? null) ? $inscripcion->nota->entrevista : 0;
                 $examen = is_numeric($inscripcion->nota->examen ?? null) ? $inscripcion->nota->examen : 0;
                 $nota_final = $cv + $entrevista + $examen;
                 $inscripcion->nota_final = $nota_final;
+
+                $cv_raw = $inscripcion->nota->cv ?? null;
+                $entrevista_raw = $inscripcion->nota->entrevista ?? null;
+                $examen_raw = $inscripcion->nota->examen ?? null;
+                $inscripcion->alcanzo_vacante = is_numeric($cv_raw) && is_numeric($entrevista_raw) && is_numeric($examen_raw);
+
                 return $inscripcion;
             });
 
-            // Ordenar: primero por nota final descendente, luego por ap_paterno, ap_materno, nombres
+            // Ordenar: primero por alcanzo_vacante desc, luego por nota final descendente, luego por ap_paterno, ap_materno, nombres
             $inscripcionesPrograma = $inscripcionesPrograma->sort(function ($a, $b) {
-                if ($a->nota_final == $b->nota_final) {
-                    $comparePaterno = strcmp($a->postulante->ap_paterno, $b->postulante->ap_paterno);
-                    if ($comparePaterno === 0) {
-                        $compareMaterno = strcmp($a->postulante->ap_materno, $b->postulante->ap_materno);
-                        if ($compareMaterno === 0) {
-                            return strcmp($a->postulante->nombres, $b->postulante->nombres);
-                        }
-                        return $compareMaterno;
-                    }
-                    return $comparePaterno;
+                if ($a->alcanzo_vacante !== $b->alcanzo_vacante) {
+                    return $b->alcanzo_vacante <=> $a->alcanzo_vacante;
                 }
-                return $b->nota_final <=> $a->nota_final; // Nota final descendente
+                if ($a->nota_final != $b->nota_final) {
+                    return $b->nota_final <=> $a->nota_final;
+                }
+                $comparePaterno = strcmp($a->postulante->ap_paterno, $b->postulante->ap_paterno);
+                if ($comparePaterno === 0) {
+                    $compareMaterno = strcmp($a->postulante->ap_materno, $b->postulante->ap_materno);
+                    if ($compareMaterno === 0) {
+                        return strcmp($a->postulante->nombres, $b->postulante->nombres);
+                    }
+                    return $compareMaterno;
+                }
+                return $comparePaterno;
             })->values();
 
             // Asignar mérito (considerando empates)
             $merito = 1;
             $anteriorNota = null;
-            foreach ($inscripcionesPrograma as $key => $inscripcion) {
-                if (!is_null($anteriorNota) && $inscripcion->nota_final < $anteriorNota) {
-                    $merito = $key + 1;
+            $vacantesCount = 0;
+            foreach ($inscripcionesPrograma as $inscripcion) {
+                if ($inscripcion->alcanzo_vacante) {
+                    if (!is_null($anteriorNota) && $inscripcion->nota_final < $anteriorNota) {
+                        $merito = $vacantesCount + 1;
+                    }
+                    $inscripcion->merito = $merito;
+                    $anteriorNota = $inscripcion->nota_final;
+                    $vacantesCount++;
+                } else {
+                    $inscripcion->merito = '-';
                 }
-                $inscripcion->merito = $merito;
-                $anteriorNota = $inscripcion->nota_final;
             }
 
             // Determinar situación (vacante alcanzada o no)
