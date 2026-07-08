@@ -173,7 +173,28 @@ class CargoConstanciasProgramSheet implements FromCollection, WithStyles, WithTi
         } else {
             $titulo = $gradoStr . ' EN ' . $progStr;
         }
-        $titulo .= ' PROM. ______'; // Espacio en blanco para la promoción
+        // Mapa de promociones por ID de programa (extraído de reporte_FORMATEADO.xlsx)
+        $promociones = [
+            7 => 'V',
+            8 => 'IV',
+            9 => 'XIII',
+            10 => 'VIII',
+            21 => 'VIII',
+            22 => 'XIV',
+            24 => 'III',
+            25 => 'III',
+            27 => 'III',
+            28 => 'VIII',
+            29 => 'I',
+            31 => 'II',
+            32 => 'I',
+            33 => 'I',
+            34 => 'I',
+        ];
+
+        $progId = (int)$this->programa->id;
+        $promo = $promociones[$progId] ?? '______';
+        $titulo .= ' PROM. ' . $promo;
 
         $sheet->setCellValue('B7', $titulo);
         $sheet->getStyle('B7')->applyFromArray([
