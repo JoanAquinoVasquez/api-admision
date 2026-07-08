@@ -24,35 +24,43 @@ class CargoConstanciasProgramSheet implements FromCollection, WithHeadings, With
 
     public function title(): string
     {
+        $gradoId = (int)$this->programa->grado_id;
+        $prefix = match ($gradoId) {
+            1 => 'DOC-',
+            2 => 'MAE-',
+            3 => 'SEG-',
+            default => '',
+        };
+
         // Quitar caracteres no permitidos en pestañas de Excel
         $name = str_replace(['\\', '/', '?', '*', ':', '[', ']'], '', $this->programa->nombre);
-        // Abreviar nombres para evitar exceder el límite de 31 caracteres
+        
+        // Quitar redundancias del grado
         $name = str_replace(
             [
                 'MAESTRÍA EN CIENCIAS CON MENCIÓN EN',
+                'MAESTRIA EN CIENCIAS CON MENCIÓN EN',
+                'MAESTRÍA EN CIENCIAS CON MENCION EN',
+                'MAESTRIA EN CIENCIAS CON MENCION EN',
                 'MAESTRÍA EN',
+                'MAESTRIA EN',
                 'DOCTORADO EN',
                 'SEGUNDA ESPECIALIDAD EN',
                 'SEGUNDA ESPECIALIDAD PROFESIONAL EN',
-                'CON MENCIÓN EN',
                 'con mención en',
-                'con Mención en'
+                'con Mención en',
+                'CON MENCIÓN EN',
+                'con mencion en',
+                'CON MENCION EN'
             ],
-            [
-                'MC',
-                'MSTR',
-                'DOCT',
-                'SEG ESP',
-                'SEG ESP',
-                '',
-                '',
-                ''
-            ],
+            '',
             $name
         );
-        
+
         $name = mb_strtoupper(trim($name));
-        return mb_substr($name, 0, 30);
+        $fullTitle = $prefix . $name;
+        
+        return mb_substr($fullTitle, 0, 31);
     }
 
     public function collection()
