@@ -9,6 +9,7 @@ use App\Exports\InscripcionExport;
 use App\Exports\InscripcionNotasFinalExport;
 use App\Exports\InscripcionesPersonalizadoExport;
 use App\Exports\PreinscripcionSinPagarExport;
+use App\Exports\IngresantesProgramaExport;
 use App\Models\ComisionAdmision;
 use App\Models\Facultad;
 use App\Models\Inscripcion;
@@ -933,6 +934,15 @@ class ReportService
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Generar Excel de ingresantes por programa
+     */
+    public function generateIngresantesProgramaExcel()
+    {
+        $nombreArchivo = 'reporte_ingresantes_programa_' . now()->format('d-m-Y_His') . '.xlsx';
+        return Excel::download(new IngresantesProgramaExport, $nombreArchivo);
     }
 
     public function generateAulasResumenPdf()

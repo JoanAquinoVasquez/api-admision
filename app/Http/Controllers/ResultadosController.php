@@ -35,6 +35,11 @@ class ResultadosController extends BaseController
         return $this->reportService->generateIngresantesTopPDF();
     }
 
+    public function reportIngresantesProgramaExcel()
+    {
+        return $this->reportService->generateIngresantesProgramaExcel();
+    }
+
     public function ingresantesPorPrograma()
     {
         try {
