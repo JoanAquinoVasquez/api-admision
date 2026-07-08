@@ -3,7 +3,6 @@
 namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -12,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Illuminate\Support\Collection;
 
-class CargoConstanciasProgramSheet implements FromCollection, WithHeadings, WithStyles, WithTitle
+class CargoConstanciasProgramSheet implements FromCollection, WithStyles, WithTitle
 {
     protected $programa;
     protected $inscripciones;
@@ -80,6 +79,15 @@ class CargoConstanciasProgramSheet implements FromCollection, WithHeadings, With
     public function collection()
     {
         $data = new Collection();
+        
+        // Agregar cabecera como la primera fila de la colección
+        $data->push([
+            'EMPTY' => '',
+            'NRO' => 'NRO',
+            'APELLIDOS Y NOMBRES' => 'APELLIDOS Y NOMBRES',
+            'FIRMA' => 'FIRMA',
+        ]);
+
         $contador = 1;
 
         foreach ($this->inscripciones as $inscripcion) {
@@ -95,13 +103,6 @@ class CargoConstanciasProgramSheet implements FromCollection, WithHeadings, With
         }
 
         return $data;
-    }
-
-    public function headings(): array
-    {
-        return [
-            '', 'NRO', 'APELLIDOS Y NOMBRES', 'FIRMA'
-        ];
     }
 
     public function styles(Worksheet $sheet)
