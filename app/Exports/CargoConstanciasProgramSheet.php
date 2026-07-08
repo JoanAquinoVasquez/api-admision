@@ -32,8 +32,9 @@ class CargoConstanciasProgramSheet implements FromCollection, WithHeadings, With
             default => '',
         };
 
-        // Quitar caracteres no permitidos en pestañas de Excel
-        $name = str_replace(['\\', '/', '?', '*', ':', '[', ']'], '', $this->programa->nombre);
+        // Convertir a mayúsculas y limpiar caracteres no permitidos al inicio
+        $name = mb_strtoupper($this->programa->nombre);
+        $name = str_replace(['\\', '/', '?', '*', ':', '[', ']'], '', $name);
         
         // Quitar redundancias del grado
         $name = str_replace(
@@ -42,22 +43,34 @@ class CargoConstanciasProgramSheet implements FromCollection, WithHeadings, With
                 'MAESTRIA EN CIENCIAS CON MENCIÓN EN',
                 'MAESTRÍA EN CIENCIAS CON MENCION EN',
                 'MAESTRIA EN CIENCIAS CON MENCION EN',
+                'MAESTRÍA EN CIENCIAS CON MENCIÓN',
+                'MAESTRIA EN CIENCIAS CON MENCIÓN',
+                'MAESTRÍA EN CIENCIAS CON MENCION',
+                'MAESTRIA EN CIENCIAS CON MENCION',
+                'MAESTRÍA EN CIENCIAS',
+                'MAESTRIA EN CIENCIAS',
+                'CIENCIAS CON MENCIÓN EN',
+                'CIENCIAS CON MENCION EN',
+                'CIENCIAS CON MENCIÓN',
+                'CIENCIAS CON MENCION',
+                'CIENCIAS SOCIALES CON MENCIÓN',
                 'MAESTRÍA EN',
                 'MAESTRIA EN',
                 'DOCTORADO EN',
                 'SEGUNDA ESPECIALIDAD EN',
                 'SEGUNDA ESPECIALIDAD PROFESIONAL EN',
-                'con mención en',
-                'con Mención en',
                 'CON MENCIÓN EN',
-                'con mencion en',
-                'CON MENCION EN'
+                'CON MENCION EN',
+                'CIENCIAS'
             ],
             '',
             $name
         );
 
-        $name = mb_strtoupper(trim($name));
+        // Limpiar espacios múltiples y bordes
+        $name = preg_replace('/\s+/', ' ', $name);
+        $name = trim($name);
+        
         $fullTitle = $prefix . $name;
         
         return mb_substr($fullTitle, 0, 31);
@@ -86,8 +99,7 @@ class CargoConstanciasProgramSheet implements FromCollection, WithHeadings, With
     public function headings(): array
     {
         return [
-            ['', 'NRO', 'APELLIDOS Y NOMBRES', 'FIRMA'],
-            ['', '', '', '']
+            '', 'NRO', 'APELLIDOS Y NOMBRES', 'FIRMA'
         ];
     }
 
@@ -101,6 +113,9 @@ class CargoConstanciasProgramSheet implements FromCollection, WithHeadings, With
 
         // 2. Insertar filas en blanco al inicio para título y metadatos
         $sheet->insertNewRowBefore(1, 13);
+
+        // Insertar una fila vacía para lograr el encabezado de doble fila (Row 15)
+        $sheet->insertNewRowBefore(15, 1);
 
         // 3. Formato del título y cabecera
         // B4: UNIVERSIDAD NACIONAL PEDRO RUIZ GALLO
