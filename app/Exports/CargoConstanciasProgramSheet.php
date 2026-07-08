@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Illuminate\Support\Collection;
@@ -116,6 +117,19 @@ class CargoConstanciasProgramSheet implements FromCollection, WithHeadings, With
 
         // Insertar una fila vacía para lograr el encabezado de doble fila (Row 15)
         $sheet->insertNewRowBefore(15, 1);
+
+        // Agregar logo
+        if (file_exists(public_path('img/isotipo_color_epg.webp'))) {
+            $drawing = new Drawing();
+            $drawing->setName('Logo EPG');
+            $drawing->setDescription('Logo Escuela de Posgrado');
+            $drawing->setPath(public_path('img/isotipo_color_epg.webp'));
+            $drawing->setHeight(50);
+            $drawing->setCoordinates('B3');
+            $drawing->setWorksheet($sheet);
+            $drawing->setOffsetX(5);
+            $drawing->setOffsetY(5);
+        }
 
         // 3. Formato del título y cabecera
         // B4: UNIVERSIDAD NACIONAL PEDRO RUIZ GALLO
