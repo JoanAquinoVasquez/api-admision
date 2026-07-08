@@ -125,7 +125,7 @@ class CargoConstanciasProgramSheet implements FromCollection, WithStyles, WithTi
             $drawing->setName('Logo EPG');
             $drawing->setDescription('Logo Escuela de Posgrado');
             $drawing->setPath(public_path('img/isotipo_color_epg.webp'));
-            $drawing->setHeight(50);
+            $drawing->setHeight(100);
             $drawing->setCoordinates('B3');
             $drawing->setWorksheet($sheet);
             $drawing->setOffsetX(5);
