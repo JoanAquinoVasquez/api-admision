@@ -10,6 +10,8 @@ use App\Exports\InscripcionNotasFinalExport;
 use App\Exports\InscripcionesPersonalizadoExport;
 use App\Exports\PreinscripcionSinPagarExport;
 use App\Exports\IngresantesProgramaExport;
+use App\Exports\CargoConstanciasExport;
+use App\Exports\EstadisticasAdmisionExport;
 use App\Models\ComisionAdmision;
 use App\Models\Facultad;
 use App\Models\Inscripcion;
@@ -943,6 +945,24 @@ class ReportService
     {
         $nombreArchivo = 'reporte_ingresantes_programa_' . now()->format('d-m-Y_His') . '.xlsx';
         return Excel::download(new IngresantesProgramaExport, $nombreArchivo);
+    }
+
+    /**
+     * Generar Excel de cargo de entrega de constancias
+     */
+    public function generateCargoConstanciasExcel($gradoId = null, $programaId = null)
+    {
+        $nombreArchivo = 'cargo_entrega_constancias_' . now()->format('d-m-Y_His') . '.xlsx';
+        return Excel::download(new CargoConstanciasExport($gradoId, $programaId), $nombreArchivo);
+    }
+
+    /**
+     * Generar Excel de estadísticas de admisión de los últimos procesos
+     */
+    public function generateEstadisticasAdmisionExcel()
+    {
+        $nombreArchivo = 'reporte_estadisticas_admision_' . now()->format('d-m-Y_His') . '.xlsx';
+        return Excel::download(new EstadisticasAdmisionExport, $nombreArchivo);
     }
 
     public function generateAulasResumenPdf()

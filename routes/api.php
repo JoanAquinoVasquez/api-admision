@@ -210,6 +210,8 @@ Route::middleware(['auth:api', 'active'])->group(function () {
     Route::get('/reporte-inscripcion-final/resumen-evaluadores/pdf', [InscripcionController::class, 'reportResumenEvaluadoresPdf'])->middleware(['role:super-admin|admin|comision']);
     Route::get('/reporte-ingresantes-programa', [ResultadosController::class, 'reportIngresantesPrograma'])->middleware(['role:super-admin|admin|comision']);
     Route::get('/reporte-ingresantes-programa/excel', [ResultadosController::class, 'reportIngresantesProgramaExcel'])->middleware(['role:super-admin|admin|comision']);
+    Route::get('/reporte-cargo-constancias-excel', [ResultadosController::class, 'reportCargoConstanciasExcel'])->middleware(['role:super-admin|admin|comision']);
+    Route::get('/reporte-estadisticas-admision-excel', [ResultadosController::class, 'reportEstadisticasAdmisionExcel'])->middleware(['role:super-admin|admin|comision']);
 
     // Resultados Ingresantes
     Route::get('/resultados-ingresantes', [ResultadosController::class, 'index'])->middleware(['role:super-admin|admin|comision']);

@@ -40,6 +40,19 @@ class ResultadosController extends BaseController
         return $this->reportService->generateIngresantesProgramaExcel();
     }
 
+    public function reportCargoConstanciasExcel(Request $request)
+    {
+        $gradoId = $request->input('grado') ? intval($request->input('grado')) : null;
+        $programaId = $request->input('programa') ? intval($request->input('programa')) : null;
+
+        return $this->reportService->generateCargoConstanciasExcel($gradoId, $programaId);
+    }
+
+    public function reportEstadisticasAdmisionExcel()
+    {
+        return $this->reportService->generateEstadisticasAdmisionExcel();
+    }
+
     public function ingresantesPorPrograma()
     {
         try {
