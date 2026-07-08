@@ -27,7 +27,7 @@ class EstadisticasAdmisionExport implements FromCollection, WithHeadings, WithSt
             ->values();
 
         $reportData = new Collection();
-        $contador = 7; // Fila de inicio de los datos de 2026-I en Excel
+        $contador = 2; // Fila de inicio de los datos de 2026-I en Excel antes de insertar cabeceras (se desplazará 5 filas abajo)
 
         foreach ($programas as $p) {
             // Inscripciones activas para este programa
