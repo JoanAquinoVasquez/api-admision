@@ -78,7 +78,8 @@ class CargoConstanciasProgramSheet implements FromCollection, WithHeadings, With
     public function headings(): array
     {
         return [
-            ['', 'NRO', 'APELLIDOS Y NOMBRES', 'FIRMA']
+            ['', 'NRO', 'APELLIDOS Y NOMBRES', 'FIRMA'],
+            ['', '', '', '']
         ];
     }
 
