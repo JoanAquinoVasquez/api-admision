@@ -65,6 +65,7 @@ class CargoConstanciasProgramSheet implements FromCollection, WithHeadings, With
             $nombreCompleto = mb_strtoupper($postulante->ap_paterno . ' ' . $postulante->ap_materno . ' ' . $postulante->nombres);
             
             $data->push([
+                'EMPTY' => '',
                 'NRO' => $contador++,
                 'APELLIDOS Y NOMBRES' => $nombreCompleto,
                 'FIRMA' => '',
@@ -77,7 +78,7 @@ class CargoConstanciasProgramSheet implements FromCollection, WithHeadings, With
     public function headings(): array
     {
         return [
-            ['NRO', 'APELLIDOS Y NOMBRES', 'FIRMA']
+            ['', 'NRO', 'APELLIDOS Y NOMBRES', 'FIRMA']
         ];
     }
 
