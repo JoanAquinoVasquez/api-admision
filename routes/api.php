@@ -187,6 +187,8 @@ Route::middleware(['auth:api', 'active'])->group(function () {
     Route::get('/devolucion/programa/{idPrograma}', [ReservaDevolucionController::class, 'listarInscripcionesDevolver'])->middleware(['role:super-admin|admin']);
     Route::get('/devolucion/inscripcion/{id}/cancelar', [ReservaDevolucionController::class, 'cancelarDevolucion'])->middleware(['role:super-admin|admin']);
     Route::get('/devolucion/reporte', [ReservaDevolucionController::class, 'reportDevolucion'])->middleware(['role:super-admin|admin']);
+    Route::get('/inhabilitadas/reporte/todos', [ReservaDevolucionController::class, 'reportTodos'])->middleware(['role:super-admin|admin']);
+    Route::get('/inhabilitadas/reporte/pendientes', [ReservaDevolucionController::class, 'reportPendientes'])->middleware(['role:super-admin|admin']);
     // Cambio de programa
     Route::get('/programas-posibles/{id}', [ReservaDevolucionController::class, 'showProgramasPosibles'])->middleware(['role:super-admin|admin']);
     Route::post('/programa-cambio/{id}', [ReservaDevolucionController::class, 'updateProgramasPosibles'])->middleware(['role:super-admin|admin']);

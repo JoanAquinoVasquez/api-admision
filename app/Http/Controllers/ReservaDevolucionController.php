@@ -363,4 +363,26 @@ class ReservaDevolucionController extends BaseController
             ], 'Programa cambiado exitosamente');
         }, 'Error al cambiar el programa');
     }
+
+    /**
+     * Generate report for all disabled/pending inscriptions
+     */
+    public function reportTodos()
+    {
+        return $this->handleRequest(function () {
+            $this->logActivity('Reporte general de inhabilitados generado', null, []);
+            return $this->reservaDevolucionService->generateReportInhabilitados([0, 2, 3], 'Todos');
+        }, 'Error al generar el reporte de inscripciones');
+    }
+
+    /**
+     * Generate report for pending inscriptions only
+     */
+    public function reportPendientes()
+    {
+        return $this->handleRequest(function () {
+            $this->logActivity('Reporte de pendientes generado', null, []);
+            return $this->reservaDevolucionService->generateReportInhabilitados([0], 'Pendientes');
+        }, 'Error al generar el reporte de inscripciones');
+    }
 }

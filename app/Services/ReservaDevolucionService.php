@@ -318,4 +318,13 @@ class ReservaDevolucionService
             'programa_new' => $programa,
         ];
     }
+
+    /**
+     * Generate inhabilitados/todos report
+     */
+    public function generateReportInhabilitados(array $estados = [0, 2, 3], string $titulo = 'GENERAL')
+    {
+        $nombreArchivo = 'reporte_inscripciones_' . strtolower($titulo) . '_' . now()->format('d-m-Y_His') . '.xlsx';
+        return Excel::download(new \App\Exports\InscripcionesInhabilitadasExport($estados, $titulo), $nombreArchivo);
+    }
 }
