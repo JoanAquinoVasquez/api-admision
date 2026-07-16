@@ -336,9 +336,16 @@ class ReportService
         }
     }
 
-    public function generateFinalPdf()
+    public function generateFinalPdf($gradoId = null, $programaIds = null)
     {
-        $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
+        $query = Programa::where('estado', 1);
+        if ($gradoId && $gradoId !== 'all') {
+            $query->where('grado_id', $gradoId);
+        }
+        if (!empty($programaIds)) {
+            $query->whereIn('id', (array) $programaIds);
+        }
+        $idProgramas = $query->pluck('id')->toArray();
         $programasData = [];
 
         foreach ($idProgramas as $idPrograma) {
@@ -378,7 +385,7 @@ class ReportService
         return $pdf->stream("reporte_notasCV-multiple_" . now()->format('d-m-Y_His') . ".pdf");
     }
 
-    public function generateFinalAulasPdf()
+    public function generateFinalAulasPdf($gradoId = null, $programaIds = null)
     {
         $aulasAsignadas = [
             21 => 'AULA 02',
@@ -397,7 +404,14 @@ class ReportService
             24 => 'AULA 17',
         ];
 
-        $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
+        $query = Programa::where('estado', 1);
+        if ($gradoId && $gradoId !== 'all') {
+            $query->where('grado_id', $gradoId);
+        }
+        if (!empty($programaIds)) {
+            $query->whereIn('id', (array) $programaIds);
+        }
+        $idProgramas = $query->pluck('id')->toArray();
         $programasData = [];
 
         foreach ($idProgramas as $idPrograma) {
@@ -409,9 +423,6 @@ class ReportService
             ])
                 ->where('programa_id', $idPrograma)
                 ->where('estado', 1)
-                ->whereHas('nota', function ($sq) {
-                    $sq->whereNotNull('examen');
-                })
                 ->get();
 
             $inscripciones = $inscripciones->sortBy(function ($inscripcion) {
@@ -471,7 +482,7 @@ class ReportService
         return $pdf->stream("reporte_aulas_" . now()->format('d-m-Y_His') . ".pdf");
     }
 
-    public function generateFinalFirmasPdf()
+    public function generateFinalFirmasPdf($gradoId = null, $programaIds = null)
     {
         $aulasAsignadas = [
             21 => 'AULA 02',
@@ -490,7 +501,14 @@ class ReportService
             24 => 'AULA 17',
         ];
 
-        $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
+        $query = Programa::where('estado', 1);
+        if ($gradoId && $gradoId !== 'all') {
+            $query->where('grado_id', $gradoId);
+        }
+        if (!empty($programaIds)) {
+            $query->whereIn('id', (array) $programaIds);
+        }
+        $idProgramas = $query->pluck('id')->toArray();
         $programasData = [];
 
         foreach ($idProgramas as $idPrograma) {
@@ -502,9 +520,6 @@ class ReportService
             ])
                 ->where('programa_id', $idPrograma)
                 ->where('estado', 1)
-                ->whereHas('nota', function ($sq) {
-                    $sq->whereNotNull('examen');
-                })
                 ->get();
 
             $inscripciones = $inscripciones->sortBy(function ($inscripcion) {
@@ -564,9 +579,16 @@ class ReportService
         return $pdf->stream("reporte_aptos_firmas_" . now()->format('d-m-Y_His') . ".pdf");
     }
 
-    public function generateComplementarioAsistenciaPdf()
+    public function generateComplementarioAsistenciaPdf($gradoId = null, $programaIds = null)
     {
-        $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
+        $query = Programa::where('estado', 1);
+        if ($gradoId && $gradoId !== 'all') {
+            $query->where('grado_id', $gradoId);
+        }
+        if (!empty($programaIds)) {
+            $query->whereIn('id', (array) $programaIds);
+        }
+        $idProgramas = $query->pluck('id')->toArray();
 
         $inscripciones = Inscripcion::with([
             'postulante',
@@ -597,9 +619,16 @@ class ReportService
         return $pdf->stream("reporte_asistencia_complementario_" . now()->format('d-m-Y_His') . ".pdf");
     }
 
-    public function generateComplementarioEntrevistaPdf()
+    public function generateComplementarioEntrevistaPdf($gradoId = null, $programaIds = null)
     {
-        $idProgramas = Programa::where('estado', 1)->pluck('id')->toArray();
+        $query = Programa::where('estado', 1);
+        if ($gradoId && $gradoId !== 'all') {
+            $query->where('grado_id', $gradoId);
+        }
+        if (!empty($programaIds)) {
+            $query->whereIn('id', (array) $programaIds);
+        }
+        $idProgramas = $query->pluck('id')->toArray();
 
         $programas = Programa::with([
             'grado',
@@ -965,7 +994,7 @@ class ReportService
         return Excel::download(new EstadisticasAdmisionExport, $nombreArchivo);
     }
 
-    public function generateAulasResumenPdf()
+    public function generateAulasResumenPdf($gradoId = null, $programaIds = null)
     {
         try {
             $aulasAsignadas = [
@@ -986,9 +1015,14 @@ class ReportService
             ];
 
             // Obtener programas con estado 1 (aperturados)
-            $programas = \App\Models\Programa::where('estado', 1)
-                ->with(['grado'])
-                ->get();
+            $query = \App\Models\Programa::where('estado', 1);
+            if ($gradoId && $gradoId !== 'all') {
+                $query->where('grado_id', $gradoId);
+            }
+            if (!empty($programaIds)) {
+                $query->whereIn('id', (array) $programaIds);
+            }
+            $programas = $query->with(['grado'])->get();
 
             $datosReporte = [];
             $subtotalInscritos = 0;
@@ -1054,7 +1088,7 @@ class ReportService
         }
     }
 
-    public function generateEvaluadoresPdf()
+    public function generateEvaluadoresPdf($gradoId = null, $programaIds = null)
     {
         try {
             $aulasAsignadas = [
@@ -1093,9 +1127,14 @@ class ReportService
             ];
 
             // Obtener programas con estado 1 (aperturados)
-            $programas = \App\Models\Programa::where('estado', 1)
-                ->with(['grado', 'docenteEntrevista'])
-                ->get();
+            $query = \App\Models\Programa::where('estado', 1);
+            if ($gradoId && $gradoId !== 'all') {
+                $query->where('grado_id', $gradoId);
+            }
+            if (!empty($programaIds)) {
+                $query->whereIn('id', (array) $programaIds);
+            }
+            $programas = $query->with(['grado', 'docenteEntrevista'])->get();
 
             $datosReporte = [];
 

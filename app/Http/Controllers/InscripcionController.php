@@ -340,39 +340,53 @@ class InscripcionController extends BaseController
         return $this->reportService->generateNotasFinalReportExcel($gradoId, $programaId);
     }
 
-    public function reportFinalPdf()
+    public function reportFinalPdf(Request $request)
     {
-        return $this->reportService->generateFinalPdf();
+        $gradoId = $request->input('grado') ? intval($request->input('grado')) : null;
+        $programaId = $request->input('programa');
+        return $this->reportService->generateFinalPdf($gradoId, $programaId);
     }
 
-    public function reportFinalAulasPdf()
+    public function reportFinalAulasPdf(Request $request)
     {
-        return $this->reportService->generateFinalAulasPdf();
+        $gradoId = $request->input('grado') ? intval($request->input('grado')) : null;
+        $programaId = $request->input('programa');
+        return $this->reportService->generateFinalAulasPdf($gradoId, $programaId);
     }
 
-    public function reportFinalFirmasPdf()
+    public function reportFinalFirmasPdf(Request $request)
     {
-        return $this->reportService->generateFinalFirmasPdf();
+        $gradoId = $request->input('grado') ? intval($request->input('grado')) : null;
+        $programaId = $request->input('programa');
+        return $this->reportService->generateFinalFirmasPdf($gradoId, $programaId);
     }
 
-    public function reportComplementarioPdf()
+    public function reportComplementarioPdf(Request $request)
     {
-        return $this->reportService->generateComplementarioAsistenciaPdf();
+        $gradoId = $request->input('grado') ? intval($request->input('grado')) : null;
+        $programaId = $request->input('programa');
+        return $this->reportService->generateComplementarioAsistenciaPdf($gradoId, $programaId);
     }
 
-    public function reportComplementarioEntrevistaPdf()
+    public function reportComplementarioEntrevistaPdf(Request $request)
     {
-        return $this->reportService->generateComplementarioEntrevistaPdf();
+        $gradoId = $request->input('grado') ? intval($request->input('grado')) : null;
+        $programaId = $request->input('programa');
+        return $this->reportService->generateComplementarioEntrevistaPdf($gradoId, $programaId);
     }
 
-    public function reportResumenAulasPdf()
+    public function reportResumenAulasPdf(Request $request)
     {
-        return $this->reportService->generateAulasResumenPdf();
+        $gradoId = $request->input('grado') ? intval($request->input('grado')) : null;
+        $programaId = $request->input('programa');
+        return $this->reportService->generateAulasResumenPdf($gradoId, $programaId);
     }
 
-    public function reportResumenEvaluadoresPdf()
+    public function reportResumenEvaluadoresPdf(Request $request)
     {
-        return $this->reportService->generateEvaluadoresPdf();
+        $gradoId = $request->input('grado') ? intval($request->input('grado')) : null;
+        $programaId = $request->input('programa');
+        return $this->reportService->generateEvaluadoresPdf($gradoId, $programaId);
     }
 
     public function resumenGeneralInscripcion()
