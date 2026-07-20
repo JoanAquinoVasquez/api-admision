@@ -53,6 +53,11 @@ class ResultadosController extends BaseController
         return $this->reportService->generateEstadisticasAdmisionExcel();
     }
 
+    public function reportInscripcionResumenExcel()
+    {
+        return $this->reportService->generateInscripcionResumenExcel();
+    }
+
     public function ingresantesPorPrograma()
     {
         try {

@@ -78,6 +78,15 @@ class ReportService
     }
 
     /**
+     * Generar reporte general de inscripciones con resumen
+     */
+    public function generateInscripcionResumenExcel()
+    {
+        $nombreArchivo = 'reporte_inscripcion_' . now()->format('d-m-Y_His') . '.xlsx';
+        return Excel::download(new \App\Exports\InscripcionResumenExport, $nombreArchivo);
+    }
+
+    /**
      * Generar reporte de notas finales en Excel
      */
     public function generateNotasFinalReportExcel($gradoId = null, $programaId = null)

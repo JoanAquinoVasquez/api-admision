@@ -25,30 +25,6 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\Auth\AuthDocenteController;
 use Illuminate\Support\Facades\Route;
 
-// Ruta temporal para previsualizar el diseño del manual en PDF
-Route::get('/preview-manual', function () {
-    $user = (object) [
-        'name' => 'Usuario de Prueba (Previsualización)',
-        'email' => 'admin_prueba@unprg.edu.pe',
-        'roles' => [
-            (object) ['nombre' => 'Comisión de Admisión']
-        ]
-    ];
-    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.manual_usuario', ['user' => $user]);
-    return $pdf->stream('Previsualizacion_Manual_Sistema.pdf');
-});
-
-Route::get('/preview-reminder', function () {
-    return view('email.recordatorio-expediente', [
-        'sexo' => 'M',
-        'nombres' => 'Juan Alberto',
-        'ap_paterno' => 'Pérez',
-        'ap_materno' => 'García',
-        'nombre_grado' => 'Maestría',
-        'nombre_programa' => 'Gerencia de Obras y Construcción'
-    ]);
-});
-
 
 Route::middleware(['auth:api', 'active'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->middleware(['role:super-admin']);
@@ -214,6 +190,7 @@ Route::middleware(['auth:api', 'active'])->group(function () {
     Route::get('/reporte-ingresantes-programa/excel', [ResultadosController::class, 'reportIngresantesProgramaExcel'])->middleware(['role:super-admin|admin|comision']);
     Route::get('/reporte-cargo-constancias-excel', [ResultadosController::class, 'reportCargoConstanciasExcel'])->middleware(['role:super-admin|admin|comision']);
     Route::get('/reporte-estadisticas-admision-excel', [ResultadosController::class, 'reportEstadisticasAdmisionExcel'])->middleware(['role:super-admin|admin|comision']);
+    Route::get('/reporte-inscripcion-resumen-excel', [ResultadosController::class, 'reportInscripcionResumenExcel'])->middleware(['role:super-admin|admin|comision']);
 
     // Resultados Ingresantes
     Route::get('/resultados-ingresantes', [ResultadosController::class, 'index'])->middleware(['role:super-admin|admin|comision']);
