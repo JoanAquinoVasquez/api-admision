@@ -40,6 +40,14 @@ class Postulante extends Model
         return $this->hasOne(PreInscripcion::class);
     }
 
+    /**
+     * Histórico de preinscripciones de esta persona a través de los periodos.
+     */
+    public function preInscripcionesPorPeriodo()
+    {
+        return $this->hasMany(PreInscripcion::class);
+    }
+
     // Relación uno a muchos con Documento
     public function documentos()
     {
@@ -50,5 +58,13 @@ class Postulante extends Model
     public function inscripcion()
     {
         return $this->hasOne(Inscripcion::class);
+    }
+
+    /**
+     * Histórico de inscripciones de esta persona a través de los periodos.
+     */
+    public function inscripcionesPorPeriodo()
+    {
+        return $this->hasMany(Inscripcion::class);
     }
 }

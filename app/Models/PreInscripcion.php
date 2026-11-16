@@ -4,13 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Concerns\ScopesToAdmissionProcess;
 
 class PreInscripcion extends Model
 {
     use HasFactory;
+    use ScopesToAdmissionProcess;
 
     protected $fillable = [
         'postulante_id',
+        'proceso_admision_id',
         'distrito_id',
         'programa_id',
         'nombres',
@@ -27,6 +31,11 @@ class PreInscripcion extends Model
         'cargo',
         'estado',
     ];
+
+    public function procesoAdmision(): BelongsTo
+    {
+        return $this->belongsTo(ProcesoAdmision::class);
+    }
 
     // Relación muchos a uno con Distrito
     public function distrito()

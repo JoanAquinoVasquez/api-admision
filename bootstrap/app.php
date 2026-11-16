@@ -61,6 +61,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'active' => \App\Http\Middleware\ActiveUserMiddleware::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class, // Roles
+            'process.access' => \App\Http\Middleware\ProcessAccessMiddleware::class,
             'auth.docente.cookie' => \App\Http\Middleware\AuthenticateDocenteFromCookie::class,
         ]);
     })

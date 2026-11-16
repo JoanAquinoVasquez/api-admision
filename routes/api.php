@@ -18,6 +18,7 @@ use App\Http\Controllers\NotaController;
 use App\Http\Controllers\PostulanteController;
 use App\Http\Controllers\PreInscripcionController;
 use App\Http\Controllers\ProgramaController;
+use App\Http\Controllers\ProcesoAdmisionController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\ReservaDevolucionController;
 use App\Http\Controllers\ResultadosController;
@@ -26,7 +27,12 @@ use App\Http\Controllers\Auth\AuthDocenteController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware(['auth:api', 'active'])->group(function () {
+Route::middleware(['auth:api', 'active', 'process.access:admin|comision'])->group(function () {
+    Route::get('/procesos-admision', [ProcesoAdmisionController::class, 'index'])->name('procesos-admision.index');
+    Route::get('/procesos-admision/{codigo}', [ProcesoAdmisionController::class, 'show']);
+    Route::put('/procesos-admision/{codigo}/usuarios/{userId}/roles', [ProcesoAdmisionController::class, 'sincronizarRolesUsuario'])
+        ->middleware(['role:super-admin']);
+
     Route::get('/users', [UserController::class, 'index'])->middleware(['role:super-admin']);
     Route::get('users/{id}', [UserController::class, 'show'])->middleware(['role:super-admin']);
     Route::post('users', [UserController::class, 'store'])->middleware(['role:super-admin']);
@@ -78,7 +84,7 @@ Route::middleware(['auth:api', 'active'])->group(function () {
     Route::get('/inscripcion/{inscripcion}', [InscripcionController::class, 'show'])->middleware(['role:super-admin|admin']);
     Route::post('/inscripcion-update/{id}', [InscripcionUpdateController::class, 'update'])->middleware(['role:super-admin|admin']);
     Route::post('/inscripcion/val-digital', [InscripcionController::class, 'valDigital'])->middleware(['role:super-admin|admin']);
-    Route::get('/inscripcion/val-fisica/{id}', [InscripcionController::class, 'valFisica'])->middleware(['role:super-admin|admin']);
+    Route::get('/inscripcion/val-fisica/{id}', [InscripcionController::class, 'valFisica'])->middleware(['role:super-admin|admin', 'process.access:admin,write']);
     // Grafico dashboard inscripcion
     Route::get('/resumen-inscripcion-grafico', [InscripcionController::class, 'resumenInscripcionGrafico'])->middleware(['role:super-admin|admin|comision']);
     Route::get('/programas-posibles/{id}', [InscripcionController::class, 'programasPosibles'])->middleware(['role:super-admin|admin']);
@@ -86,13 +92,13 @@ Route::middleware(['auth:api', 'active'])->group(function () {
     Route::get('/inscripcion/resumen/total', [InscripcionController::class, 'resumenGeneralInscripcion']);
 
     //Enviar correo de validación
-    Route::get('/inscripcion/validad-correo/{id}', [InscripcionController::class, 'enviarCorreo']);
+    Route::get('/inscripcion/validad-correo/{id}', [InscripcionController::class, 'enviarCorreo'])->middleware(['process.access:admin,write']);
 
     //Generar cosntancia de inscripcion del postulante
     Route::get('/postulante/constancia/{id}', [PostulanteController::class, 'generateConstancia'])->middleware(['role:super-admin|admin']);
 
     //Generar los carnets de los postulantes
-    Route::post('/postulante-carnet', [PostulanteController::class, 'generateCarnet'])->middleware(['role:super-admin|admin']);
+    Route::post('/postulante-carnet', [PostulanteController::class, 'generateCarnet'])->middleware(['role:super-admin|admin', 'process.access:admin,read']);
 
     //Evaluacion postulantes
     Route::get('/inscripcion-nota', [InscripcionController::class, 'inscripcionNota'])->middleware(['role:super-admin|admin']);
@@ -127,7 +133,7 @@ Route::middleware(['auth:api', 'active'])->group(function () {
     ///////// Reportes los Postulantes Aptos para evaluacion en PDF /////////
     // Reporte de postulantes y notas de cv evaluadas por un docente
     Route::get('/postulantes-notasCV-admin/{idPrograma}', [DocenteController::class, 'reportNotasCV'])->middleware(['role:super-admin|admin']);
-    Route::post('/postulantes-notasCV-multiple-admin', [DocenteController::class, 'reportNotasCVMultiple'])->middleware(['role:super-admin|admin']);
+    Route::post('/postulantes-notasCV-multiple-admin', [DocenteController::class, 'reportNotasCVMultiple'])->middleware(['role:super-admin|admin', 'process.access:admin,read']);
     // Reporte de postulantes aptos para entrevista
     Route::get('/postulantes-aptos/{idPrograma}', [NotaController::class, 'postulantesAptos'])->middleware(['role:super-admin|admin']);
     Route::get('/postulantes-aptos-multiple', [NotaController::class, 'postulantesAptosMultiple'])->middleware(['role:super-admin|admin']);
@@ -153,15 +159,15 @@ Route::middleware(['auth:api', 'active'])->group(function () {
     Route::get('/inscripciones-inhabilitadas/{idPrograma}', [ReservaDevolucionController::class, 'inscripcionesInhabilitadasPrograma'])->middleware(['role:super-admin|admin']);
     // Acciones para la inscripciones que no abriran
     // RESERVA:
-    Route::get('/reservas/inscripcion/{id}', [ReservaDevolucionController::class, 'reservarInscripcion'])->middleware(['role:super-admin|admin']);
+    Route::get('/reservas/inscripcion/{id}', [ReservaDevolucionController::class, 'reservarInscripcion'])->middleware(['role:super-admin|admin', 'process.access:admin,write']);
     Route::get('/reservas/programa/{idPrograma}', [ReservaDevolucionController::class, 'listarInscripcionesReserva'])->middleware(['role:super-admin|admin']);
-    Route::get('/reservas/inscripcion/{id}/cancelar', [ReservaDevolucionController::class, 'cancelarReserva'])->middleware(['role:super-admin|admin']);
+    Route::get('/reservas/inscripcion/{id}/cancelar', [ReservaDevolucionController::class, 'cancelarReserva'])->middleware(['role:super-admin|admin', 'process.access:admin,write']);
     Route::get('/reservas/reporte', [ReservaDevolucionController::class, 'reportReserva'])->middleware(['role:super-admin|admin']);
     Route::get('/reservas/vouchers', [ReservaDevolucionController::class, 'reportReservaVouchers'])->middleware(['role:super-admin|admin']);
     // DEVOLUCION:
-    Route::get('/devolucion/inscripcion/{id}', [ReservaDevolucionController::class, 'devolverInscripcion'])->middleware(['role:super-admin|admin']);
+    Route::get('/devolucion/inscripcion/{id}', [ReservaDevolucionController::class, 'devolverInscripcion'])->middleware(['role:super-admin|admin', 'process.access:admin,write']);
     Route::get('/devolucion/programa/{idPrograma}', [ReservaDevolucionController::class, 'listarInscripcionesDevolver'])->middleware(['role:super-admin|admin']);
-    Route::get('/devolucion/inscripcion/{id}/cancelar', [ReservaDevolucionController::class, 'cancelarDevolucion'])->middleware(['role:super-admin|admin']);
+    Route::get('/devolucion/inscripcion/{id}/cancelar', [ReservaDevolucionController::class, 'cancelarDevolucion'])->middleware(['role:super-admin|admin', 'process.access:admin,write']);
     Route::get('/devolucion/reporte', [ReservaDevolucionController::class, 'reportDevolucion'])->middleware(['role:super-admin|admin']);
     Route::get('/inhabilitadas/reporte/todos', [ReservaDevolucionController::class, 'reportTodos'])->middleware(['role:super-admin|admin']);
     Route::get('/inhabilitadas/reporte/pendientes', [ReservaDevolucionController::class, 'reportPendientes'])->middleware(['role:super-admin|admin']);

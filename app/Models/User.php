@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -67,6 +68,42 @@ class User extends Authenticatable implements JWTSubject
         return $this->roles()->whereIn('slug', (array) $roles)->exists();
     }
 
+    public function procesoRoles(): HasMany
+    {
+        return $this->hasMany(ProcesoAdmisionUserRole::class);
+    }
+
+    public function hasRoleForProcess(int $processId, array|string $roles): bool
+    {
+        $roles = (array) $roles;
+
+        if ($this->hasAnyRole(['super-admin'])) {
+            return true;
+        }
+
+        return $this->procesoRoles()
+            ->where('proceso_admision_id', $processId)
+            ->whereHas('role', fn ($query) => $query->whereIn('slug', $roles))
+            ->exists();
+    }
+
+    public function hasAnyProcessRole(array|string $roles): bool
+    {
+        return $this->procesoRoles()
+            ->whereHas('role', fn ($query) => $query->whereIn('slug', (array) $roles))
+            ->exists();
+    }
+
+    /** @return list<string> */
+    public function effectiveRoleSlugs(): array
+    {
+        $global = $this->roles()->pluck('slug')->all();
+        $scoped = $this->procesoRoles()->with('role:id,slug')->get()
+            ->pluck('role.slug')->filter()->all();
+
+        return array_values(array_unique(array_merge($global, $scoped)));
+    }
+
     // Rest omitted for brevity
 
     /**
@@ -86,8 +123,10 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
+        $roles = $this->effectiveRoleSlugs();
         return [
-            'role' => $this->roles()->pluck('slug')->first(),
+            'role' => $roles[0] ?? null,
+            'roles' => $roles,
         ];
     }
 

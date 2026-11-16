@@ -28,10 +28,13 @@ class AuthController extends BaseController
                 return $this->unauthorized('Usuario no autenticado');
             }
 
+            $roles = $user->effectiveRoleSlugs();
+
             return $this->successResponse([
                 'authenticated' => true,
                 'user' => $user,
-                'role' => $user->roles()->pluck('slug')->first(),
+                'role' => $roles[0] ?? null,
+                'roles' => $roles,
             ]);
         }, 'Error al obtener el perfil');
     }
@@ -279,10 +282,13 @@ class AuthController extends BaseController
                 return $this->successResponse(['authenticated' => false]);
             }
 
+            $roles = $user->effectiveRoleSlugs();
+
             return $this->successResponse([
                 'authenticated' => true,
                 'user' => $user,
-                'role' => $user->roles()->pluck('slug')->first(),
+                'role' => $roles[0] ?? null,
+                'roles' => $roles,
             ]);
         }, 'Error al verificar autenticación');
     }

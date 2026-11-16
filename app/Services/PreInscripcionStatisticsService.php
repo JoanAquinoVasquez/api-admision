@@ -24,8 +24,13 @@ class PreInscripcionStatisticsService
         $totalGeneral = PreInscripcion::count();
         $totalPre_Inscritos = PreInscripcion::whereNotNull('postulante_id')->count();
 
-        $preInscritosPagados = PreInscripcion::whereIn('num_iden', function($query) {
+        $process = request()->attributes->get('proceso_admision');
+        $processId = DB::getDefaultConnection() === 'mysql_unificada' ? $process?->id : null;
+        $preInscritosPagados = PreInscripcion::whereIn('num_iden', function ($query) use ($processId) {
             $query->select('num_iden')->from('vouchers');
+            if ($processId !== null) {
+                $query->where('proceso_admision_id', $processId);
+            }
         })->count();
 
         $preinscritosNoPagados = $totalGeneral - $preInscritosPagados;
@@ -35,6 +40,10 @@ class PreInscripcionStatisticsService
                         ->join('postulantes', 'pre_inscripcions.postulante_id', '=', 'postulantes.id')
                         ->join('inscripcions', 'postulantes.id', '=', 'inscripcions.postulante_id')
                         ->join('programas', 'inscripcions.programa_id', '=', 'programas.id')
+                        ->when($processId !== null, function ($query) use ($processId) {
+                            $query->where('pre_inscripcions.proceso_admision_id', $processId)
+                                ->where('inscripcions.proceso_admision_id', $processId);
+                        })
                         ->select('programas.grado_id', DB::raw('count(*) as total'))
                         ->groupBy('programas.grado_id')
                         ->pluck('total', 'grado_id');

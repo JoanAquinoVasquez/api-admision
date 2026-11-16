@@ -32,8 +32,11 @@ class ResultadosService
             ->get();
 
         // Extraemos conteos agrupados de vouchers usando DB raw para evitar N+1 o exceso de RAM
+        $process = request()->attributes->get('proceso_admision');
+        $processId = \Illuminate\Support\Facades\DB::getDefaultConnection() === 'mysql_unificada' ? $process?->id : null;
         $vouchersCount = \Illuminate\Support\Facades\DB::table('vouchers')
             ->join('concepto_pagos', 'vouchers.concepto_pago_id', '=', 'concepto_pagos.id')
+            ->when($processId !== null, fn ($query) => $query->where('vouchers.proceso_admision_id', $processId))
             ->whereIn('concepto_pagos.cod_concepto', ['00000001', '00000003'])
             ->select('vouchers.num_iden', 'concepto_pagos.cod_concepto', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
             ->groupBy('vouchers.num_iden', 'concepto_pagos.cod_concepto')

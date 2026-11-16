@@ -5,13 +5,17 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Concerns\ScopesToAdmissionProcess;
 
 class Inscripcion extends Model
 {
     use HasFactory; // Descomentar y agregar LogsActivity
+    use ScopesToAdmissionProcess;
 
     protected $fillable = [
         'postulante_id',
+        'proceso_admision_id',
         'programa_id',
         'voucher_id',
         'codigo',
@@ -20,6 +24,11 @@ class Inscripcion extends Model
         'observacion',
         'estado',
     ];
+
+    public function procesoAdmision(): BelongsTo
+    {
+        return $this->belongsTo(ProcesoAdmision::class);
+    }
 
 
 

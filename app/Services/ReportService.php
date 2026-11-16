@@ -869,8 +869,11 @@ class ReportService
         $valFisico1 = Inscripcion::where('val_fisico', 1)->count();
 
         // Contadores por grado mediante agrupación en BD SQL
+        $process = request()->attributes->get('proceso_admision');
+        $processId = \Illuminate\Support\Facades\DB::getDefaultConnection() === 'mysql_unificada' ? $process?->id : null;
         $gradoCounts = \Illuminate\Support\Facades\DB::table('inscripcions')
                         ->join('programas', 'inscripcions.programa_id', '=', 'programas.id')
+                        ->when($processId !== null, fn ($query) => $query->where('inscripcions.proceso_admision_id', $processId))
                         ->select('programas.grado_id', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
                         ->groupBy('programas.grado_id')
                         ->pluck('total', 'grado_id');

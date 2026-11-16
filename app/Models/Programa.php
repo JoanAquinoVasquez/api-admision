@@ -4,11 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\DB;
 
 class Programa extends Model
 {
     /** @use HasFactory<\Database\Factories\ProgramaFactory> */
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('admission_process', function ($query): void {
+            if (DB::getDefaultConnection() !== 'mysql_unificada' || app()->runningInConsole() || ! app()->bound('request')) {
+                return;
+            }
+
+            $process = app('request')->attributes->get('proceso_admision');
+            if ($process) {
+                $query->whereHas('procesosAdmision', fn ($processQuery) => $processQuery->whereKey($process->id));
+            }
+        });
+    }
 
     // Ocultar los campos created_at y updated_at
     protected $hidden = ['created_at', 'updated_at'];
@@ -33,6 +50,29 @@ class Programa extends Model
         'plan_estudio',
         'brochure',
     ];
+
+    public function ofertasPorProceso(): HasMany
+    {
+        return $this->hasMany(ProgramaProceso::class);
+    }
+
+    public function procesosAdmision(): BelongsToMany
+    {
+        return $this->belongsToMany(ProcesoAdmision::class, 'programas_procesos')
+            ->withPivot([
+                'id',
+                'estado',
+                'vacantes',
+                'concepto_pago_id',
+                'docente_id',
+                'docente_entrevista_id',
+                'duracion_meses',
+                'modalidad',
+                'plan_estudio',
+                'brochure',
+            ])
+            ->withTimestamps();
+    }
 
     // Relación muchos a uno con Facultad
     public function facultad()
