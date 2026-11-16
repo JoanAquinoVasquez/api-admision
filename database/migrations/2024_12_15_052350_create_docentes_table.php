@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('ap_materno');
             $table->string('dni')->unique();
             $table->string('email')->unique();
+            $table->enum('tipo', ['cv', 'entrevista'])->default('cv');
             $table->string('password');
             $table->boolean('estado')->default(true);
             $table->timestamps();

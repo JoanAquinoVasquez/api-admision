@@ -199,9 +199,21 @@ class ProgramaRepository extends BaseRepository implements ProgramaRepositoryInt
     public function getForLandingPages(): \Illuminate\Support\Collection
     {
         return $this->model
-            ->select(['id', 'grado_id', 'facultad_id', 'nombre', 'plan_estudio', 'brochure', 'duracion_meses', 'modalidad', 'estado'])
-            ->with(['facultad:id,siglas'])
-            ->orderBy('nombre', 'asc')
+            ->select([
+                'programas.id',
+                'programas.grado_id',
+                'programas.facultad_id',
+                'programas.nombre',
+                'programas.plan_estudio',
+                'programas.brochure',
+                'programas.duracion_meses',
+                'programas.modalidad',
+                'programas.estado',
+            ])
+            ->with(['facultad:id,siglas', 'grado:id,nombre'])
+            ->join('facultads', 'programas.facultad_id', '=', 'facultads.id')
+            ->orderBy('facultads.siglas', 'asc')
+            ->orderBy('programas.nombre', 'asc')
             ->get()
             ->map(function ($programa) {
                 return [

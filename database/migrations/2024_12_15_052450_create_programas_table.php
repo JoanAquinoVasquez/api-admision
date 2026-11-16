@@ -17,8 +17,13 @@ return new class extends Migration
             $table->foreignId('facultad_id')->constrained();
             $table->foreignId('concepto_pago_id')->constrained();
             $table->foreignId('docente_id')->nullable()->constrained();
+            $table->foreignId('docente_entrevista_id')->nullable()->constrained('docentes');
             $table->string('nombre');
+            $table->integer('duracion_meses')->nullable();
+            $table->string('modalidad')->nullable();
             $table->string('vacantes');
+            $table->text('plan_estudio')->nullable();
+            $table->text('brochure')->nullable();
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });

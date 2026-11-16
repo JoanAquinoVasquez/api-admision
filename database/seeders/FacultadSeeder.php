@@ -33,7 +33,7 @@ class FacultadSeeder extends Seeder
             [
                 'nombre' => 'FACULTAD DE INGENIERÍA MECÁNICA Y ELÉCTRICA',
                 'siglas' => 'FIME',
-            ],            
+            ],
             [
                 'nombre' => 'FACULTAD DE DERECHO Y CIENCIA POLÍTICA ',
                 'siglas' => 'FDCP',
@@ -57,6 +57,10 @@ class FacultadSeeder extends Seeder
             [
                 'nombre' => 'FACULTAD DE AGRONOMÍA',
                 'siglas' => 'FAG'
+            ],
+            [
+                'nombre' => 'FACULTAD DE INGENIERÍA ZOOTECNIA',
+                'siglas' => 'FIZ',
             ]
         ];
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('notas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('inscripcion_id')->constrained();
+            $table->foreignId('inscripcion_id')->unique()->constrained();
             $table->decimal('cv', 5, 3)->nullable();
             $table->decimal('entrevista', 5, 3)->nullable();
             $table->decimal('examen', 5, 3)->nullable();
